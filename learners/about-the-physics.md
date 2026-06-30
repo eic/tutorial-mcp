@@ -27,6 +27,10 @@ title: "Physics reference: Λ⁰ → p π⁻"
 pre.ai-prompt, div.sourceCode.ai-prompt {
   border-top: 10px solid #7c3aed;
 }
+pre.ai-prompt, pre.ai-prompt code {
+  white-space: pre-wrap;       /* wrap long prompts onto many lines */
+  overflow-wrap: anywhere;
+}
 pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
   content: "AI Prompt";
   display: block;

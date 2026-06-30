@@ -143,10 +143,12 @@ combinatorial background — one reason a fit, not a count, is required.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-You do not download a file. In [Episode 3](03-mcp-servers.md) the assistant uses the **rucio** tools
-to find a DIS dataset and **xrootd** to verify its files, then reads one of the dataset's `root://`
-URLs (e.g. `root://dtn-eic.jlab.org//...`) **in place** with the **uproot** tools — pulling exactly
-these branches without writing any I/O code.
+You do not download a file. In [Episode 3](03-mcp-servers.md) the assistant uses the
+[**rucio**](https://github.com/eic/rucio-eic-mcp-server) tools to find a DIS dataset and
+[**xrootd**](https://github.com/eic/xrootd-mcp-server) to verify its files, then reads one of the
+dataset's `root://` URLs (e.g. `root://dtn-eic.jlab.org//...`) **in place** with the
+[**uproot**](https://github.com/eic/uproot-mcp-server) tools — pulling exactly these branches
+without writing any I/O code.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 

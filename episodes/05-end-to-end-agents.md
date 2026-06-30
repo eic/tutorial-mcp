@@ -29,6 +29,10 @@ exercises: 30
 pre.ai-prompt, div.sourceCode.ai-prompt {
   border-top: 10px solid #7c3aed;
 }
+pre.ai-prompt, pre.ai-prompt code {
+  white-space: pre-wrap;       /* wrap long prompts onto many lines */
+  overflow-wrap: anywhere;
+}
 pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
   content: "AI Prompt";
   display: block;
@@ -67,7 +71,7 @@ Specification of the end-to-end run, building on Episodes 1–3. Fixes the pipel
 
 ## The composed pipeline
 
-The previous episodes combine into one procedure run from a single request: the lambda-fit skill (Episode 4) supplies the steps, the uproot tool server (Episode 3) supplies verifiable data access, and the agentic loop (Episode 1) carries it out and checks the result.
+The previous episodes combine into one procedure run from a single request: the lambda-fit skill (Episode 4) supplies the steps, the [uproot tool server](https://github.com/eic/uproot-mcp-server) (Episode 3) supplies verifiable data access, and the agentic loop (Episode 1) carries it out and checks the result.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%

@@ -29,6 +29,10 @@ exercises: 10
 pre.ai-prompt, div.sourceCode.ai-prompt {
   border-top: 10px solid #7c3aed;
 }
+pre.ai-prompt, pre.ai-prompt code {
+  white-space: pre-wrap;       /* wrap long prompts onto many lines */
+  overflow-wrap: anywhere;
+}
 pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
   content: "AI Prompt";
   display: block;
@@ -173,7 +177,7 @@ flowchart TB
 
 | Component | What it adds to the core loop | In this tutorial |
 | --- | --- | --- |
-| MCP servers | external tools & data, client-agnostic | Episodes 3 & 5 (the uproot/xrootd servers) |
+| MCP servers | external tools & data, client-agnostic | Episodes 3 & 5 (the [uproot](https://github.com/eic/uproot-mcp-server)/[xrootd](https://github.com/eic/xrootd-mcp-server) servers) |
 | Subagents | isolated, specialised helpers | discussed in Episode 5 |
 | Skills | reusable, versioned procedures | Episode 4 (`SKILL.md`) |
 | LSP | code intelligence & diagnostics | background (your editor) |

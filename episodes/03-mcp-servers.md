@@ -29,6 +29,10 @@ exercises: 35
 pre.ai-prompt, div.sourceCode.ai-prompt {
   border-top: 10px solid #7c3aed;
 }
+pre.ai-prompt, pre.ai-prompt code {
+  white-space: pre-wrap;       /* wrap long prompts onto many lines */
+  overflow-wrap: anywhere;
+}
 pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
   content: "AI Prompt";
   display: block;
@@ -193,6 +197,22 @@ Inside eic-shell, `rucio-mcp` signs in to the authenticated catalogue with the s
 store you can use `xrootd-mcp` alone.
 
 :::::::::::::::::::::::::::::::::::::::::::::
+
+## List the available campaigns
+
+ePIC data is organised by **production campaign** — a version such as `25.12.0` — together with the
+beam/target and physics, all encoded in the rucio DID
+(e.g. `epic:/RECO/25.12.0/epic_craterlake/DIS/CC/18x275/...`). Before locating a specific dataset,
+see which campaigns exist so you target a current one:
+
+```{.ai-prompt}
+Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 25.12.0). Show the most recent few and roughly how many datasets each holds.
+```
+
+The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic`,
+groups the DIDs by their campaign component, and reports the campaigns — so you pick a version that
+still exists instead of guessing one that has moved on. (The `xrootd` server's `list_campaigns`
+browses the same structure on the store directly.)
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
