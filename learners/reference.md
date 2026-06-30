@@ -38,8 +38,8 @@ harness
     control loop. The method of this lesson is independent of which model fills the first slot.
 
 invariant mass
-:   The Lorentz-invariant combination *m* = √((ΣE)² − |Σ**p**|²) of a set of four-momenta. For the
-    daughters of a real decay it equals the parent mass.
+:   The Lorentz-invariant combination $m = \sqrt{(\Sigma E)^2 - |\Sigma \vec{p}|^2}$ of a set of
+    four-momenta. For the daughters of a real decay it equals the parent mass.
 
 JSON-RPC
 :   A lightweight remote-procedure-call protocol using JSON messages. MCP is built on JSON-RPC 2.0.

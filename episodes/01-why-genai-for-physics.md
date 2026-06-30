@@ -4,6 +4,41 @@ teaching: 40
 exercises: 10
 ---
 
+<style>
+/* Mermaid: force diagram label text dark so it stays readable on the
+   light node fills in BOTH light and dark mode. The Carpentries dark
+   theme sets `p`/`li` color and darkens `pre` backgrounds, which would
+   otherwise turn mermaid's label text light (invisible on light nodes)
+   and the diagram surface dark. We override both, with !important to
+   beat the theme rules and mermaid's own inline styles. */
+.mermaid { background: transparent !important; }
+.mermaid .nodeLabel, .mermaid .edgeLabel, .mermaid .label,
+.mermaid .cluster-label, .mermaid text, .mermaid tspan,
+.mermaid span, .mermaid p, .mermaid foreignObject div {
+  color: #10204a !important;
+  fill: #10204a !important;
+}
+.mermaid .edgeLabel, .mermaid .edgeLabel p, .mermaid .edgeLabel rect {
+  background-color: #e2e8f0 !important;
+}
+/* AI prompts: paste-into-your-assistant blocks. Styled like a normal
+   code block (same neutral pre background/border as python etc.), with
+   just a small "AI Prompt" tag in the corner. */
+pre.ai-prompt, div.sourceCode.ai-prompt {
+  border-top: 10px solid #7c3aed;
+}
+pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
+  content: "AI Prompt";
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600;
+  font-size: .78em;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #7c3aed;
+}
+</style>
+
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
 - How does an agentic, tool-using assistant differ from a conversational language model?
@@ -30,7 +65,7 @@ In a typical analysis the physics is modest: select a final state, build an obse
 signal. Most effort goes into the software around it — locating datasets, decoding a data model,
 getting branch names and units right, iterating on plotting and fitting code. LLMs compress this
 overhead well, but only if they produce *checkable* results. Later episodes apply this to the decay
-Λ⁰ → p π⁻.
+$\Lambda^0 \to p\,\pi^-$.
 
 ## Two modes of use
 
@@ -86,7 +121,7 @@ flowchart TD
 ## Why the loop is essential, not cosmetic
 
 Feeding tool results back lets the assistant correct course against ground truth: read the actual
-branch names rather than guessing, run a fit and read back its χ²/ndf, refit if the peak is
+branch names rather than guessing, run a fit and read back its $\chi^2/\mathrm{ndf}$, refit if the peak is
 misplaced. A single completion cannot, because it never observes a consequence of its actions.
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -169,8 +204,8 @@ result earns trust.
 
 ## Discussion: what does the loop buy you?
 
-For the Λ⁰ → p π⁻ analysis, identify two failure modes of a one-shot completion that an agentic
-loop removes.
+For the $\Lambda^0 \to p\,\pi^-$ analysis, identify two failure modes of a one-shot completion that an
+agentic loop removes.
 
 ::::::::::::::: solution
 
@@ -178,7 +213,7 @@ loop removes.
    example `ReconstructedParticles.px` instead of `ReconstructedChargedParticles.momentum.x`). An
    agent can query the file and use the real names.
 2. **Unvalidated fit.** A one-shot model cannot know whether its fit converged or where the peak
-   landed. An agent can execute the fit, read μ, σ, and χ²/ndf, and iterate.
+   landed. An agent can execute the fit, read $\mu$, $\sigma$, and $\chi^2/\mathrm{ndf}$, and iterate.
 
 Both are the same principle: conditioning on observations beats conditioning on the prior.
 

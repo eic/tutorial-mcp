@@ -2,26 +2,24 @@
 title: Setup
 ---
 
-This lesson runs entirely inside **eic-shell**, the ePIC software container. You
-only need two things: eic-shell and a free AI assistant. No Docker, no grid
-certificate, no data download — the MCP tool servers reuse the container's own
-`uproot`, `xrdfs`, and `rucio` (already logged in to the shared read-only
-`eicread` account).
+This lesson runs entirely inside **eic-shell**, the ePIC software container. You install an AI
+assistant yourself; one command then builds the tool servers. No Docker, no grid certificate, no
+data download — the MCP servers reuse the container's own `uproot`, `xrdfs`, and `rucio` (already
+logged in to the shared read-only `eicread` account).
 
 ::::::::::::::::::::::::::::::::::::::::::::: checklist
 
 ## Quick checklist
 
-* [ ] **eic-shell** installed and working (`./eic-shell` drops you into the container).
-* [ ] **opencode** installed and connected to a free model (Episode 2).
-* [ ] The three EIC MCP servers built and running (`eic-mcp up`, Episode 3).
+* [ ] **eic-shell** working (`./eic-shell` drops you into the container).
+* [ ] An AI assistant installed and connected to a free model — you choose it (Episode 2).
+* [ ] **`eic-mcp setup`** run once (clones + builds the three MCP servers).
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## 1. eic-shell
 
-The ePIC environment ships everything the tool servers need. If you don't have
-it yet, follow the ePIC
+If you don't have it yet, follow the ePIC
 [setup guide](https://eic.github.io/tutorial-setting-up-environment/), then:
 
 ```bash
@@ -30,37 +28,35 @@ it yet, follow the ePIC
 
 Everything below runs **inside** that shell.
 
-## 2. An AI assistant — opencode
+## 2. An AI assistant (your choice)
 
-We use [opencode](https://opencode.ai), a free, open-source terminal assistant
-with native MCP support. Install it and connect a free model (full walkthrough
-in [Episode 2](../episodes/02-your-ai-coding-setup.md)):
+Install one agentic assistant and connect it to a free model. [Episode 2](../episodes/02-your-ai-coding-setup.md)
+compares the options; this lesson uses [opencode](https://opencode.ai):
 
 ```bash
 curl -fsSL https://opencode.ai/install | bash
-opencode auth login          # pick Google Gemini (free tier), GitHub Models, or a local Ollama model
+opencode auth login    # pick Google Gemini (free tier), GitHub Models, or a local Ollama model
 ```
 
-## 3. The EIC MCP servers
+## 3. Build the MCP servers — `eic-mcp setup`
 
-This lesson's repository ships a small launcher, `bin/eic-mcp`, that builds and
-runs the three servers inside eic-shell. Build them once:
+The lesson ships a launcher, `bin/eic-mcp`, that clones and builds the three servers (uproot,
+xrootd, rucio) inside eic-shell. Run it once:
 
 ```bash
 eic-mcp setup
 ```
 
-You start and stop them per session in [Episode 3](../episodes/03-mcp-servers.md)
-with `eic-mcp up` / `eic-mcp down`. The matching opencode configuration lives in
-[`files/mcp-config/opencode.jsonc`](../files/mcp-config/opencode.jsonc).
+The first run takes a few minutes. You start and stop the servers per session in
+[Episode 3](../episodes/03-mcp-servers.md) with `eic-mcp up` / `eic-mcp down`; point your assistant
+at them with [`files/mcp-config/opencode.jsonc`](../files/mcp-config/opencode.jsonc).
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## No credentials, no data download
 
-The `rucio` server signs in automatically with the shared, read-only `eicread`
-account baked into eic-shell — the same one the `rucio` command line uses. You
-never enter a password or a grid proxy, and you never download a dataset: the
-assistant reads ROOT files in place over `root://`.
+The `rucio` server signs in automatically with the shared, read-only `eicread` account baked into
+eic-shell — the same one the `rucio` command line uses. You never enter a password or a grid proxy,
+and you never download a dataset: the assistant reads ROOT files in place over `root://`.
 
 :::::::::::::::::::::::::::::::::::::::::::::

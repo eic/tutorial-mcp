@@ -13,7 +13,7 @@ proton–π⁻ pairs, and histograms the invariant mass. Full scripts:
 
 ## All four agree
 
-Same masses (`M_p = 0.9382720813`, `M_π = 0.13957061` GeV), same 200 bins over 1.05–1.25 GeV,
+Same masses ($M_p = 0.9382720813$, $M_\pi = 0.13957061$ GeV), same 200 bins over 1.05–1.25 GeV,
 same peak. Choose for convenience.
 
 :::::::::::::::::::::::::::::::::::::::::::::

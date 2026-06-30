@@ -4,6 +4,41 @@ teaching: 30
 exercises: 25
 ---
 
+<style>
+/* Mermaid: force diagram label text dark so it stays readable on the
+   light node fills in BOTH light and dark mode. The Carpentries dark
+   theme sets `p`/`li` color and darkens `pre` backgrounds, which would
+   otherwise turn mermaid's label text light (invisible on light nodes)
+   and the diagram surface dark. We override both, with !important to
+   beat the theme rules and mermaid's own inline styles. */
+.mermaid { background: transparent !important; }
+.mermaid .nodeLabel, .mermaid .edgeLabel, .mermaid .label,
+.mermaid .cluster-label, .mermaid text, .mermaid tspan,
+.mermaid span, .mermaid p, .mermaid foreignObject div {
+  color: #10204a !important;
+  fill: #10204a !important;
+}
+.mermaid .edgeLabel, .mermaid .edgeLabel p, .mermaid .edgeLabel rect {
+  background-color: #e2e8f0 !important;
+}
+/* AI prompts: paste-into-your-assistant blocks. Styled like a normal
+   code block (same neutral pre background/border as python etc.), with
+   just a small "AI Prompt" tag in the corner. */
+pre.ai-prompt, div.sourceCode.ai-prompt {
+  border-top: 10px solid #7c3aed;
+}
+pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
+  content: "AI Prompt";
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600;
+  font-size: .78em;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #7c3aed;
+}
+</style>
+
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
 - Which assistants provide an agentic loop at low or no cost?
@@ -60,7 +95,7 @@ You need only one. Each option is self-contained.
 ## Option A — GitHub Copilot (VS Code or CLI)
 
 1. Install [Visual Studio Code](https://code.visualstudio.com/).
-2. Install the **GitHub Copilot** and **GitHub Copilot Chat** extensions.
+2. Install the [**GitHub Copilot**](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and [**GitHub Copilot Chat**](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extensions.
 3. Authenticate with a GitHub account; students and educators get Copilot Pro free.
 4. Open Copilot Chat and select **Agent** mode.
 
@@ -73,7 +108,7 @@ Terminal: the **GitHub Copilot CLI** (`copilot`) is agentic and speaks MCP. Sign
 ## Option B — Claude Code (terminal)
 
 1. Install [Node.js](https://nodejs.org/) (LTS).
-2. `npm install -g @anthropic-ai/claude-code`
+2. Install the [`@anthropic-ai/claude-code`](https://www.npmjs.com/package/@anthropic-ai/claude-code) package: `npm install -g @anthropic-ai/claude-code` (see the [Claude Code docs](https://docs.claude.com/en/docs/claude-code/overview)).
 3. Run `claude` in a project directory and authenticate once.
 4. `/help` lists commands; `/mcp` (Episode 3) lists connected tool servers.
 
@@ -147,13 +182,13 @@ flowchart LR
 
 ### The observable
 
-The Λ⁰ is neutral and not detected directly; we reconstruct it from its charged daughters. For a candidate proton *p*₁ = (E₁, **p**₁) and candidate pion *p*₂ = (E₂, **p**₂), the pair's **invariant mass** is Lorentz invariant:
+The Λ⁰ is neutral and not detected directly; we reconstruct it from its charged daughters. For a candidate proton $p_1 = (E_1, \vec{p}_1)$ and candidate pion $p_2 = (E_2, \vec{p}_2)$, the pair's **invariant mass** is Lorentz invariant:
 
-```
-E_i = sqrt(|p_i|^2 + m_i^2)          with m_i the assigned proton or pion mass
+$$E_i = \sqrt{|\vec{p}_i|^2 + m_i^2}$$
 
-m(p, π) = sqrt( (E_1 + E_2)^2 − |p_1 + p_2|^2 )
-```
+with $m_i$ the assigned proton or pion mass, and
+
+$$m(p, \pi) = \sqrt{(E_1 + E_2)^2 - |\vec{p}_1 + \vec{p}_2|^2}$$
 
 Assign the proton mass to one track and the pion mass to the other (using reconstructed particle ID). For true Λ⁰ decays this equals the parent mass; candidates accumulate in a **peak at 1.115683 GeV**.
 
@@ -161,7 +196,7 @@ Assign the proton mass to one track and the pion mass to the other (using recons
 
 ## Width: resolution, not lifetime
 
-The Λ⁰ natural width (Γ = ħ/τ ≈ 2.5 × 10⁻⁶ eV) is far below any detector effect. The observed peak width — a few MeV — measures **detector momentum and angular resolution**, not the particle.
+The Λ⁰ natural width ($\Gamma = \hbar/\tau \approx 2.5 \times 10^{-6}$ eV) is far below any detector effect. The observed peak width — a few MeV — measures **detector momentum and angular resolution**, not the particle.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 

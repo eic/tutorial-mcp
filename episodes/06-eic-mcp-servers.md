@@ -4,6 +4,41 @@ teaching: 15
 exercises: 0
 ---
 
+<style>
+/* Mermaid: force diagram label text dark so it stays readable on the
+   light node fills in BOTH light and dark mode. The Carpentries dark
+   theme sets `p`/`li` color and darkens `pre` backgrounds, which would
+   otherwise turn mermaid's label text light (invisible on light nodes)
+   and the diagram surface dark. We override both, with !important to
+   beat the theme rules and mermaid's own inline styles. */
+.mermaid { background: transparent !important; }
+.mermaid .nodeLabel, .mermaid .edgeLabel, .mermaid .label,
+.mermaid .cluster-label, .mermaid text, .mermaid tspan,
+.mermaid span, .mermaid p, .mermaid foreignObject div {
+  color: #10204a !important;
+  fill: #10204a !important;
+}
+.mermaid .edgeLabel, .mermaid .edgeLabel p, .mermaid .edgeLabel rect {
+  background-color: #e2e8f0 !important;
+}
+/* AI prompts: paste-into-your-assistant blocks. Styled like a normal
+   code block (same neutral pre background/border as python etc.), with
+   just a small "AI Prompt" tag in the corner. */
+pre.ai-prompt, div.sourceCode.ai-prompt {
+  border-top: 10px solid #7c3aed;
+}
+pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
+  content: "AI Prompt";
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600;
+  font-size: .78em;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #7c3aed;
+}
+</style>
+
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
 - Which MCP servers does the EIC/ePIC collaboration provide?
@@ -150,7 +185,7 @@ The servers above are individual tools. **corun-ai** is the shared infrastructur
 
 ## Where this is going
 
-The central infrastructure the workshop set out to discuss: shared MCP servers and proxies, a catalogue of skills, and reusable agent harnesses — from a single free assistant and one tool server up to a collaboration-wide ecosystem, plus a real Λ⁰ measurement you carried out yourself.
+The central infrastructure the workshop set out to discuss: shared MCP servers and proxies, a catalogue of skills, and reusable agent harnesses — from a single free assistant and one tool server up to a collaboration-wide ecosystem, plus a real $\Lambda^0$ measurement you carried out yourself.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 

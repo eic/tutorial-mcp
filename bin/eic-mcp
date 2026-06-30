@@ -148,6 +148,10 @@ cmd_list() {
     printf "%-8s %-6s %-14s %-22s %s\n" "$n" "${SRV_PORT[$n]}" "${SRV_KIND[$n]}" "$e" "${SRV_REPO[$n]}"
   done
 }
+needs_bridge() { local n; for n in $(enabled_servers); do case "${SRV_KIND[$n]}" in *-stdio) return 0;; esac; done; return 1; }
+
+# `setup` clones + builds the enabled MCP servers (and the stdio→SSE bridge if
+# needed). It does NOT install the LLM client — that's the user's choice.
 cmd_setup() {
   mkdir -p "$EIC_MCP_DIR" "$RUN_DIR" "$LOG_DIR"
   local n dir
@@ -160,6 +164,12 @@ cmd_setup() {
     else echo "==> cloning $n"; git clone "${SRV_REPO[$n]}" "$dir"; fi
     echo "==> building $n (${SRV_KIND[$n]})"; build_server "$n"
   done
+
+  if needs_bridge; then
+    echo "==> pre-fetching supergateway (stdio→SSE bridge)"
+    run_in_env "export npm_config_cache=\"\$HOME/.cache/eic-mcp/npm\" && npx -y supergateway --version >/dev/null 2>&1 || true"
+  fi
+
   echo; echo "Setup complete. Start with: eic-mcp up"
 }
 cmd_up() {

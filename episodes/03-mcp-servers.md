@@ -5,16 +5,37 @@ exercises: 35
 ---
 
 <style>
-/* AI prompts: the blocks you paste into your assistant */
-div.sourceCode.ai-prompt, pre.ai-prompt {
-  border-left: .35rem solid #7c3aed;
-  background: rgba(124, 58, 237, .08);
-  border-radius: 6px;
+/* Mermaid: force diagram label text dark so it stays readable on the
+   light node fills in BOTH light and dark mode. The Carpentries dark
+   theme sets `p`/`li` color and darkens `pre` backgrounds, which would
+   otherwise turn mermaid's label text light (invisible on light nodes)
+   and the diagram surface dark. We override both, with !important to
+   beat the theme rules and mermaid's own inline styles. */
+.mermaid { background: transparent !important; }
+.mermaid .nodeLabel, .mermaid .edgeLabel, .mermaid .label,
+.mermaid .cluster-label, .mermaid text, .mermaid tspan,
+.mermaid span, .mermaid p, .mermaid foreignObject div {
+  color: #10204a !important;
+  fill: #10204a !important;
 }
-div.sourceCode.ai-prompt::before, pre.ai-prompt::before {
-  content: "🤖 Prompt — paste into your assistant";
-  display: block; padding: .4rem .7rem 0;
-  font-weight: 700; font-size: .82em; letter-spacing: .02em; color: #7c3aed;
+.mermaid .edgeLabel, .mermaid .edgeLabel p, .mermaid .edgeLabel rect {
+  background-color: #e2e8f0 !important;
+}
+/* AI prompts: paste-into-your-assistant blocks. Styled like a normal
+   code block (same neutral pre background/border as python etc.), with
+   just a small "AI Prompt" tag in the corner. */
+pre.ai-prompt, div.sourceCode.ai-prompt {
+  border-top: 10px solid #7c3aed;
+}
+pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
+  content: "AI Prompt";
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600;
+  font-size: .78em;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #7c3aed;
 }
 </style>
 
@@ -151,7 +172,7 @@ flowchart LR
 * **[`rucio-mcp`](https://github.com/eic/rucio-eic-mcp-server)** queries the data-management catalogue:
   `list_dids` finds the dataset identifier (DID) by name, `get_did_metadata` and `list_files`
   describe its contents, `list_file_replicas` returns the physical `root://` locations.
-* **`xrootd-mcp`** works directly on the store: `list_campaigns` / `list_datasets` browse it,
+* **[`xrootd-mcp`](https://github.com/eic/xrootd-mcp-server)** works directly on the store: `list_campaigns` / `list_datasets` browse it,
   `list_directory` and `check_file_exists` enumerate and verify files, and
   `get_dataset_event_statistics` reports total events across a dataset.
 
