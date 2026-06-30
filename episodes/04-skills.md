@@ -81,7 +81,7 @@ flowchart TD
 
 ## AGENTS.md — project context
 
-`AGENTS.md` is plain Markdown at your project root (subdirectories may override it for files beneath them). Claude Code, opencode, and others read it automatically; where a tool uses a different name (`CLAUDE.md`, "custom instructions"), the content transfers unchanged.
+`AGENTS.md` is plain Markdown at your project root (subdirectories may override it for files beneath them). opencode, Cursor, and others read it automatically; where a tool uses a different name (Copilot's `copilot-instructions.md`, a `.cursorrules`), the content transfers unchanged.
 
 It is loaded on every turn, so keep it short and factual:
 
@@ -136,23 +136,17 @@ This encodes the schema, the tool policy (use the server, not hand-written I/O),
 
 ## One source of truth: bridge files
 
-Not every tool reads `AGENTS.md`. Most modern ones do — opencode, Cursor, Codex, Gemini CLI, Zed — but some look for their own filename and silently ignore it. Claude Code reads `CLAUDE.md`. A project with only an `AGENTS.md` runs such a tool with no context and no warning.
+Not every tool reads `AGENTS.md`. Most modern ones do — opencode, Codex, Gemini CLI, Zed — but some look for their own filename and silently ignore it: GitHub Copilot reads `copilot-instructions.md`, Cursor reads `.cursorrules`. A project with only an `AGENTS.md` runs such a tool with no context and no warning.
 
 Don't copy your rules into a second file; two copies drift within a week. **Keep the standard in the centre and let each tool read from it**: the tool-specific file becomes a one-line *bridge* pointing at `AGENTS.md`.
 
-`CLAUDE.md` (the `@` pulls the referenced file into Claude Code's context):
-
-```markdown
-@AGENTS.md
-```
-
-`.github/copilot-instructions.md` (GitHub Copilot):
+`.github/copilot-instructions.md` (GitHub Copilot) — and `.cursorrules` (Cursor) — are one line:
 
 ```markdown
 Follow the project rules in AGENTS.md.
 ```
 
-Now every assistant reads the same source of truth. Copy the ready-made bridges: [`CLAUDE.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/CLAUDE.md) and [`copilot-instructions.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
+Now every assistant reads the same source of truth. Copy the ready-made bridge: [`copilot-instructions.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
 
 ## SKILL.md — a named procedure
 
@@ -213,7 +207,7 @@ file list), so the run can be reproduced.
 
 ## How clients load a skill
 
-Claude Code reads skills from a `skills/` (or `.claude/skills/`) directory and loads one when a request matches its `description`. Clients without a native skill mechanism reach the same end by referencing the procedure from `AGENTS.md`. The form — a versioned, self-contained specification that drives the MCP tools — is portable even where the loading mechanism is not.
+An assistant with a native skill mechanism reads skills from a `skills/` directory and loads one when a request matches its `description`. Clients without one reach the same end by referencing the procedure from `AGENTS.md`. The form — a versioned, self-contained specification that drives the MCP tools — is portable even where the loading mechanism is not.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -253,9 +247,9 @@ A project that behaves the same under any assistant:
 ```bash
 lambda-analysis/
 ├── AGENTS.md                        # source of truth: context + conventions (write this)
-├── CLAUDE.md                        # one line: @AGENTS.md  (bridge for Claude Code)
 ├── .github/
 │   └── copilot-instructions.md      # points to AGENTS.md   (bridge for Copilot)
+├── .cursorrules                     # points to AGENTS.md   (bridge for Cursor)
 ├── opencode.jsonc                   # MCP server connections (Episode 3)
 └── skills/
     └── lambda-fit/
@@ -280,7 +274,7 @@ The [next episode](05-end-to-end-agents.md) runs this skill end to end and scale
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
 - AGENTS.md is always-loaded project context; a SKILL.md is a named procedure loaded on demand.
-- Keep one source of truth (AGENTS.md) and point tool-specific files (CLAUDE.md, copilot-instructions.md) at it — never maintain duplicates.
+- Keep one source of truth (AGENTS.md) and point tool-specific files (copilot-instructions.md, .cursorrules) at it — never maintain duplicates.
 - A skill's frontmatter `description` is what the model matches against to decide when to load it.
 - Encode inputs, steps, success criteria, and provenance so a result can be reproduced and audited.
 

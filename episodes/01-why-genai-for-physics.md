@@ -183,8 +183,7 @@ flowchart TB
 
 A *plugin* is a container for the other components — commands, subagents, skills, hooks, MCP
 servers — so an entire workflow installs in one step. For a collaboration, that is the path from "I
-configured my assistant" to "everyone runs the same vetted setup." See the Claude Code
-[plugin components reference](https://code.claude.com/docs/en/plugins-reference#plugin-components-reference).
+configured my assistant" to "everyone runs the same vetted setup."
 
 :::::::::::::::::::::::::::::::::::::::::::::
 

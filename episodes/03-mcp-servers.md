@@ -73,7 +73,7 @@ servers. The lesson's servers run inside eic-shell and speak SSE.
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: EIC MCP data tools
-    A["AI assistant<br/>opencode · Claude Code · Copilot"]:::core <-->|"JSON-RPC / SSE"| S["uproot tool server<br/>(MCP, in eic-shell)"]:::tool
+    A["AI assistant<br/>opencode · Copilot · Cursor"]:::core <-->|"JSON-RPC / SSE"| S["uproot tool server<br/>(MCP, in eic-shell)"]:::tool
     S <-->|"uproot"| F["EDM4eic ROOT file"]:::data
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
@@ -149,9 +149,8 @@ Copy it to the directory where you launch opencode (or to `~/.config/opencode/`)
 
 ## Other clients point at the same URLs
 
-The SSE endpoints are not opencode-specific. Claude Code:
-`claude mcp add --transport sse uproot http://127.0.0.1:9101/sse` (likewise for `xrootd` and
-`rucio`); GitHub Copilot reads the equivalent SSE URLs from its own config.
+The SSE endpoints work with any MCP client: point VS Code/Copilot or Cursor at the same
+`http://127.0.0.1:910x/sse` URLs in its MCP settings.
 
 :::::::::::::::
 

@@ -15,7 +15,7 @@ agentic loop
 AGENTS.md
 :   A plain-Markdown file giving an assistant always-on project context (environment, data model,
     conventions, definition of done). Read automatically by many clients; equivalent to a
-    `CLAUDE.md` or "custom instructions" elsewhere.
+    `copilot-instructions.md`, `.cursorrules`, or "custom instructions" elsewhere.
 
 branching fraction
 :   The probability that a particle decays through a particular channel. For Λ⁰ → p π⁻ it is ≈ 63.9%.
