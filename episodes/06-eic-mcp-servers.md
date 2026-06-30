@@ -62,7 +62,8 @@ MCP is a standard ([Episode 3](03-mcp-servers.md)), so the collaboration exposes
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
-    accTitle: EIC MCP server catalogue
+    accTitle: {EIC MCP server catalogue}
+    accDescr: {EIC MCP server catalogue}
     A(["your AI assistant"]):::core
     A --> DATA
     A --> REC

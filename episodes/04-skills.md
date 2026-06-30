@@ -67,7 +67,8 @@ Typing requests (Episode 3) does not scale: you re-explain the data model, conve
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
-    accTitle: Skills and AGENTS.md
+    accTitle: {Skills and AGENTS.md}
+    accDescr: {Skills and AGENTS.md}
     R["your project"] --> AG["AGENTS.md<br/>whole file always in context"]:::always
     R --> SK["skills/lambda-fit/SKILL.md<br/>only its description is indexed"]:::ondemand
     AG --> M(["model context"]):::core

@@ -70,7 +70,8 @@ The previous episodes combine into one procedure run from a single request: the 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
-    accTitle: End-to-end agent run
+    accTitle: {End-to-end agent run}
+    accDescr: {End-to-end agent run}
     A["resolve input<br/>root:// file or file list"]:::data --> B["build m(p,π) histogram<br/>uproot MCP · execute_kernel"]:::tool
     B --> C["fit Gaussian + poly-2<br/>opencode prompt"]:::tool
     C --> D["report μ, σ, S, χ²/ndf<br/>+ plot + provenance"]:::out

@@ -66,7 +66,8 @@ vertex displaced from the primary interaction point. The neutral Λ⁰ leaves no
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
-    accTitle: Lambda V0 decay topology
+    accTitle: {Lambda V0 decay topology}
+    accDescr: {Lambda V0 decay topology}
     PV["primary vertex<br/>e + A collision"]:::vtx -. "Λ⁰: neutral, cτ ≈ 7.9 cm" .-> DV["displaced<br/>decay vertex"]:::vtx
     DV --> P["proton track (+)"]:::pos
     DV --> PI["pion track (−)"]:::neg

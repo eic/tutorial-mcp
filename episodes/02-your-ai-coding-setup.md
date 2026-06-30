@@ -56,7 +56,8 @@ displaced from the primary interaction point.
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
-    accTitle: Lambda to proton pion V0 decay
+    accTitle: {Lambda to proton pion V0 decay}
+    accDescr: {Lambda to proton pion V0 decay}
     PV["primary vertex<br/>e + A collision"]:::vtx -. "Λ⁰: neutral, cτ ≈ 7.9 cm" .-> DV["displaced<br/>decay vertex"]:::vtx
     DV --> P["proton<br/>PDG 2212"]:::pos
     DV --> PI["pion<br/>PDG -211"]:::neg

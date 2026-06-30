@@ -95,7 +95,8 @@ A model plus the machinery that makes it useful is a **harness**, with four comp
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
-    accTitle: AI agent harness
+    accTitle: {AI agent harness}
+    accDescr: {AI agent harness}
     U["Task specification"]:::user --> M
     C["Context window<br/>files · history · instructions"]:::core --> M["Model<br/>LLM: reasoning + generation"]:::core
     M -->|"proposes a typed tool call"| T["Tools<br/>read/write files · run code · query a server"]:::tool
@@ -135,7 +136,8 @@ vocabulary recurs in every modern assistant's documentation.
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
-    accTitle: AI agent harness
+    accTitle: {AI agent harness}
+    accDescr: {AI agent harness}
     MCP["MCP servers<br/>external tools & data"]:::tool --> H
     SUB["subagents<br/>specialised, isolated context"]:::tool --> H
     LSP["LSP<br/>code intelligence"]:::tool --> H
