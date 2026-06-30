@@ -41,18 +41,18 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
-- What is MCP, and what interoperability problem does it solve?
-- What does the uproot tool server expose, and how is its execution made safe?
-- How is one server connected to different assistants, and how do I drive it?
+- What is MCP, and what problem does it solve?
+- What does the uproot server expose, and how is it sandboxed?
+- How do you connect and drive a server?
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Describe MCP as a client–server protocol that decouples tools from assistants.
-- Enumerate the categories of tool the uproot server provides and the constraints on `execute_kernel`.
-- Start the servers with `eic-mcp up`, connect opencode over SSE, and confirm the connection.
-- Direct the assistant to locate a dataset, inspect it, and histogram a branch, then verify the result.
+- Describe MCP as a client–server tool protocol.
+- List the uproot tools and the `execute_kernel` sandbox limits.
+- Start the servers (`eic-mcp up`) and connect opencode.
+- Drive the assistant to find data, histogram a branch, and verify.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -72,6 +72,7 @@ servers. The lesson's servers run inside eic-shell and speak SSE.
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
+    accTitle: EIC MCP data tools
     A["AI assistant<br/>opencode · Claude Code · Copilot"]:::core <-->|"JSON-RPC / SSE"| S["uproot tool server<br/>(MCP, in eic-shell)"]:::tool
     S <-->|"uproot"| F["EDM4eic ROOT file"]:::data
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
@@ -163,6 +164,7 @@ store, with no download step.
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
+    accTitle: EIC MCP data tools
     R["rucio-mcp<br/>list_dids · list_files · list_file_replicas"]:::tool -->|"DID + root:// replica URLs"| X["xrootd-mcp<br/>list_datasets · check_file_exists · get_dataset_event_statistics"]:::tool
     X -->|"verified root:// paths"| U["uproot-mcp<br/>analyse in place"]:::core
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;

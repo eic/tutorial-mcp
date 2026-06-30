@@ -41,21 +41,21 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
-- How does an agentic, tool-using assistant differ from a conversational language model?
-- What are the components of an LLM "harness", and why does each one matter for analysis work?
-- How do modern assistants extend that core — MCP, subagents, LSP, hooks, monitors, plugins?
-- How do we obtain trustworthy, reproducible results from a stochastic model?
-- Why build the workflow on an open protocol rather than a single product?
+- How does an agentic assistant differ from a chat model?
+- What are the parts of an LLM "harness"?
+- How is the harness extended (MCP, subagents, hooks, …)?
+- How do we get trustworthy results from a stochastic model?
+- Why build on an open protocol, not one product?
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Distinguish a one-shot chat completion from an agentic loop that observes and acts.
-- Identify the four components of a harness: model, context, tools, and the control loop.
-- Outline how the harness is extended: MCP tools, subagents, LSP, hooks, monitors, and plugins.
-- Explain why verification against ground truth, not the model's confidence, establishes correctness.
-- Justify an interoperability standard (MCP) as the basis for a portable, reproducible workflow.
+- Distinguish a chat completion from an agentic loop.
+- Name the four harness parts: model, context, tools, loop.
+- List the harness extensions (MCP, subagents, hooks, …).
+- Explain why verification beats model confidence.
+- Justify MCP as the basis for a portable workflow.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -95,6 +95,7 @@ A model plus the machinery that makes it useful is a **harness**, with four comp
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
+    accTitle: AI agent harness
     U["Task specification"]:::user --> M
     C["Context window<br/>files · history · instructions"]:::core --> M["Model<br/>LLM: reasoning + generation"]:::core
     M -->|"proposes a typed tool call"| T["Tools<br/>read/write files · run code · query a server"]:::tool
@@ -134,6 +135,7 @@ vocabulary recurs in every modern assistant's documentation.
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
+    accTitle: AI agent harness
     MCP["MCP servers<br/>external tools & data"]:::tool --> H
     SUB["subagents<br/>specialised, isolated context"]:::tool --> H
     LSP["LSP<br/>code intelligence"]:::tool --> H
@@ -246,8 +248,8 @@ reproducible across environments.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-The [next episode](02-your-ai-coding-setup.md) sets up a working assistant and states the physics
-measurement precisely.
+The [next episode](02-your-ai-coding-setup.md) states the physics measurement; you install an
+assistant on the [Setup](../learners/setup.md) page.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 

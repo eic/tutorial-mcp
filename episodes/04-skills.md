@@ -41,19 +41,19 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
-- How do I give an assistant durable project context instead of re-explaining it each session?
-- What is the difference between AGENTS.md and a SKILL.md, and when do I use each?
-- How do I make every tool — even ones that ignore AGENTS.md — read the same rules?
-- What does a usable SKILL.md for the Λ⁰ measurement actually contain?
+- How do you give an assistant durable project context?
+- AGENTS.md vs SKILL.md — when to use each?
+- How do you make every tool read the same rules?
+- What's in a usable SKILL.md for the Λ⁰ fit?
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Write an AGENTS.md that supplies always-on project context to any assistant.
-- Use bridge files so a single AGENTS.md drives Claude Code, Copilot, opencode, and others.
-- Write a SKILL.md that an assistant loads on demand to run the Λ⁰ fit.
-- Encode explicit success criteria and provenance into a procedure so its output is auditable.
+- Write an AGENTS.md for always-on project context.
+- Bridge it so one AGENTS.md drives any tool.
+- Write a SKILL.md that runs the Λ⁰ fit on demand.
+- Encode success criteria + provenance for auditable output.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -67,6 +67,7 @@ Typing requests (Episode 3) does not scale: you re-explain the data model, conve
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
+    accTitle: Skills and AGENTS.md
     R["your project"] --> AG["AGENTS.md<br/>whole file always in context"]:::always
     R --> SK["skills/lambda-fit/SKILL.md<br/>only its description is indexed"]:::ondemand
     AG --> M(["model context"]):::core

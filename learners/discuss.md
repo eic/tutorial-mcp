@@ -16,7 +16,7 @@ your own:
 * **Trust and reproducibility at scale.** The trust checklist (check the result, make it
   repeatable, keep a record, watch the cost, stay in the loop) matters more, not less, as
   analyses get more automated. How do we make an automatic result as solid as a hand-made one?
-* **Cost and openness.** The market table in [Episode 2](../episodes/02-your-ai-coding-setup.md)
+* **Cost and openness.** The assistant table on the [Setup](setup.md) page
   will keep changing. Open tools (opencode, Cline) plus local models, or commercial free tiers —
   what is the right default for new collaborators?
 

@@ -41,17 +41,17 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
-- Which MCP servers does the EIC/ePIC collaboration provide?
-- What does each one connect an assistant to, and which are ready to use today?
-- How do these tools fit into the wider corun-ai / dev-cloud infrastructure?
+- Which MCP servers does EIC/ePIC provide?
+- What does each connect to, and which work today?
+- How do they fit the corun-ai / dev-cloud infrastructure?
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Locate the EIC MCP servers and identify what each one fronts.
-- Distinguish servers that are available now from those still planned.
-- Recognise the corun-ai and ePIC dev-cloud infrastructure these plug into.
+- Locate the EIC MCP servers and what each fronts.
+- Tell available servers from planned ones.
+- Recognise the corun-ai / dev-cloud infrastructure.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -62,6 +62,7 @@ MCP is a standard ([Episode 3](03-mcp-servers.md)), so the collaboration exposes
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
+    accTitle: EIC MCP server catalogue
     A(["your AI assistant"]):::core
     A --> DATA
     A --> REC
