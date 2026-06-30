@@ -12,6 +12,8 @@ exercises: 0
    and the diagram surface dark. We override both, with !important to
    beat the theme rules and mermaid's own inline styles. */
 .mermaid { background: transparent !important; }
+/* Hide the Workbench "Diagram source code" spoiler under each diagram */
+.mermaid-img-wrapper details { display: none !important; }
 .mermaid .nodeLabel, .mermaid .edgeLabel, .mermaid .label,
 .mermaid .cluster-label, .mermaid text, .mermaid tspan,
 .mermaid span, .mermaid p, .mermaid foreignObject div {
