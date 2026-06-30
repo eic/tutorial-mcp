@@ -1,11 +1,9 @@
-# This template CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to replace its contents
-# with information about your lesson.
-# Remember to update this file periodically, 
-# ensuring that the author list and other fields remain accurate.
+# This CITATION.cff file provides information used to cite this lesson.
+# Visit https://citation-file-format.github.io/ for the format reference,
+# and update the author list and other fields as the lesson develops.
 
 cff-version: 1.2.0
-title: FIXME
+title: 'Generative AI for Physics Analysis (ePIC tutorial)'
 message: >-
   Please cite this lesson using the information in this file
   when you refer to it in publications, and/or if you
@@ -13,10 +11,24 @@ message: >-
   training material.
 type: dataset
 authors:
-  - given-names: FIXME
-    family-names: FIXME
+  - given-names: Alexandr
+    family-names: Prozorov
+  - name: The ePIC Collaboration
 abstract: >-
-  FIXME Replace this with a short abstract describing the
-  lesson, e.g. its target audience and main intended
-  learning objectives.
+  A tool-agnostic, hands-on lesson that teaches researchers to use generative
+  AI — AI coding assistants, MCP (Model Context Protocol) tool servers, skills,
+  and agents — for a real ePIC physics analysis: reconstructing the decay
+  Lambda0 -> p pi- and fitting its invariant-mass peak at 1.115683 GeV. Built
+  with The Carpentries Workbench.
+keywords:
+  - generative AI
+  - AI assistant
+  - Model Context Protocol
+  - MCP
+  - EIC
+  - ePIC
+  - physics analysis
+  - uproot
+  - EDM4eic
+repository-code: 'https://github.com/aprozo/tutorial-mcp'
 license: CC-BY-4.0

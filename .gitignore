@@ -49,3 +49,11 @@ docs/
 # translation temp files
 po/*~
 
+# --- Generative AI lesson: Python, data cache, analysis outputs ---
+__pycache__/
+*.pyc
+
+# Local data cache (EDM4eic files are read in place over root://, never committed)
+.cache/
+output/
+

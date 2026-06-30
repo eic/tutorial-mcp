@@ -8,40 +8,40 @@
 # lc: Library Carpentry
 # cp: Carpentries (to use for instructor training for instance)
 # incubator: The Carpentries Incubator
-# 
+#
 # This option supports custom types so lessons can be branded
 # and themed with your own logo and alt-text (see `carpentry_description`)
 # See https://carpentries.github.io/sandpaper-docs/editing.html#adding-a-custom-logo
 carpentry: 'incubator'
 
 # Alt-text description of the lesson.
-carpentry_description: 'Lesson Description'
+carpentry_description: 'Generative AI for ePIC physics analysis'
 
 # Overall title for pages.
-title: 'Lesson Title' # FIXME
+title: 'Generative AI for Physics Analysis'
 
 # Date the lesson was created (YYYY-MM-DD, this is empty by default)
-created: ~ # FIXME
+created: 2026-06-04
 
 # Comma-separated list of keywords for the lesson
-keywords: 'software, data, lesson, The Carpentries' # FIXME
+keywords: 'generative AI, AI assistant, agent, MCP, Model Context Protocol, EIC, ePIC, physics analysis, uproot, EDM4eic, invariant mass, Lambda baryon'
 
 # Life cycle stage of the lesson
 # refer to <https://docs.carpentries.org/resources/curriculum/lesson-life-cycle.html> for details
 # possible values: pre-alpha, alpha, beta, stable
-life_cycle: 'pre-alpha' # FIXME
+life_cycle: 'pre-alpha'
 
 # License of the lesson
 license: 'CC-BY 4.0'
 
 # Link to the source repository for this lesson
-source: 'https://github.com/carpentries/workbench-template-md' # FIXME
+source: 'https://github.com/aprozo/tutorial-mcp'
 
 # Default branch of your lesson
 branch: 'main'
 
 # Who to contact if there are any issues
-contact: 'team@carpentries.org' # FIXME
+contact: 'epic-collaboration@bnl.gov'
 
 # Navigation ------------------------------------------------
 #
@@ -66,21 +66,31 @@ contact: 'team@carpentries.org' # FIXME
 # - another-learner.md
 
 # Order of episodes in your lesson
-episodes: 
-- introduction.md
+episodes:
+- 01-why-genai-for-physics.md
+- 02-your-ai-coding-setup.md
+- 03-mcp-servers.md
+- 04-skills.md
+- 05-end-to-end-agents.md
+- 06-eic-mcp-servers.md
 
 # Information for Learners
-learners: 
+learners:
+- setup.md
+- about-the-physics.md
+- analysis-approaches.md
+- discuss.md
+- reference.md
 
 # Information for Instructors
-instructors: 
+instructors:
+- instructor-notes.md
 
 # Learner Profiles
-profiles: 
+profiles:
+- learner-profiles.md
 
 # Customisation ---------------------------------------------
 #
 # This space below is where custom yaml items (e.g. pinning
 # sandpaper and varnish versions) should live
-
-

@@ -1,84 +1,66 @@
-# The Carpentries Workbench Template Markdown Lesson
+# Generative AI for Physics Analysis (ePIC tutorial)
 
-This lesson is a template lesson that uses [The Carpentries Workbench][workbench]. 
+A **tool-agnostic** lesson that teaches researchers to use generative AI — AI coding assistants,
+**MCP servers**, *skills*, and *agents* — for a real ePIC physics analysis: reconstructing the
+decay **Λ⁰ → p + π⁻** and fitting its invariant-mass peak at 1.115683 GeV.
 
-## Note about lesson life cycle stage
-Although the `config.yaml` states the life cycle stage as pre-alpha, **the template is stable and ready to use**. The life cycle stage is preset to `"pre-alpha"` as this setting is appropriate for new lessons initialised using the template.
+It is built with [The Carpentries Workbench][workbench].
 
-## Create a new repository from this template
+## What's here
 
-To use this template to start a new lesson repository, 
-make sure you're logged into Github.   
-Visit https://github.com/carpentries/workbench-template-md/generate
-and follow the instructions.
-Checking the 'Include all branches' option will save some time waiting for the first website build
-when your new repository is initialised.
+| Path | Contents |
+| --- | --- |
+| `episodes/` | The lesson. **01–03 are the hands-on core** (harness concept; free AI setup + the physics; MCP servers). **04–06 are detailed outlines** (Skills; end-to-end agents; the EIC MCP catalogue). |
+| `learners/` | `setup.md`, the glossary (`reference.md`), and reference pages: `about-the-physics.md` (Λ deep-dive), `analysis-approaches.md` (the same analysis in uproot/RDataFrame/TTreeReader/PODIO), and `discuss.md`. |
+| `instructors/` | `instructor-notes.md` (scope, timing, pitfalls). |
+| `bin/eic-mcp` | Launcher that builds and runs the three EIC MCP servers inside eic-shell. |
+| `files/mcp-config/` | Ready-made MCP configs (opencode, VS Code/Copilot, Claude Code). |
+| `files/skills/` | Example `AGENTS.md`, bridge files, and the `lambda-fit` skill. |
+| `extras/` | Stand-alone worked examples (uproot / RDataFrame / TTreeReader / PODIO). |
+| `episodes/fig/` | Figures embedded in the lesson. |
 
-If you have any questions, contact [@tobyhodges](https://github.com/tobyhodges)
+## The physics, in one line
 
-## Configure a new lesson
+Pair every reconstructed proton (PDG `2212`) with every π⁻ (PDG `-211`), compute the invariant
+mass `m = √((E_p+E_π)² − |p_p+p_π|²)`, and a Λ⁰ peak rises at 1.115683 GeV over a combinatorial
+background. Students reconstruct it themselves by driving the MCP tools from natural-language
+prompts — no analysis code or data ships with the lesson.
 
-Follow the steps below to
-complete the initial configuration of a new lesson repository built from this template:
+## Build and preview locally
 
-1. **Make sure GitHub Pages is activated:**
-   navigate to _Settings_,
-   select _Pages_ from the left sidebar,
-   and make sure that `gh-pages` is selected as the branch to build from.
-   If no `gh-pages` branch is available, check the _Actions_ tab to see if the first
-   website build workflows are still running.
-   If they're not running yet, you may need to manually enable them via the _Actions_ tab.
-   The branch should become available when those have completed.
-1. **Adjust the `config.yaml` file:**
-   this file contains global parameters for your lesson site.
-   Individual fields within the file are documented with comments (beginning with `#`)
-   At minimum, you should adjust all the fields marked 'FIXME':
-   - `title`
-   - `created`
-   - `keywords`
-   - `life_cycle` (the default, _pre-alpha_, is the appropriate for brand new lessons)
-   - `contact`
-1. **Annotate the repository** with site URL and topic tags:
-   navigate back to the repository landing page and
-   click on the gear wheel/cog icon (similar to ⚙️) 
-   at the top-right of the _About_ box.
-   Check the "Use your GitHub Pages website" option,
-   and [add some keywords and other annotations to describe your lesson](https://cdh.carpentries.org/the-carpentries-incubator.html#topic-tags)
-   in the _Topics_ field.
-   At minimum, these should include:
-   - `lesson`
-   - the life cycle of the lesson (e.g. `pre-alpha`)
-   - the human language the lesson is written in (e.g. `deutsch`)
-1. **Adjust the 
-   `CITATION.cff`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, and `LICENSE.md` files**
-   as appropriate for your project.
-   -  `CITATION.cff`:
-      this file contains information that people can use to cite your lesson,
-      for example if they publish their own work based on it.
-      You should [update the CFF][cff-sandpaper-docs] now to include information about your lesson,
-      and remember to return to it periodically, keeping it updated as your
-      author list grows and other details become available or need to change.
-      The [Citation File Format home page][cff-home] gives more information about the format,
-      and the [`cffinit` webtool][cffinit] can be used to create new and update existing CFF files.
-   -  `CODE_OF_CONDUCT.md`: 
-      if you are using this template for a project outside The Carpentries,
-      you should adjust this file to describe 
-      who should be contacted with Code of Conduct reports,
-      and how those reports will be handled.
-   -  `CONTRIBUTING.md`:
-      depending on the current state and maturity of your project,
-      the contents of the template Contributing Guide may not be appropriate.
-      You should adjust the file to help guide contributors on how best
-      to get involved and make an impact on your lesson.
-   -  `LICENSE.md`:
-      in line with the terms of the CC-BY license,
-      you should ensure that the copyright information 
-      provided in the license file is accurate for your project.
-1. **Update this README with 
-   [relevant information about your lesson](https://carpentries.github.io/lesson-development-training/collaborating-newcomers.html#readme)**
-   and delete this section.
+This lesson uses [The Carpentries Workbench][workbench] (the `sandpaper`/`pegboard`/`varnish` R
+packages — no Ruby/Jekyll). In an R session:
 
-[cff-home]: https://citation-file-format.github.io/
-[cff-sandpaper-docs]:  https://carpentries.github.io/sandpaper-docs/editing.html#making-your-lesson-citable
-[cffinit]: https://citation-file-format.github.io/cff-initializer-javascript/
+```r
+# one-time install
+install.packages("sandpaper", repos = c("https://carpentries.r-universe.dev/", getOption("repos")))
+
+sandpaper::serve()            # build and live-preview at http://localhost:4321
+sandpaper::validate_lesson()  # check episode formatting and internal links
+```
+
+See the [Workbench documentation][workbench] for details.
+
+## Data
+
+No data ships with the lesson. Inside eic-shell the assistant **finds** a dataset with the
+`rucio` tools, **verifies** the files with `xrootd`, and **reads** a `root://` URL in place with
+`uproot` — no download, and no credentials (the shared read-only `eicread` account is built in).
+
+## Verify it works
+
+Start the servers (`eic-mcp up`), launch `opencode`, and run `/mcp` — `uproot`, `xrootd`, and
+`rucio` should be connected. Then work through [Episode 3](episodes/03-mcp-servers.md).
+
+## License
+
+Instructional material is [CC-BY 4.0](LICENSE.md); code is MIT. See [LICENSE.md](LICENSE.md).
+
+## Acknowledgements
+
+Built for an ePIC generative-AI workshop. Uses the ePIC
+[`uproot-mcp-server`](https://github.com/eic/uproot-mcp-server),
+[`xrootd-mcp-server`](https://github.com/eic/xrootd-mcp-server), and
+[`rucio-eic-mcp-server`](https://github.com/eic/rucio-eic-mcp-server).
+
 [workbench]: https://carpentries.github.io/sandpaper-docs/
