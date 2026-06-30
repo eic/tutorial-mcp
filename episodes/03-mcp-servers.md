@@ -4,6 +4,20 @@ teaching: 30
 exercises: 35
 ---
 
+<style>
+/* AI prompts: the blocks you paste into your assistant */
+div.sourceCode.ai-prompt, pre.ai-prompt {
+  border-left: .35rem solid #7c3aed;
+  background: rgba(124, 58, 237, .08);
+  border-radius: 6px;
+}
+div.sourceCode.ai-prompt::before, pre.ai-prompt::before {
+  content: "🤖 Prompt — paste into your assistant";
+  display: block; padding: .4rem .7rem 0;
+  font-weight: 700; font-size: .82em; letter-spacing: .02em; color: #7c3aed;
+}
+</style>
+
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
 - What is MCP, and what interoperability problem does it solve?
@@ -23,19 +37,19 @@ exercises: 35
 
 ## The interoperability problem
 
-[Episode 1](01-why-genai-for-physics.md) established that tools are the only channel through which
-an assistant acts. Historically each assistant needed bespoke integrations for each data source — an
-N×M problem. The **Model Context Protocol (MCP)** standardises the interface: implement a tool once
-as a **server**, and any MCP-compliant **client** (the assistant) can use it.
+Tools are the only channel through which an assistant acts
+([Episode 1](01-why-genai-for-physics.md)). Historically each assistant needed bespoke integrations for each data source — an N×M problem. The
+**Model Context Protocol (MCP)** standardises the interface: implement a tool once as a **server**,
+and any MCP-compliant **client** (the assistant) can use it.
 
 MCP is a client–server protocol over **JSON-RPC 2.0**. After capability negotiation, the server
 advertises three object types — **tools** (callable functions), **resources** (readable data), and
-**prompts** (templated instructions). Two transports exist: **stdio**, where the client launches the
-server as a subprocess and exchanges messages over standard input/output, and streamable **HTTP/SSE**
-for networked servers. The lesson's servers run inside eic-shell and speak SSE, so the assistant
-connects to them over a URL.
+**prompts** (templated instructions). Two transports exist: **stdio** (client launches the server as
+a subprocess, messages over standard input/output) and streamable **HTTP/SSE** for networked
+servers. The lesson's servers run inside eic-shell and speak SSE.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     A["AI assistant<br/>opencode · Claude Code · Copilot"]:::core <-->|"JSON-RPC / SSE"| S["uproot tool server<br/>(MCP, in eic-shell)"]:::tool
     S <-->|"uproot"| F["EDM4eic ROOT file"]:::data
@@ -48,9 +62,8 @@ flowchart LR
 
 ## Why run the servers inside eic-shell
 
-The servers reuse the container's own `uproot`, `xrdfs`, and `rucio`, so dependencies are already
-pinned and the same environment runs both your analysis and the tools — which matters for
-reproducibility. `eic-mcp up` starts them as background processes serving SSE on local ports;
+The servers reuse the container's own `uproot`, `xrdfs`, and `rucio`, so dependencies are pinned and
+one environment runs both analysis and tools. `eic-mcp up` starts them as background SSE processes;
 `eic-mcp down` stops them. They hold no state between sessions.
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -58,15 +71,15 @@ reproducibility. `eic-mcp up` starts them as background processes serving SSE on
 ## The uproot tool server
 
 The ePIC [uproot tool server](https://github.com/eic/uproot-mcp-server) reads ROOT/EDM4eic files
-with [uproot](../learners/reference.md) and returns **compact, JSON-serialisable summaries** —
-edges, counts, statistics, fit inputs — not raw arrays. Reduced quantities keep payloads inside the
-model's context budget and stay easy to check. It exposes 15 tools in four groups:
+with [uproot](../learners/reference.md) and returns **compact, JSON-serialisable summaries** — edges,
+counts, statistics, fit inputs — not raw arrays, keeping payloads inside the model's context budget.
+It exposes 15 tools in four groups:
 
 | Group | Representative tools | Purpose |
 | --- | --- | --- |
 | Inspection | `get_file_structure`, `get_tree_info`, `get_branch_statistics`, `validate_dataset_schema` | enumerate trees, branches, types, and summary statistics |
 | Single-file compute | `histogram_branch`, `execute_kernel` | histogram a branch; run sandboxed NumPy/awkward over branches |
-| Dataset (multi-file) | `get_dataset_file_list`, `histogram_dataset`, `get_dataset_statistics`, `execute_kernel_dataset`, `estimate_dataset_cost` | enumerate matching files, then accumulate the same operations across them |
+| Dataset (multi-file) | `get_dataset_file_list`, `histogram_dataset`, `get_dataset_statistics`, `execute_kernel_dataset`, `estimate_dataset_cost` | enumerate matching files, then accumulate operations across them |
 | Asynchronous jobs | `submit_kernel_dataset`, `get_job_status`, `get_job_result`, `cancel_job` | dispatch long dataset jobs and poll them |
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
@@ -74,9 +87,8 @@ model's context budget and stay easy to check. It exposes 15 tools in four group
 ## The execution sandbox
 
 `execute_kernel` runs client-supplied Python in a restricted environment: no `import`, no file or
-network I/O, only `np` (NumPy) and `ak` (awkward) in scope. The limits are enforced at compile time,
-and the code runs in a subprocess with a 30-second wall-clock limit. This boundary is what makes it
-defensible to let a model author code that runs against your data.
+network I/O, only `np` (NumPy) and `ak` (awkward) in scope. Limits are enforced at compile time, and
+the code runs in a subprocess with a 30-second wall-clock limit.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -90,8 +102,7 @@ $ eic-mcp up
 ```
 
 This launches the uproot, xrootd, and rucio servers as SSE endpoints on `127.0.0.1`, ports `9101`,
-`9102`, and `9103`. Stop them at the end with `eic-mcp down`. You never launch the tools by hand; the
-assistant connects to those URLs.
+`9102`, `9103`. Stop them with `eic-mcp down`. The assistant connects to those URLs.
 
 ## Connect the assistant
 
@@ -116,19 +127,20 @@ Copy it to the directory where you launch opencode (or to `~/.config/opencode/`)
 
 ## Other clients point at the same URLs
 
-The SSE endpoints are not opencode-specific. Any MCP client registers them the same way — Claude
-Code with `claude mcp add --transport sse uproot http://127.0.0.1:9101/sse` (and likewise for
-`xrootd` and `rucio`), and GitHub Copilot reads the equivalent SSE URLs from its own config.
+The SSE endpoints are not opencode-specific. Claude Code:
+`claude mcp add --transport sse uproot http://127.0.0.1:9101/sse` (likewise for `xrootd` and
+`rucio`); GitHub Copilot reads the equivalent SSE URLs from its own config.
 
 :::::::::::::::
 
 ## Finding the data with MCP
 
 You fetch no dataset by hand. The other two MCP servers let the assistant locate and verify the real
-files, replacing the manual `rucio` + `xrdfs` recipe — and `uproot-mcp` reads the file straight from
-the store, with no download step.
+files, replacing the manual `rucio` + `xrdfs` recipe; `uproot-mcp` reads the file straight from the
+store, with no download step.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     R["rucio-mcp<br/>list_dids · list_files · list_file_replicas"]:::tool -->|"DID + root:// replica URLs"| X["xrootd-mcp<br/>list_datasets · check_file_exists · get_dataset_event_statistics"]:::tool
     X -->|"verified root:// paths"| U["uproot-mcp<br/>analyse in place"]:::core
@@ -138,21 +150,21 @@ flowchart LR
 
 * **[`rucio-mcp`](https://github.com/eic/rucio-eic-mcp-server)** queries the data-management catalogue:
   `list_dids` finds the dataset identifier (DID) by name, `get_did_metadata` and `list_files`
-  describe its contents, and `list_file_replicas` returns the physical `root://` locations.
-* **`xrootd-mcp`** (started by `eic-mcp up`) works directly on the store: `list_campaigns` /
-  `list_datasets` browse it, `list_directory` and `check_file_exists` enumerate and verify files,
-  and `get_dataset_event_statistics` reports total events across a dataset.
+  describe its contents, `list_file_replicas` returns the physical `root://` locations.
+* **`xrootd-mcp`** works directly on the store: `list_campaigns` / `list_datasets` browse it,
+  `list_directory` and `check_file_exists` enumerate and verify files, and
+  `get_dataset_event_statistics` reports total events across a dataset.
 
-The two compose: rucio tells you *what* the dataset is and *where* its replicas live, xrootd confirms
-the files are there, and `uproot-mcp` reads a `root://` URL **in place**.
+rucio tells you *what* the dataset is and *where* its replicas live, xrootd confirms the files are
+there, and `uproot-mcp` reads a `root://` URL **in place**.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## rucio works automatically — no key
 
 Inside eic-shell, `rucio-mcp` signs in to the authenticated catalogue with the shared, read-only
-`eicread` account — the same one the `rucio` command line uses. You never enter a password or grid
-proxy. The xrootd path is public too, so to only *browse* the store you can use `xrootd-mcp` alone.
+`eicread` account. No password or grid proxy. The xrootd path is public, so to only *browse* the
+store you can use `xrootd-mcp` alone.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -162,7 +174,7 @@ proxy. The xrootd path is public too, so to only *browse* the store you can use 
 
 With `rucio` and `xrootd` connected (no credentials — see the callout), ask your assistant:
 
-```
+```{.ai-prompt}
 Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 25.10.2, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.
 ```
 
@@ -180,9 +192,9 @@ with `list_dids`, not hard-coded — what you want when campaign names change.
 
 ## Inspect the dataset
 
-With the server connected, you specify the operation in natural language and the assistant issues the
-matching tool calls. Take one of the `root://` URLs from the previous exercise — written below as
-`root://dtn-eic.jlab.org//…` — and analyse it **in place**.
+You specify the operation in natural language and the assistant issues the matching tool calls. Take
+one of the `root://` URLs from the previous exercise — written below as `root://dtn-eic.jlab.org//…`
+— and analyse it **in place**.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
@@ -190,7 +202,7 @@ matching tool calls. Take one of the `root://` URLs from the previous exercise �
 
 Issue the request:
 
-```
+```{.ai-prompt}
 Using the uproot tools, report the structure of root://dtn-eic.jlab.org//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
 ```
 
@@ -224,7 +236,7 @@ from Episode 1.
 
 Issue the request:
 
-```
+```{.ai-prompt}
 Histogram ReconstructedChargedParticles.PDG so I can see the reconstructed particle species in the file.
 ```
 
@@ -248,9 +260,9 @@ present. Counting over a reconstructed-DIS file gives, for example:
 
 ![Reconstructed charged-particle species in the file](fig/pdg_species.svg){alt='Bar histogram of reconstructed charged-particle PDG codes in the file, with pions dominating and protons rare'}
 
-Note two things. Pions dominate; **protons are rare** (≈ 2%), so the Λ⁰ signal will be small. And a
-sizeable fraction of tracks carry **no PID** (code 0) or a wrong one — misidentification that feeds
-the combinatorial background and is why we *fit* the peak rather than count it.
+Pions dominate; **protons are rare** (≈ 2%), so the Λ⁰ signal will be small. A sizeable fraction of
+tracks carry **no PID** (code 0) or a wrong one — misidentification that feeds the combinatorial
+background and is why we *fit* the peak rather than count it.
 
 :::::::::::::::
 
@@ -260,9 +272,9 @@ the combinatorial background and is why we *fit* the peak rather than count it.
 
 ## Verify the returned quantities
 
-The tools return numbers — bin edges, counts, statistics. Inspect them: do the PDG peaks fall at
-physical codes, and are the proton and pion yields plausible? This is the verification step from
-Episode 1 in practice; [Episode 4](04-skills.md) formalises it as explicit success criteria.
+Inspect the returned numbers — bin edges, counts, statistics: do the PDG peaks fall at physical
+codes, and are the proton and pion yields plausible? [Episode 4](04-skills.md) formalises this as
+explicit success criteria.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -270,21 +282,21 @@ Episode 1 in practice; [Episode 4](04-skills.md) formalises it as explicit succe
 
 ePIC data follow the **PODIO** model (EDM4eic): an `events` tree whose branches are per-event
 collections such as `ReconstructedChargedParticles` and `MCParticles`. We read it with **uproot**
-because that needs only eic-shell — no compiled framework. uproot is only one of several equivalent
-access paths.
+because that needs only eic-shell — no compiled framework. uproot is one of several equivalent access
+paths.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Equivalent implementations
 
-This lesson reads EDM4eic with **uproot** through MCP. The same Λ⁰ peak comes out of:
+The same Λ⁰ peak comes out of:
 
 * **ROOT RDataFrame** — declarative, columnar, parallel;
 * **ROOT TTreeReader** — an explicit event loop;
 * **bare uproot** — Python with no tool server; and
 * **the PODIO Frame API** — the native interface.
 
-Worked implementations of each, all reproducing the same result, are in
+Worked implementations of each are in
 [Alternative analysis approaches](../learners/analysis-approaches.md).
 
 :::::::::::::::::::::::::::::::::::::::::::::

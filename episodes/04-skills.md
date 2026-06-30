@@ -24,16 +24,13 @@ exercises: 20
 
 ## Two ways to make instructions persistent
 
-Typing requests (Episode 3) does not scale: you re-explain the data model, conventions, and
-procedure every session, and nothing stops two runs from diverging. Two complementary file-based
-mechanisms fix this.
+Typing requests (Episode 3) does not scale: you re-explain the data model, conventions, and procedure every session, and nothing stops two runs from diverging. Two file-based mechanisms fix this.
 
-* **`AGENTS.md`** — always-on **context**. The assistant reads it at the start of every session as
-  background: environment, data model, conventions, and what "done" means.
-* **`SKILL.md`** — an on-demand **procedure** in a named skill directory. Loaded only when a request
-  matches its description. It encodes one repeatable workflow.
+* **`AGENTS.md`** — always-on **context**, read at the start of every session: environment, data model, conventions, and what "done" means.
+* **`SKILL.md`** — an on-demand **procedure** in a named skill directory, loaded only when a request matches its description. It encodes one repeatable workflow.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
     R["your project"] --> AG["AGENTS.md<br/>whole file always in context"]:::always
     R --> SK["skills/lambda-fit/SKILL.md<br/>only its description is indexed"]:::ondemand
@@ -44,17 +41,13 @@ flowchart TD
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
 ```
 
-`AGENTS.md` answers "what is this project and how do we work here?"; a `SKILL.md` answers "how do I
-carry out *this* task?".
+`AGENTS.md` answers "what is this project and how do we work here?"; a `SKILL.md` answers "how do I carry out *this* task?".
 
 ## AGENTS.md — project context
 
-`AGENTS.md` is plain Markdown at your project root (subdirectories may have their own, overriding
-the root for files beneath them). It is a cross-tool convention: Claude Code, opencode, and others
-read it automatically. Where a tool uses a different name (`CLAUDE.md`, "custom instructions"), the
-content transfers unchanged.
+`AGENTS.md` is plain Markdown at your project root (subdirectories may override it for files beneath them). Claude Code, opencode, and others read it automatically; where a tool uses a different name (`CLAUDE.md`, "custom instructions"), the content transfers unchanged.
 
-It is loaded on every turn, so keep it short and factual. A useful `AGENTS.md` for this analysis:
+It is loaded on every turn, so keep it short and factual:
 
 ```markdown
 # AGENTS.md — Lambda analysis project
@@ -94,31 +87,22 @@ peak near 1.115683 GeV.
 - Always run the fit and check these before reporting a result.
 ```
 
-This encodes the schema (so the model never guesses branch names), the tool policy (use the server,
-not hand-written I/O), the conventions, and an explicit definition of done.
+This encodes the schema, the tool policy (use the server, not hand-written I/O), the conventions, and an explicit definition of done.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Two rules for a useful AGENTS.md
 
-* **Keep it short.** It is loaded on every turn (see *context economy*, below), so length costs
-  tokens and dilutes attention. Write only what the model cannot infer from the code.
-* **Describe concepts, not file paths.** "The reconstructed tracks are in the
-  `ReconstructedChargedParticles` collection" ages well; "the kernel is in `src/old/lambda_v2.py`"
-  does not — paths move, and the model will then search confidently in the wrong place. State *what*
-  things are and *how* you work; let the tools locate the files.
+* **Keep it short.** It is loaded on every turn, so length costs tokens and dilutes attention. Write only what the model cannot infer from the code.
+* **Describe concepts, not file paths.** "The reconstructed tracks are in the `ReconstructedChargedParticles` collection" ages well; a path like `src/old/lambda_v2.py` does not — paths move, and the model then searches confidently in the wrong place.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## One source of truth: bridge files
 
-Not every tool reads `AGENTS.md`. Most modern ones do — opencode, Cursor, Codex, Gemini CLI, Zed —
-but some look for their own filename and silently ignore it. Claude Code reads `CLAUDE.md`. A
-project with only an `AGENTS.md` runs such a tool with no context and no warning.
+Not every tool reads `AGENTS.md`. Most modern ones do — opencode, Cursor, Codex, Gemini CLI, Zed — but some look for their own filename and silently ignore it. Claude Code reads `CLAUDE.md`. A project with only an `AGENTS.md` runs such a tool with no context and no warning.
 
-Don't copy your rules into a second file; two copies drift within a week. Instead, **keep the
-standard in the centre and let each tool read from it**: the tool-specific file becomes a one-line
-*bridge* pointing at `AGENTS.md`.
+Don't copy your rules into a second file; two copies drift within a week. **Keep the standard in the centre and let each tool read from it**: the tool-specific file becomes a one-line *bridge* pointing at `AGENTS.md`.
 
 `CLAUDE.md` (the `@` pulls the referenced file into Claude Code's context):
 
@@ -132,9 +116,7 @@ standard in the centre and let each tool read from it**: the tool-specific file 
 Follow the project rules in AGENTS.md.
 ```
 
-Now every assistant reads the same source of truth, maintained in one place. Copy the ready-made
-bridges: [`CLAUDE.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/CLAUDE.md) and
-[`copilot-instructions.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
+Now every assistant reads the same source of truth. Copy the ready-made bridges: [`CLAUDE.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/CLAUDE.md) and [`copilot-instructions.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
 
 ## SKILL.md — a named procedure
 
@@ -146,13 +128,9 @@ skills/
     SKILL.md              specification: applicability, inputs, steps, success criteria
 ```
 
-The procedure runs by driving the MCP tools (it builds the histogram with the uproot kernel and fits
-the Gaussian + polynomial in the same sandbox), so the skill needs no bundled scripts.
+The procedure runs by driving the MCP tools (build the histogram with the uproot kernel, fit the Gaussian + polynomial in the same sandbox), so it needs no bundled scripts.
 
-The YAML frontmatter carries a `name` and a `description`. The `description` is load-bearing: the
-client matches the request against it to decide whether to load the skill, so name the task
-explicitly. **Only the name and description stay in context** — the body is read in *only when* the
-description matches. A working `SKILL.md` for the Λ⁰ fit:
+The YAML frontmatter carries a `name` and a `description`. The `description` is load-bearing: the client matches the request against it to decide whether to load the skill. **Only the name and description stay in context** — the body is read in *only when* the description matches.
 
 ```markdown
 ---
@@ -199,16 +177,11 @@ file list), so the run can be reproduced.
 
 ## How clients load a skill
 
-Claude Code reads skills from a `skills/` (or `.claude/skills/`) directory and loads one when a
-request matches its `description`. Clients without a native skill mechanism reach the same end by
-referencing the procedure from `AGENTS.md` or pasting it as instructions. The form — a versioned,
-self-contained specification that drives the MCP tools — is portable even where the loading
-mechanism is not.
+Claude Code reads skills from a `skills/` (or `.claude/skills/`) directory and loads one when a request matches its `description`. Clients without a native skill mechanism reach the same end by referencing the procedure from `AGENTS.md`. The form — a versioned, self-contained specification that drives the MCP tools — is portable even where the loading mechanism is not.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-Copy both example files: [`files/skills/AGENTS.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/AGENTS.md) and
-[`files/skills/lambda-fit/SKILL.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md).
+Copy both example files: [`files/skills/AGENTS.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/AGENTS.md) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md).
 
 ## When to use which
 
@@ -218,32 +191,24 @@ Copy both example files: [`files/skills/AGENTS.md`](https://github.com/aprozo/tu
 | "How do I perform *this* specific task?" | a `SKILL.md` (loaded on demand) |
 | "What must every result satisfy?" | success criteria — in both, but enforced by the skill |
 
-The two work together: `AGENTS.md` sets standing context; the skill executes a procedure within it.
+`AGENTS.md` sets standing context; the skill executes a procedure within it.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Why this is efficient: context economy
 
-The context window is finite, and everything in it costs tokens on every turn. The two mechanisms
-spend that budget differently — which is the point.
+The context window is finite, and everything in it costs tokens on every turn.
 
-* **`AGENTS.md` is loaded in full, every turn.** Keep it short and high-signal: a page of
-  conventions, not a manual. Every line is paid for on every request.
-* **A skill loads progressively.** Only its `name` and one-line `description` stay in context; the
-  body is read *only when* a request matches. So you can install dozens of detailed skills, and none
-  occupies the window until needed.
+* **`AGENTS.md` is loaded in full, every turn.** Keep it short and high-signal — every line is paid for on every request.
+* **A skill loads progressively.** Only its `name` and one-line `description` stay in context; the body is read *only when* a request matches. You can install dozens of detailed skills, and none occupies the window until needed.
 
-Put small, always-relevant facts in `AGENTS.md`; put detailed, occasional procedures in skills. This
-*progressive disclosure* lets the workflow scale without exhausting the context.
+Put small, always-relevant facts in `AGENTS.md`; put detailed, occasional procedures in skills.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## Why the success criteria matter
 
-An automated procedure still has to produce a defensible number. Explicit acceptance tests in the
-skill — peak position, width, χ²/ndf — turn "the assistant said it worked" into "the result passed
-stated, checkable conditions." Recording the tool calls and dataset makes the run reproducible and
-auditable — the same standards you would apply to a result computed by hand.
+Explicit acceptance tests in the skill — peak position, width, χ²/ndf — turn "the assistant said it worked" into "the result passed stated, checkable conditions." Recording the tool calls and dataset makes the run reproducible and auditable.
 
 ## Your project layout
 
@@ -265,22 +230,16 @@ lambda-analysis/
 
 ## The golden rule
 
-Write each instruction once, in the shared open format — `AGENTS.md` for context, `SKILL.md` for
-procedures, `opencode.jsonc` for tool connections — then point any tool-specific file at it. Never
-keep duplicate rule files. *Standards in the centre, tools at the edges:* this keeps the workflow
-consistent as assistants come and go, and lets a collaboration share one vetted setup.
+Write each instruction once, in the shared open format — `AGENTS.md` for context, `SKILL.md` for procedures, `opencode.jsonc` for tool connections — then point any tool-specific file at it. Never keep duplicate rule files. *Standards in the centre, tools at the edges.*
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## Exercises
 
-* Write a minimal `SKILL.md` for "summarise the contents of any EDM4eic file" that calls
-  `get_file_structure` and `get_tree_info`.
-* Extend the provenance section of `lambda-fit` so it also records the number of input files and the
-  total number of candidate pairs.
+* Write a minimal `SKILL.md` for "summarise the contents of any EDM4eic file" that calls `get_file_structure` and `get_tree_info`.
+* Extend the provenance section of `lambda-fit` so it also records the number of input files and the total number of candidate pairs.
 
-The [next episode](05-end-to-end-agents.md) runs this skill end to end and scales it from one file
-to the full sample.
+The [next episode](05-end-to-end-agents.md) runs this skill end to end and scales it from one file to the full sample.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
