@@ -26,49 +26,43 @@ exercises: 10
 
 ## The bottleneck is rarely the physics
 
-This episode sets up the framing for the whole lesson: what a tool-using AI assistant actually is,
-why its feedback loop matters for analysis, and how we keep its results trustworthy. The later
-episodes apply that framing to a concrete measurement, the decay Λ⁰ → p π⁻.
+This episode frames the lesson: what a tool-using AI assistant is, why its feedback loop matters,
+and how we keep its results trustworthy. Later episodes apply that framing to the decay
+Λ⁰ → p π⁻.
 
-Start by noticing where the time actually goes. In a typical analysis the conceptual content is
-modest: select a final state, build an observable, fit a signal. Most of the effort goes into the
-software around it — locating datasets, decoding a data model, getting branch names and units
-right, and iterating on plotting and fitting code.
+In a typical analysis the physics is modest: select a final state, build an observable, fit a
+signal. Most of the effort goes into the software around it — locating datasets, decoding a data
+model, getting branch names and units right, iterating on plotting and fitting code.
 
-Large language models (LLMs) are well suited to compressing this overhead. But that only helps if
-they are used in a way that produces *checkable* results, which is the standard the rest of this
-lesson holds them to.
+LLMs compress this overhead well. But that only helps if they produce *checkable* results, the
+standard the rest of this lesson holds them to.
 
 ## Two modes of use
 
-Before going further, it is worth being precise about two qualitatively different ways to use an
-LLM. The distinction is the whole reason the rest of the episode exists.
-
-A **chat completion** is a single forward pass. You supply a prompt, the model returns text, and
-the exchange ends. If that text is code, *you* execute it, inspect the error, and feed it back by
-hand. The model never observes your data or the result of running anything.
+A **chat completion** is a single forward pass. You supply a prompt, the model returns text, the
+exchange ends. If that text is code, *you* execute it, inspect the error, and feed it back by hand.
+The model never observes your data or the result of running anything.
 
 An **agentic loop** wraps the same model in a control structure that lets it *act*. The model
 proposes an action, an external **tool** carries it out, the result is appended to the context, and
 the model is invoked again. The loop continues until a stopping condition is met.
 
-The difference is what the model gets to see. In the loop it is conditioned on the actual state of
-your files and the output of real computations, not on its prior alone.
+The difference is what the model sees. In the loop it is conditioned on the actual state of your
+files and the output of real computations, not on its prior alone.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Scope
 
-Throughout this lesson, "generative AI" means an LLM-based coding assistant operating in this
-agentic mode. We are not discussing machine learning for reconstruction or particle
-identification; the object of study is the *analysis-authoring* workflow.
+Here, "generative AI" means an LLM-based coding assistant in this agentic mode. We are not
+discussing machine learning for reconstruction or particle identification; the object of study is
+the *analysis-authoring* workflow.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## Anatomy of a harness
 
-The combination of a model with the machinery that makes it useful is commonly called a
-**harness**. It has four components, shown below.
+A model plus the machinery that makes it useful is a **harness**. It has four components.
 
 ```mermaid
 flowchart TD
@@ -83,35 +77,32 @@ flowchart TD
     classDef user fill:#f1f3f5,stroke:#868e96,stroke-width:1.5px,color:#212529;
 ```
 
-* **Model** — the language model that performs reasoning and code generation. It is
-  *interchangeable*: the provider and model are an implementation choice, not part of the method.
-* **Context** — everything the model can attend to in a given step: the system instructions, the
-  relevant files, prior turns, and tool outputs. It is bounded (the *context window*, measured in
-  tokens), so what is included, and when, is a deliberate decision.
-* **Tools** — the operations the model may invoke, each with a typed interface (a name, arguments,
-  and a return schema). Tools are the only channel through which the model affects the outside
-  world.
+* **Model** — performs reasoning and code generation. It is *interchangeable*: the provider and
+  model are an implementation choice, not part of the method.
+* **Context** — everything the model can attend to in a step: system instructions, relevant files,
+  prior turns, tool outputs. It is bounded (the *context window*, measured in tokens), so what is
+  included, and when, is a deliberate decision.
+* **Tools** — the operations the model may invoke, each with a typed interface (name, arguments,
+  return schema). Tools are the only channel through which the model affects the outside world.
 * **Control loop** — the policy that alternates *propose → execute → observe* until the task is
-  complete. This loop is what distinguishes an agent from a chatbot.
-
-Of the four, the loop is the part that does the real work, so it is worth pausing on why.
+  complete. This is what distinguishes an agent from a chatbot.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Why the loop is essential, not cosmetic
 
-Because the loop feeds tool results back to the model, the assistant can compare its own output
-against ground truth and correct course: read the actual branch names rather than guessing them,
-run a fit and read back its χ²/ndf, and refit if the peak is misplaced. A single completion
-cannot do this, because it never observes a consequence of its actions.
+Feeding tool results back lets the assistant compare its output against ground truth and correct
+course: read the actual branch names rather than guessing, run a fit and read back its χ²/ndf,
+refit if the peak is misplaced. A single completion cannot, because it never observes a consequence
+of its actions.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## Extending the harness: the modern toolkit
 
-Production assistants keep that small core — model, context, tools, loop — and surround it with a
-standard set of extension points. You will not need all of them for this lesson, but the vocabulary
-recurs everywhere, so recognising it helps you read the documentation of any modern assistant.
+Production assistants keep that small core — model, context, tools, loop — and surround it with
+standard extension points. You will not need all of them here, but the vocabulary recurs in every
+modern assistant's documentation.
 
 ```mermaid
 flowchart TB
@@ -134,22 +125,20 @@ flowchart TB
   instructions, spawned to handle a sub-task and report back. They isolate context and enable
   divide-and-conquer over large jobs.
 * **Skills** — packaged, versioned *procedures* (a `SKILL.md` plus scripts) loaded on demand when a
-  request matches ([Episode 4](04-skills.md)). Where a tool is a capability, a skill is a recipe
-  that orchestrates capabilities.
-* **LSP (Language Server Protocol)** — the same language servers that power editor autocomplete,
-  giving the assistant real code intelligence: go-to-definition, references, types, and *compiler
-  diagnostics*, instead of guessing about a codebase.
+  request matches ([Episode 4](04-skills.md)). A tool is a capability; a skill is a recipe that
+  orchestrates capabilities.
+* **LSP (Language Server Protocol)** — the language servers behind editor autocomplete, giving the
+  assistant real code intelligence: go-to-definition, references, types, and *compiler diagnostics*,
+  instead of guessing about a codebase.
 * **Hooks** — user scripts triggered on lifecycle events (before/after a tool call, on prompt
   submit, on session stop). They enforce policy and automate deterministically — format after an
-  edit, block a dangerous command, or record a provenance log.
+  edit, block a dangerous command, record a provenance log.
 * **Monitors** — mechanisms that watch long-running or background state (a build, a job queue, a set
   of files) and react: notifying you or re-invoking the assistant when something finishes or
   changes. They close the loop around work that outlives a single turn.
 * **Plugins** — the *packaging* layer. A plugin bundles commands, subagents, skills, hooks, and MCP
   servers into one installable, versioned unit, so a collaboration can share a whole capability set
-  at once rather than configuring each piece by hand.
-
-The table summarises where each piece fits and where it appears later in the tutorial.
+  at once.
 
 | Component | What it adds to the core loop | In this tutorial |
 | --- | --- | --- |
@@ -165,30 +154,29 @@ The table summarises where each piece fits and where it appears later in the tut
 
 ## Plugins are how this becomes shareable
 
-The reference picture treats a *plugin* as a container for the other components — commands,
-subagents, skills, hooks, and MCP servers — so an entire workflow can be installed in one step.
-For a collaboration, that is the path from "I configured my assistant" to "everyone runs the same
-vetted setup." See the Claude Code
+A *plugin* is a container for the other components — commands, subagents, skills, hooks, MCP
+servers — so an entire workflow installs in one step. For a collaboration, that is the path from
+"I configured my assistant" to "everyone runs the same vetted setup." See the Claude Code
 [plugin components reference](https://code.claude.com/docs/en/plugins-reference#plugin-components-reference)
-for one concrete implementation.
+for one implementation.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## Correctness comes from verification, not confidence
 
-All of this machinery is in service of one thing: results you can trust. That is harder than it
-looks, because an LLM is a stochastic system. Identical prompts can yield different outputs, and a
-fluent, confident answer is not evidence of a correct one.
+All this machinery serves one thing: results you can trust. That is hard, because an LLM is
+stochastic. Identical prompts can yield different outputs, and a fluent, confident answer is not
+evidence of a correct one.
 
-So the discipline this lesson adopts is simple. Treat every model output as a **hypothesis**, and
-accept it only after checking it against something external: the data itself, a fit statistic, a
-known physical value, or an independent implementation. The agentic loop earns its keep here,
-because it makes such checks cheap and automatic.
+So the discipline is simple. Treat every model output as a **hypothesis**, and accept it only after
+checking it against something external: the data itself, a fit statistic, a known physical value, or
+an independent implementation. The agentic loop earns its keep by making such checks cheap and
+automatic.
 
-This shapes how we work. We favour tools that return compact, inspectable quantities — counts,
-edges, fit parameters — over opaque ones, and we keep a record of what was run so a result can be
-reproduced and audited. Reproducibility and provenance are not afterthoughts; they are the criteria
-by which an automated result earns trust.
+This shapes how we work. Favour tools that return compact, inspectable quantities — counts, edges,
+fit parameters — over opaque ones, and keep a record of what was run so a result can be reproduced
+and audited. Reproducibility and provenance are the criteria by which an automated result earns
+trust.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
@@ -205,8 +193,7 @@ loop removes.
 2. **Unvalidated fit.** A one-shot model cannot know whether its fit converged or where the peak
    landed. An agent can execute the fit, read μ, σ, and χ²/ndf, and iterate.
 
-Both are instances of the same principle: conditioning on observations beats conditioning on the
-prior.
+Both are the same principle: conditioning on observations beats conditioning on the prior.
 
 :::::::::::::::
 
@@ -214,28 +201,27 @@ prior.
 
 ## Where this sits
 
-None of this is hypothetical. Generative AI is already part of the research software ecosystem —
-for code development and review, for navigating large codebases, and for searching technical
-documentation. The ePIC collaboration, which produced the data used here, applies these tools in
-several such roles.
+Generative AI is already part of the research software ecosystem — for code development and review,
+navigating large codebases, and searching technical documentation. The ePIC collaboration, which
+produced the data used here, applies these tools in several such roles.
 
-This lesson is a self-contained, low-cost entry point into that practice: with a free assistant and
-a single tool server you will carry out a complete measurement on real ePIC data.
+This lesson is a self-contained, low-cost entry point: with a free assistant and a single tool
+server you will carry out a complete measurement on real ePIC data.
 
 ## Portability through an open protocol
 
-One question remains: how do we keep any of this from going stale? The assistant market changes on
-a timescale of months, so to keep the method durable we depend on a standard rather than a product.
+One question remains: how do we keep this from going stale? The assistant market changes on a
+timescale of months, so we depend on a standard rather than a product.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## One interface, many assistants
 
 The **Model Context Protocol (MCP)** is an open standard for exposing tools to language-model
-clients. A tool implemented once against MCP can be used by any compliant assistant — analogous
-to a hardware bus that decouples peripherals from hosts. In [Episode 3](03-mcp-servers.md) you
-will register a single physics tool server with three different assistants and observe identical
-behaviour, which is what makes the workflow reproducible across environments.
+clients. A tool implemented once against MCP works in any compliant assistant — like a hardware bus
+that decouples peripherals from hosts. In [Episode 3](03-mcp-servers.md) you connect the EIC tool
+servers to your assistant and see that any MCP-compliant client connects the same way — what makes
+the workflow reproducible across environments.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 

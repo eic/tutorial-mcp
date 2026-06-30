@@ -24,18 +24,16 @@ exercises: 30
 
 ## Status of this episode
 
-This is a detailed specification of the end-to-end run, building on the hands-on Episodes 1–3. It
-fixes the pipeline, the scaling options, and the acceptance criteria; the per-client walkthrough
-is to be added.
+A detailed specification of the end-to-end run, building on Episodes 1–3. It fixes the pipeline,
+the scaling options, and the acceptance criteria; the per-client walkthrough is to be added.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## The composed pipeline
 
-The components from the previous episodes combine into a single procedure that the assistant
-executes from one request: the lambda-fit skill (Episode 4) supplies the steps, the uproot tool
-server (Episode 3) supplies verifiable access to the data, and the agentic loop (Episode 1) carries
-it out and checks the result.
+The previous episodes combine into one procedure the assistant runs from a single request: the
+lambda-fit skill (Episode 4) supplies the steps, the uproot tool server (Episode 3) supplies
+verifiable data access, and the agentic loop (Episode 1) carries it out and checks the result.
 
 ```mermaid
 flowchart LR
@@ -49,9 +47,9 @@ flowchart LR
 
 ## One file, end to end
 
-With the three servers running and the lambda-fit skill available, a single request runs the whole
-chain. Point it at one of the dataset's `root://` files — the assistant uses the `rucio` tools to
-find a DIS dataset and `list_file_replicas` for the URLs, `xrootd` to confirm the file is there, and
+With the three servers running and the lambda-fit skill available, one request runs the whole
+chain. Point it at one of the dataset's `root://` files. The assistant uses the `rucio` tools to
+find a DIS dataset and `list_file_replicas` for the URLs, `xrootd` to confirm the file is there,
 then reads it in place:
 
 ```
@@ -61,28 +59,28 @@ Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 
 fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot.
 ```
 
-The assistant calls `execute_kernel` (tree `events`, with the proton/pion branches) to build the
-invariant-mass histogram, then runs a follow-up prompt to fit it with a Gaussian-plus-polynomial
-model and reports the parameters. On a single file the peak sits at μ ≈ 1.1157 GeV; its significance
-is limited by the small event count, which the next section addresses.
+The assistant calls `execute_kernel` (tree `events`, proton/pion branches) to build the
+invariant-mass histogram, then a follow-up prompt fits it with a Gaussian-plus-polynomial model
+and reports the parameters. On a single file the peak sits at μ ≈ 1.1157 GeV; its significance is
+limited by the small event count, which the next section addresses.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Smaller models take shortcuts — verify the result, not the route
 
-A capable model uses the MCP `execute_kernel` tool as instructed. A cheaper model may instead
-reach for `execute_kernel_dataset` on a single file, or write its own NumPy in the kernel — both
-produce the same histogram. This is fine: the audit checklist below judges the *result* (peak
-position, width, χ²/ndf, recorded inputs), not which tool produced it.
+A capable model uses `execute_kernel` as instructed. A cheaper model may reach for
+`execute_kernel_dataset` on a single file, or write its own NumPy in the kernel — both produce the
+same histogram. That is fine: the audit checklist below judges the *result* (peak position, width,
+χ²/ndf, recorded inputs), not which tool produced it.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## Scaling to the full sample
 
-The same kernel applies unchanged to many files; only the tool differs. Where `execute_kernel`
-runs one file, `execute_kernel_dataset` dispatches the identical kernel across a whole file list and
-returns one merged histogram, so peak memory is independent of the dataset size. Enumerate the
-files first with `get_dataset_file_list`, then let the assistant fan the kernel out over them:
+The same kernel applies unchanged to many files; only the tool differs. `execute_kernel` runs one
+file; `execute_kernel_dataset` dispatches the identical kernel across a whole file list and returns
+one merged histogram, so peak memory is independent of dataset size. Enumerate the files with
+`get_dataset_file_list`, then fan the kernel out over them:
 
 ```
 Using the lambda-fit skill, run the same proton-pion mass kernel across the dataset's files
@@ -90,9 +88,9 @@ with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the 
 report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.
 ```
 
-Because the kernel sandbox is NumPy/awkward only (no imports, no I/O), the assistant returns the
-merged histogram and then runs a follow-up fit prompt on it. Over ~100 files this gives the
-full-statistics spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
+The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged
+histogram and runs a follow-up fit prompt on it. Over ~100 files this gives the full-statistics
+spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
 
 ![Fitted Λ⁰ and Λ̄ invariant-mass spectra (100-file reference)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
 
@@ -106,31 +104,31 @@ of reconstructed momenta; σ is the detector mass resolution, not the (negligibl
 
 ## Extracting the yield
 
-The fit model is a Gaussian signal on a second-order polynomial background over [1.08, 1.16] GeV,
+The fit model is a Gaussian signal on a second-order polynomial background over [1.08, 1.16] GeV:
 
 ```
 f(m) = A · exp[ −½ (m − μ)² / σ² ]  +  (c0 + c1 (m − m_Λ) + c2 (m − m_Λ)²)
 ```
 
 The polynomial absorbs the combinatorial background (Episode 2); the integrated signal is
-S = A·√(2π)·σ / (bin width). Reporting S with its uncertainty, together with μ, σ, and χ²/ndf,
-characterises the measurement — a single bin count would conflate signal with background.
+S = A·√(2π)·σ / (bin width). Report S with its uncertainty alongside μ, σ, and χ²/ndf — a single
+bin count would conflate signal with background.
 
 ## Reproducibility and audit
 
-Before treating an automated result as final, confirm it meets the criteria the skill declares:
+Before treating an automated result as final, confirm it meets the skill's criteria:
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Audit checklist
 
-* **Signal.** μ within a few MeV of 1.115683 GeV; σ consistent with the detector resolution;
+* **Signal.** μ within a few MeV of 1.115683 GeV; σ consistent with detector resolution;
   χ²/ndf of order unity; S reported with an uncertainty.
 * **Inputs pinned.** Dataset (campaign and file list), particle masses, mass window, binning, and
   fit range all fixed and recorded.
-* **Provenance.** The tool calls and their arguments are logged, so the run can be reconstructed.
-* **Cost bounded.** For multi-file jobs, the file count was capped during development before
-  scaling up with `execute_kernel_dataset`.
+* **Provenance.** Tool calls and their arguments logged, so the run can be reconstructed.
+* **Cost bounded.** For multi-file jobs, the file count was capped during development before scaling
+  up with `execute_kernel_dataset`.
 * **Oversight.** A human inspected the fit before the result was reported.
 
 :::::::::::::::::::::::::::::::::::::::::::::

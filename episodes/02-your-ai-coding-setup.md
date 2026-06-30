@@ -23,9 +23,8 @@ exercises: 25
 
 ## Choosing an assistant
 
-Several assistants expose an agentic loop at no cost, at least for moderate use. The table below
-is a snapshot (mid-2026); pricing and limits change frequently, so verify current terms before
-relying on them. For this lesson any of these is sufficient.
+Several assistants expose an agentic loop for free, at least for moderate use. The table is a
+mid-2026 snapshot; pricing and limits change, so verify current terms. Any of these works here.
 
 | Tool | Interface | Free access | MCP support |
 | --- | --- | --- | --- |
@@ -39,28 +38,28 @@ relying on them. For this lesson any of these is sufficient.
 
 ## Two senses of "free"
 
-**Open-source clients** (opencode, Cline, Continue) are free to install but bill through your
-chosen model provider per token — zero marginal cost only if paired with a local model (e.g.
-via Ollama). **Commercial free tiers** (Copilot Free, Cursor) bundle a usage quota and then
-meter. Either is adequate here; the choice does not affect the method.
+**Open-source clients** (opencode, Cline, Continue) install free but bill per token through your
+model provider — zero marginal cost only with a local model (e.g. via Ollama). **Commercial free
+tiers** (Copilot Free, Cursor) bundle a quota, then meter. Either works; the choice does not affect
+the method.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## The capabilities that matter
 
-Independent of the product, the workflow requires three capabilities, which are exactly the
-non-model components of the harness from [Episode 1](01-why-genai-for-physics.md):
+The workflow needs three capabilities — the non-model components of the harness from
+[Episode 1](01-why-genai-for-physics.md):
 
-1. a conversational interface (to specify the task and read results),
+1. a conversational interface (specify the task, read results),
 2. read/write access to project files (context), and
-3. command or tool execution with the output returned to the model (the control loop).
+3. command/tool execution with output returned to the model (the control loop).
 
-If an assistant only emits code for you to run by hand, it is operating as a chat completion;
-enable its **agent** or **edit** mode to close the loop.
+If an assistant only emits code for you to run by hand, it is a chat completion; enable its
+**agent** or **edit** mode to close the loop.
 
 ## Install one assistant
 
-You need only one. Each option below is self-contained.
+You need only one. Each option is self-contained.
 
 ::::::::::::::: spoiler
 
@@ -68,13 +67,12 @@ You need only one. Each option below is self-contained.
 
 1. Install [Visual Studio Code](https://code.visualstudio.com/).
 2. Install the **GitHub Copilot** and **GitHub Copilot Chat** extensions.
-3. Authenticate with a GitHub account; students and educators can obtain Copilot Pro at no cost.
+3. Authenticate with a GitHub account; students and educators get Copilot Pro free.
 4. Open Copilot Chat and select **Agent** mode.
 
-Prefer the terminal? The **GitHub Copilot CLI** (`copilot`) is an agentic client that also
-speaks MCP. Install it, sign in with `gh auth login`, and run headless with
-`copilot -p "<request>" --allow-all`. MCP servers go in `~/.copilot/mcp-config.json`
-(added in Episode 3).
+Prefer the terminal? The **GitHub Copilot CLI** (`copilot`) is agentic and speaks MCP. Install it,
+sign in with `gh auth login`, and run headless with `copilot -p "<request>" --allow-all`. MCP
+servers go in `~/.copilot/mcp-config.json` (added in Episode 3).
 
 :::::::::::::::
 
@@ -85,7 +83,7 @@ speaks MCP. Install it, sign in with `gh auth login`, and run headless with
 1. Install [Node.js](https://nodejs.org/) (LTS).
 2. `npm install -g @anthropic-ai/claude-code`
 3. Run `claude` in a project directory and authenticate once.
-4. `/help` lists commands; `/mcp` (used in Episode 3) lists connected tool servers.
+4. `/help` lists commands; `/mcp` (Episode 3) lists connected tool servers.
 
 :::::::::::::::
 
@@ -95,9 +93,9 @@ speaks MCP. Install it, sign in with `gh auth login`, and run headless with
 
 1. Install from [opencode.ai](https://opencode.ai).
 2. Choose a model. opencode ships **free hosted models** that need no key — run `opencode models`
-   and pick one whose name ends in `-free`. You can instead bring your own key for a paid model,
-   or run a local model via [Ollama](https://ollama.com) for zero per-token cost.
-3. Run headless with `opencode run -m <provider/model> "<request>"`, or just `opencode` for an
+   and pick one ending in `-free`. Or bring your own key for a paid model, or run a local model via
+   [Ollama](https://ollama.com) for zero per-token cost.
+3. Run headless with `opencode run -m <provider/model> "<request>"`, or `opencode` for an
    interactive session.
 4. MCP servers are declared in `opencode.jsonc` (added in Episode 3).
 
@@ -107,17 +105,17 @@ speaks MCP. Install it, sign in with `gh auth login`, and run headless with
 
 ## Exercise: confirm the loop is closed (≈ 10 min)
 
-Create an empty directory `lambda-analysis`, open it in your assistant, and issue the request:
+Create an empty directory `lambda-analysis`, open it in your assistant, and issue:
 
 ```
 Create hello.py that prints the PDG value of the Lambda baryon mass in GeV, then run it.
 ```
 
-Verify that the assistant both **wrote** the file and **executed** it.
+Verify the assistant both **wrote** the file and **executed** it.
 
 ::::::::::::::: solution
 
-You should see the assistant create `hello.py`, run it, and report the output:
+The assistant should create `hello.py`, run it, and report:
 
 ```output
 1.115683
@@ -134,28 +132,27 @@ Executing, not suggesting, is the behaviour this lesson relies on.
 
 ## One project, any assistant
 
-You configure the *project*, not each tool. Write your project's rules once in an `AGENTS.md` at
-the root of `lambda-analysis/`, and modern assistants read it automatically — opencode (Option C),
-Cursor, Codex, Gemini CLI, and others. For a tool that looks for its own file instead (Claude Code
-reads `CLAUDE.md`), a one-line *bridge* points back to the same `AGENTS.md`, so you never keep two
-copies. You will set this up properly in [Episode 4](04-skills.md); the principle —
-*standards in the centre, tools at the edges* — is what keeps the workflow consistent whichever
-assistant you, or a collaborator, happen to run.
+Configure the *project*, not each tool. Write your rules once in an `AGENTS.md` at the root of
+`lambda-analysis/`; modern assistants read it automatically — opencode (Option C), Cursor, Codex,
+Gemini CLI, and others. A tool that looks for its own file (Claude Code reads `CLAUDE.md`) gets a
+one-line *bridge* pointing back to the same `AGENTS.md`, so you never keep two copies. You set this
+up in [Episode 4](04-skills.md); the principle — *standards in the centre, tools at the edges* —
+keeps the workflow consistent whichever assistant you or a collaborator run.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## The measurement: Λ⁰ → p π⁻
 
-The Λ⁰ is the lightest strange baryon (quark content uds, spin-parity ½⁺). It decays only through
-the weak interaction (a strangeness-changing, ΔS = 1 transition), which makes it long-lived:
-cτ ≈ 7.9 cm. Its dominant hadronic mode is
+The Λ⁰ is the lightest strange baryon (uds, spin-parity ½⁺). It decays only weakly (a
+strangeness-changing ΔS = 1 transition), so it is long-lived: cτ ≈ 7.9 cm. Its dominant hadronic
+mode is
 
 ```
 Λ⁰ → p + π⁻      (branching fraction ≈ 63.9%)
 ```
 
-Because the lifetime is macroscopic, the decay produces a **V0**: two oppositely charged tracks
-emerging from a vertex that is displaced from the primary interaction point.
+The macroscopic lifetime makes the decay a **V0**: two oppositely charged tracks emerging from a
+vertex displaced from the primary interaction point.
 
 ```mermaid
 flowchart LR
@@ -169,9 +166,9 @@ flowchart LR
 
 ### The observable
 
-The Λ⁰ is neutral and is not detected directly; we reconstruct it from its charged daughters. For
-a candidate proton with four-momentum *p*₁ = (E₁, **p**₁) and a candidate pion *p*₂ = (E₂, **p**₂),
-the **invariant mass** of the pair is Lorentz invariant:
+The Λ⁰ is neutral and not detected directly; we reconstruct it from its charged daughters. For a
+candidate proton with four-momentum *p*₁ = (E₁, **p**₁) and a candidate pion *p*₂ = (E₂, **p**₂),
+the pair's **invariant mass** is Lorentz invariant:
 
 ```
 E_i = sqrt(|p_i|^2 + m_i^2)          with m_i the assigned proton or pion mass
@@ -179,28 +176,26 @@ E_i = sqrt(|p_i|^2 + m_i^2)          with m_i the assigned proton or pion mass
 m(p, π) = sqrt( (E_1 + E_2)^2 − |p_1 + p_2|^2 )
 ```
 
-We assign the proton mass to one track and the pion mass to the other (using the reconstructed
-particle ID, below). For true Λ⁰ decays this quantity equals the parent mass; the candidates
-accumulate in a **peak at 1.115683 GeV**.
+Assign the proton mass to one track and the pion mass to the other (using the reconstructed
+particle ID, below). For true Λ⁰ decays this equals the parent mass; candidates accumulate in a
+**peak at 1.115683 GeV**.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Width: resolution, not lifetime
 
-The Λ⁰ natural width (Γ = ħ/τ ≈ 2.5 × 10⁻⁶ eV) is many orders of magnitude below any detector
-effect. The observed peak width — a few MeV — is therefore a measurement of the **detector
-momentum and angular resolution**, not of the particle itself. Keep this distinction in mind
-when you interpret the fitted σ.
+The Λ⁰ natural width (Γ = ħ/τ ≈ 2.5 × 10⁻⁶ eV) is far below any detector effect. The observed peak
+width — a few MeV — therefore measures the **detector momentum and angular resolution**, not the
+particle. Keep this in mind when interpreting the fitted σ.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ### Background
 
-Most proton–pion pairs in an event do **not** come from a common Λ⁰. These random ("combinatorial")
-pairs do not peak; they form a smooth distribution under and around the signal. The analysis
-therefore extracts a yield by fitting a peak (a Gaussian) on top of a smooth background (a low-order
-polynomial), as you will do in Episode 5. The charge-conjugate mode Λ̄ → p̄ π⁺ is reconstructed
-identically with the antiparticles.
+Most proton–pion pairs in an event share no common Λ⁰. These random ("combinatorial") pairs do not
+peak; they form a smooth distribution under and around the signal. The analysis extracts a yield by
+fitting a Gaussian peak on a low-order polynomial background, as in Episode 5. The charge-conjugate
+mode Λ̄ → p̄ π⁺ is reconstructed identically with the antiparticles.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
@@ -214,16 +209,15 @@ identically with the antiparticles.
 | cτ(Λ⁰) | 7.89 cm |
 | BR(Λ⁰ → p π⁻) | 63.9 % |
 
-Energies and momenta in this lesson are in GeV (natural units, *c* = 1).
+Energies and momenta are in GeV (natural units, *c* = 1).
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## The data model
 
 ePIC reconstruction output uses **EDM4eic**, an EIC extension of EDM4hep generated with
-[PODIO](../learners/reference.md). A file contains an `events` tree; each entry is one event, and
-each branch is a **collection**. We need a single collection, the reconstructed charged tracks, and
-four of its members:
+[PODIO](../learners/reference.md). A file contains an `events` tree; each entry is one event, each
+branch a **collection**. We need one collection, the reconstructed charged tracks, and four members:
 
 ```
 events  (tree; one entry per event)
@@ -233,23 +227,22 @@ events  (tree; one entry per event)
     ReconstructedChargedParticles.momentum.z   p_z  [GeV]
 ```
 
-`PDG` is the Particle Data Group code assigned to each track by the reconstruction. We select
-protons (`2212`) and π⁻ (`-211`) for Λ⁰, and antiprotons (`-2212`) with π⁺ (`211`) for Λ̄.
+`PDG` is the Particle Data Group code the reconstruction assigns each track. Select protons
+(`2212`) and π⁻ (`-211`) for Λ⁰, antiprotons (`-2212`) and π⁺ (`211`) for Λ̄.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Caveat: PID is a hypothesis too
 
 The `PDG` field is the reconstruction's best guess, not truth. Misidentification feeds the
-combinatorial background, which is one reason a fit — rather than a simple count — is required
-to extract the yield.
+combinatorial background — one reason a fit, not a simple count, is required to extract the yield.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-You do not download a file. In [Episode 3](03-mcp-servers.md) the assistant uses the **rucio**
-tools to find a DIS dataset and **xrootd** to verify its files, then reads one of the dataset's
-`root://` URLs (e.g. `root://dtn-eic.jlab.org//...`) **in place** with the **uproot** tools —
-pulling exactly these branches without writing any I/O code ourselves.
+You do not download a file. In [Episode 3](03-mcp-servers.md) the assistant uses the **rucio** tools
+to find a DIS dataset and **xrootd** to verify its files, then reads one of the dataset's `root://`
+URLs (e.g. `root://dtn-eic.jlab.org//...`) **in place** with the **uproot** tools — pulling exactly
+these branches without writing any I/O code.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 

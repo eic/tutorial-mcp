@@ -75,11 +75,14 @@ run_in_env() {  # "<command string>"
 
 run_in_env_bg() {  # cmd pidfile logfile
   local cmd="$1" pidfile="$2" logfile="$3"
+  # setsid → the server leads its own process group, so stop_one can kill the
+  # whole group reliably (not just a wrapper shell). </dev/null detaches stdin.
   if in_container; then
-    nohup bash -lc "$cmd" >"$logfile" 2>&1 & echo $! >"$pidfile"
+    setsid bash -lc "$cmd" >"$logfile" 2>&1 </dev/null & echo $! >"$pidfile"
   else
     local sif; sif="$(find_sif)"
-    nohup apptainer exec "$sif" bash -lc "$cmd" >"$logfile" 2>&1 & echo $! >"$pidfile"
+    [ -z "$sif" ] && { echo "ERROR: not inside eic-shell and no eic_xl .sif found (set EIC_MCP_SIF)." >&2; return 1; }
+    setsid apptainer exec "$sif" bash -lc "$cmd" >"$logfile" 2>&1 </dev/null & echo $! >"$pidfile"
   fi
 }
 
@@ -164,13 +167,15 @@ stop_one() {  # name
   local name="$1" pidfile="$RUN_DIR/$1.pid" port pid i
   case "$name" in uproot) port=$UPROOT_PORT;; xrootd) port=$XROOTD_PORT;; rucio) port=$RUCIO_PORT;; esac
   if [ -f "$pidfile" ]; then
-    pid="$(cat "$pidfile")"
-    kill "$pid" 2>/dev/null || true
-    for ((i = 0; i < 6; i++)); do port_open "$port" || break; sleep 1; done
-    port_open "$port" && kill -9 "$pid" 2>/dev/null || true
+    pid="$(cat "$pidfile" 2>/dev/null)"
+    if [[ "$pid" =~ ^[0-9]+$ ]]; then
+      kill -TERM -"$pid" 2>/dev/null || kill -TERM "$pid" 2>/dev/null || true   # process group, else the pid
+      for ((i = 0; i < 6; i++)); do port_open "$port" || break; sleep 1; done
+      if port_open "$port"; then kill -KILL -"$pid" 2>/dev/null || kill -KILL "$pid" 2>/dev/null || true; fi
+    fi
     rm -f "$pidfile"
   fi
-  if port_open "$port"; then pid="$(pid_on_port "$port")"; [ -n "$pid" ] && kill -9 "$pid" 2>/dev/null || true; fi
+  if port_open "$port"; then pid="$(pid_on_port "$port")"; [[ "$pid" =~ ^[0-9]+$ ]] && kill -9 "$pid" 2>/dev/null || true; fi
   echo "  stopped $name"
 }
 
