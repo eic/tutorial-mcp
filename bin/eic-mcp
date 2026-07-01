@@ -110,12 +110,25 @@ run_in_env_bg() {  # cmd pidfile logfile  — setsid → own process group for r
 # TCP connect test (SSE streams never close, so a curl GET would hang — not a failure).
 port_open() { timeout 2 bash -c "exec 3<>/dev/tcp/$BIND_HOST/$1" 2>/dev/null; }
 wait_ready() {  # name port timeout
-  local name="$1" port="$2" timeout="${3:-45}" i
+  local name="$1" port="$2" timeout="${3:-45}" i pid
+  pid="$(cat "$RUN_DIR/$name.pid" 2>/dev/null || true)"
   for ((i = 1; i <= timeout; i++)); do
     port_open "$port" && { echo "  ✓ $name ready on http://$BIND_HOST:$port/sse"; return 0; }
+    # fail fast if the process we launched already died (e.g. bind failed)
+    if [[ "$pid" =~ ^[0-9]+$ ]] && ! kill -0 "$pid" 2>/dev/null; then
+      echo "  ✗ $name exited before binding $port (see: eic-mcp logs $name)" >&2; return 1
+    fi
     sleep 1
   done
   echo "  ✗ $name did NOT come up on port $port within ${timeout}s (eic-mcp logs $name)" >&2; return 1
+}
+# enabled servers that are actually in the registry (warn + skip unknown names)
+resolved_servers() {
+  local n
+  for n in $(enabled_servers); do
+    if [ -n "${SRV_PORT[$n]:-}" ]; then echo "$n"
+    else echo "eic-mcp: unknown server '$n' (not in registry) — skipping" >&2; fi
+  done
 }
 
 # ---- build + run recipes (dispatch on KIND) ---------------------------------
@@ -148,14 +161,14 @@ cmd_list() {
     printf "%-8s %-6s %-14s %-22s %s\n" "$n" "${SRV_PORT[$n]}" "${SRV_KIND[$n]}" "$e" "${SRV_REPO[$n]}"
   done
 }
-needs_bridge() { local n; for n in $(enabled_servers); do case "${SRV_KIND[$n]}" in *-stdio) return 0;; esac; done; return 1; }
+needs_bridge() { local n; for n in $(enabled_servers); do case "${SRV_KIND[$n]:-}" in *-stdio) return 0;; esac; done; return 1; }
 
 # `setup` clones + builds the enabled MCP servers (and the stdio→SSE bridge if
 # needed). It does NOT install the LLM client — that's the user's choice.
 cmd_setup() {
   mkdir -p "$EIC_MCP_DIR" "$RUN_DIR" "$LOG_DIR"
   local n dir
-  for n in $(enabled_servers); do
+  for n in $(resolved_servers); do
     dir="$(srv_dir "$n")"
     if [ -d "$dir/.git" ]; then echo "==> $n: present (using local checkout)"
     elif [ -n "${SRV_BRANCH[$n]}" ]; then
@@ -175,10 +188,21 @@ cmd_setup() {
 cmd_up() {
   mkdir -p "$RUN_DIR" "$LOG_DIR"
   echo "Starting EIC MCP servers (SSE) ..."
-  local n rc=0
-  for n in $(enabled_servers); do run_in_env_bg "$(run_cmd "$n")" "$RUN_DIR/$n.pid" "$LOG_DIR/$n.log"; done
-  echo "Waiting for servers (first start builds may fetch deps) ..."
-  for n in $(enabled_servers); do wait_ready "$n" "${SRV_PORT[$n]}" 60 || rc=1; done
+  local n rc=0 opid; local -a launched=()
+  for n in $(resolved_servers); do
+    # already running under our control? (live pidfile PID + port up) → skip
+    opid="$(cat "$RUN_DIR/$n.pid" 2>/dev/null || true)"
+    if [[ "$opid" =~ ^[0-9]+$ ]] && kill -0 "$opid" 2>/dev/null && port_open "${SRV_PORT[$n]}"; then
+      echo "  • $n already running (pid $opid) — skipping"; continue
+    fi
+    # port held by an unrelated process → don't clobber it, report failure
+    if port_open "${SRV_PORT[$n]}"; then
+      echo "  ⚠ $n: port ${SRV_PORT[$n]} already in use by another process — not starting" >&2; rc=1; continue
+    fi
+    run_in_env_bg "$(run_cmd "$n")" "$RUN_DIR/$n.pid" "$LOG_DIR/$n.log"; launched+=("$n")
+  done
+  [ ${#launched[@]} -gt 0 ] && echo "Waiting for servers (first start builds may fetch deps) ..."
+  for n in ${launched[@]+"${launched[@]}"}; do wait_ready "$n" "${SRV_PORT[$n]}" 60 || rc=1; done
   echo
   [ "$rc" -eq 0 ] && echo "All servers up. Point your LLM client at the /sse URLs above." \
                   || echo "Some servers failed — check 'eic-mcp logs <name>'." >&2
@@ -198,12 +222,16 @@ stop_one() {
     rm -f "$pidfile"
   fi
   if port_open "$port"; then pid="$(pid_on_port "$port")"; [[ "$pid" =~ ^[0-9]+$ ]] && kill -9 "$pid" 2>/dev/null || true; fi
-  echo "  stopped $name"
+  if port_open "$port"; then
+    echo "  ✗ $name: still listening on $port — could not stop (check 'eic-mcp logs $name' or kill it manually)" >&2
+  else
+    echo "  stopped $name"
+  fi
 }
-cmd_down()   { echo "Stopping EIC MCP servers ..."; local n; for n in $(enabled_servers); do stop_one "$n"; done; }
+cmd_down()   { echo "Stopping EIC MCP servers ..."; local n; for n in $(resolved_servers); do stop_one "$n"; done; }
 cmd_status() {
   printf "%-8s %-30s %s\n" SERVER URL STATE
-  local n; for n in $(enabled_servers); do
+  local n; for n in $(resolved_servers); do
     port_open "${SRV_PORT[$n]}" && st=UP || st=down
     printf "%-8s %-30s %s\n" "$n" "http://$BIND_HOST:${SRV_PORT[$n]}/sse" "$st"
   done
