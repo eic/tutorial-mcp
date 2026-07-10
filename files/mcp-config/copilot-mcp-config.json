@@ -1,29 +1,12 @@
 {
   "//": "GitHub Copilot CLI MCP configuration.",
   "//1": "Save as ~/.copilot/mcp-config.json (or pass with --additional-mcp-config), then run",
-  "//2": "the Copilot CLI from your project root so the ./files/data mount resolves:",
+  "//2": "the Copilot CLI from your project root:",
   "//3": "  copilot -p \"...your request...\" --allow-all",
-  "//4": "Same docker payload as every other client; only the wrapper differs.",
+  "//4": "Start the servers first with `eic-mcp up` (inside eic-shell).",
   "mcpServers": {
-    "uproot": {
-      "type": "local",
-      "command": "docker",
-      "args": ["run", "-i", "--rm",
-               "-v", "./files/data:/data",
-               "ghcr.io/eic/uproot-mcp-server:latest"],
-      "tools": ["*"]
-    },
-    "xrootd": {
-      "type": "local",
-      "command": "docker",
-      "args": ["run", "-i", "--rm",
-               "-e", "XROOTD_SERVER", "-e", "XROOTD_BASE_DIR",
-               "ghcr.io/eic/xrootd-mcp-server:latest"],
-      "env": {
-        "XROOTD_SERVER": "root://dtn-eic.jlab.org",
-        "XROOTD_BASE_DIR": "/volatile/eic/EPIC"
-      },
-      "tools": ["*"]
-    }
+    "uproot": { "type": "http", "url": "http://127.0.0.1:9101/mcp", "tools": ["*"] },
+    "xrootd": { "type": "http", "url": "http://127.0.0.1:9102/mcp", "tools": ["*"] },
+    "rucio":  { "type": "http", "url": "http://127.0.0.1:9103/mcp", "tools": ["*"] }
   }
 }

@@ -6,8 +6,9 @@
 // invariant mass. Same physics, same ~1.1157 GeV peak as the uproot / RDataFrame
 // examples.
 //
-// Environment: ROOT (e.g. inside eic-shell / Key4hep). Run with:
-//   eic-shell -- root -l -b -q 'lambda_ttreereader.C("../../files/data/lambda_skim.root")'
+// Environment: ROOT (e.g. inside eic-shell / Key4hep). Run with any EDM4eic
+// reconstruction file, read in place over root:// (discover one as in Episode 3):
+//   eic-shell -- root -l -b -q 'lambda_ttreereader.C("root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/.../file.root")'
 //
 // Output: lambda_ttreereader.pdf, plus the peak bin centre printed to stdout.
 //
@@ -31,7 +32,11 @@ static double inv_mass(double e1, double x1, double y1, double z1,
     return std::sqrt(std::max(E*E - (X*X + Y*Y + Z*Z), 0.0));
 }
 
-void lambda_ttreereader(const char* file_path = "../../files/data/lambda_skim.root") {
+void lambda_ttreereader(const char* file_path = "") {
+    if (!file_path || !*file_path) {
+        printf("usage: root -l -b -q 'lambda_ttreereader.C(\"<EDM4eic .root file or root:// URL>\")'\n");
+        return;
+    }
     TFile* f = TFile::Open(file_path);
     if (!f || f->IsZombie()) { printf("cannot open %s\n", file_path); return; }
 

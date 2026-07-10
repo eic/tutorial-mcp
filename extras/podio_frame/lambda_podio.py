@@ -8,10 +8,11 @@ and iterate over typed objects with methods like `.getPDG()` and `.getMomentum()
 This is the "what's under the hood" example. It is also the heaviest to set up:
 it REQUIRES a Key4hep / eic-shell environment with `podio` and the `edm4eic`
 dictionaries available. That contrast is the lesson: uproot + MCP get you the
-same Lambda peak with nothing but Docker, while this path needs the full stack.
+same Lambda peak with nothing but eic-shell, while this path needs the full stack.
 
-Environment: eic-shell / Key4hep. Run with:
-    eic-shell -- python3 lambda_podio.py ../../files/data/lambda_skim.root
+Environment: eic-shell / Key4hep. Run with any EDM4eic reconstruction file,
+read in place over root:// (discover one as in Episode 3):
+    eic-shell -- python3 lambda_podio.py root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/.../file.root
 
 Output: the peak window count printed to stdout (peak near 1.1157 GeV).
 """
@@ -58,4 +59,6 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "../../files/data/lambda_skim.root")
+    if len(sys.argv) < 2:
+        sys.exit("usage: lambda_podio.py <EDM4eic .root file (local path or root:// URL)>")
+    main(sys.argv[1])

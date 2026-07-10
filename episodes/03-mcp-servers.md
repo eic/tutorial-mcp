@@ -72,15 +72,15 @@ and any MCP-compliant **client** (the assistant) can use it.
 MCP is a client–server protocol over **JSON-RPC 2.0**. After capability negotiation, the server
 advertises three object types — **tools** (callable functions), **resources** (readable data), and
 **prompts** (templated instructions). Two transports exist: **stdio** (client launches the server as
-a subprocess, messages over standard input/output) and streamable **HTTP/SSE** for networked
-servers. The lesson's servers run inside eic-shell and speak SSE.
+a subprocess, messages over standard input/output) and **streamable HTTP** for networked servers.
+The lesson's servers run inside eic-shell and speak streamable HTTP on `127.0.0.1`.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {EIC MCP data tools}
     accDescr: {EIC MCP data tools}
-    A["AI assistant<br/>opencode · Copilot · Cursor"]:::core <-->|"JSON-RPC / SSE"| S["uproot tool server<br/>(MCP, in eic-shell)"]:::tool
+    A["AI assistant<br/>opencode · Copilot · Cursor"]:::core <-->|"JSON-RPC / HTTP"| S["uproot tool server<br/>(MCP, in eic-shell)"]:::tool
     S <-->|"uproot"| F["EDM4eic ROOT file"]:::data
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
@@ -92,7 +92,7 @@ flowchart LR
 ## Why run the servers inside eic-shell
 
 The servers reuse the container's own `uproot`, `xrdfs`, and `rucio`, so dependencies are pinned and
-one environment runs both analysis and tools. `eic-mcp up` starts them as background SSE processes;
+one environment runs both analysis and tools. `eic-mcp up` starts them as background HTTP services;
 `eic-mcp down` stops them. They hold no state between sessions.
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -123,41 +123,70 @@ the code runs in a subprocess with a 30-second wall-clock limit.
 
 ## Start the servers
 
-The three servers were built once at [Setup](../learners/setup.md) (`eic-mcp setup`). Start them for
-this session from inside eic-shell:
+Start the servers for this session from inside eic-shell (the first `eic-mcp up` ever run
+bootstraps them automatically if your image doesn't ship them yet — see
+[Setup](../learners/setup.md)):
 
 ```bash
 $ eic-mcp up
 ```
 
-This launches the uproot, xrootd, and rucio servers as SSE endpoints on `127.0.0.1`, ports `9101`,
-`9102`, `9103`. Stop them with `eic-mcp down`. The assistant connects to those URLs.
+This launches the uproot, xrootd, and rucio servers as MCP-over-HTTP endpoints on `127.0.0.1`,
+ports `9101`, `9102`, `9103`. Stop them with `eic-mcp down`. The assistant connects to those URLs.
 
 ## Connect the assistant
 
-opencode reads its server list from a JSON config. The ready-made
-[`files/mcp-config/opencode.jsonc`](https://github.com/aprozo/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc)
-points it at the three SSE URLs:
+opencode reads its server list from a JSON config. Generate it in the directory where you launch
+opencode (or write it to `~/.config/opencode/opencode.jsonc`):
+
+```bash
+$ eic-mcp config opencode > opencode.jsonc
+```
+
+which prints the three server URLs
+(committed as the example [`files/mcp-config/opencode.jsonc`](https://github.com/aprozo/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc)):
 
 ```json
 {
   "mcp": {
-    "rucio":  { "type": "remote", "url": "http://127.0.0.1:9103/sse", "enabled": true },
-    "xrootd": { "type": "remote", "url": "http://127.0.0.1:9102/sse", "enabled": true },
-    "uproot": { "type": "remote", "url": "http://127.0.0.1:9101/sse", "enabled": true }
+    "uproot": { "type": "remote", "url": "http://127.0.0.1:9101/mcp", "enabled": true },
+    "xrootd": { "type": "remote", "url": "http://127.0.0.1:9102/mcp", "enabled": true },
+    "rucio":  { "type": "remote", "url": "http://127.0.0.1:9103/mcp", "enabled": true }
   }
 }
 ```
 
-Copy it to the directory where you launch opencode (or to `~/.config/opencode/`). Within a session,
-`/mcp` lists the connected servers and their tools.
+Within a session, `/mcp` lists the connected servers and their tools.
 
 ::::::::::::::: callout
 
 ## Other clients point at the same URLs
 
-The SSE endpoints work with any MCP client: point VS Code/Copilot or Cursor at the same
-`http://127.0.0.1:910x/sse` URLs in its MCP settings.
+The HTTP endpoints work with any MCP client, and `eic-mcp config` writes the matching file:
+
+```bash
+$ eic-mcp config copilot > .vscode/mcp.json   # VS Code / Copilot
+$ eic-mcp config cursor  > .cursor/mcp.json   # Cursor
+$ eic-mcp config claude  > .mcp.json          # Claude Code
+```
+
+:::::::::::::::
+
+::::::::::::::: callout
+
+## Running the client outside the container
+
+The MCP servers always run *inside* eic-shell, but your AI client doesn't have to.
+
+* **Linux and Windows/WSL:** eic-shell uses Apptainer/Singularity, which shares the host network.
+  The `http://127.0.0.1:910x/mcp` URLs work identically from inside the container and from the
+  host — install your client on the host, run `eic-mcp config <client>` (the launcher finds your
+  eic_xl image automatically), and connect.
+* **macOS:** eic-shell runs via Docker, whose generated launch script publishes no ports, so the
+  endpoints are *not* reachable from the host by default. Simplest fix: run the client inside
+  eic-shell (opencode is a terminal program and installs fine in the container). Alternatively, add
+  `-p 127.0.0.1:9101-9104:9101-9104` to the `docker run` line of your `eic-shell` script and
+  restart it.
 
 :::::::::::::::
 
@@ -355,7 +384,7 @@ procedure as a reusable, versioned **skill**.
 - MCP is a JSON-RPC client–server protocol; a server exposes tools, resources, and prompts to any compliant client.
 - The uproot server returns compact, JSON-serialisable summaries rather than raw arrays, which keeps results inspectable.
 - `execute_kernel` runs client-supplied Python in a restricted sandbox: no imports or I/O, only NumPy/awkward, with a timeout.
-- The servers run inside eic-shell (`eic-mcp up`) and speak SSE; opencode and other clients connect to the same `127.0.0.1` URLs.
+- The servers run inside eic-shell (`eic-mcp up`) and speak streamable HTTP; opencode and other clients connect to the same `127.0.0.1` URLs (`eic-mcp config <client>`).
 - PODIO/uproot is one access path; RDataFrame, TTreeReader, and bare uproot give the same result (see the extras).
 
 :::::::::::::::::::::::::::::::::::::::::::::

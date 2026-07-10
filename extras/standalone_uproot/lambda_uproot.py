@@ -10,11 +10,13 @@ that is the point: PODIO/MCP is one choice among many, the physics is identical.
 Environment: a plain Python venv with `uproot awkward numpy` (see setup.md).
 No ROOT, no PODIO, no Key4hep install needed.
 
-Usage:
-    python3 lambda_uproot.py [path/to/file.root] [--out output/lambda_hist_uproot.json]
+Usage (pass any EDM4eic reconstruction file, read in place over root:// —
+discover one as in Episode 3, or browse with
+`xrdfs root://dtn-eic.jlab.org ls /volatile/eic/EPIC/RECO`):
 
-The output JSON is compatible with ../../files/code/fit_lambda.py, so you can fit it:
-    python3 ../../files/code/fit_lambda.py --in output/lambda_hist_uproot.json
+    python3 lambda_uproot.py root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/.../file.root
+
+The histogram is written to output/lambda_hist_uproot.json; fit it as in Episode 5.
 """
 from __future__ import annotations
 
@@ -95,8 +97,8 @@ def main(path, out):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("path", nargs="?",
-                    default="../../files/data/lambda_skim.root")
+    ap.add_argument("path",
+                    help="EDM4eic .root file (local path or root:// URL)")
     ap.add_argument("--out", default="output/lambda_hist_uproot.json")
     a = ap.parse_args()
     main(a.path, a.out)

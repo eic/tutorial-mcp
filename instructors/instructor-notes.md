@@ -8,7 +8,7 @@ This lesson is aimed at **graduate students and researchers** new to AI tooling.
 command-line comfort and introductory particle-physics background (four-momentum, invariant mass,
 histograms, fitting). It teaches a portable method — the agentic harness — applied to a real ePIC
 measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners pick one assistant
-(Copilot, Claude Code, or opencode) and everything else works through MCP.
+(opencode, Copilot, or Cursor) and everything else works through MCP.
 
 ## What is built vs. outlined
 
@@ -26,17 +26,18 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   connected (Setup page). Everything else runs inside eic-shell.
 * No JLab account or data download is needed: the `rucio` server signs in automatically with the
   shared read-only `eicread` account, and the assistant reads files over `root://` in place.
-* Have learners run `eic-mcp setup` ahead of time — the first build of the three servers takes a
-  few minutes.
+* Have learners run `eic-mcp up` once ahead of time — the first run bootstraps the three servers
+  automatically, which takes a few minutes; every later start is seconds.
 
 ## Timing and pitfalls
 
 * Total ≈ 2 h teaching + 1.5 h exercises (a half day). Episode 3 is the longest; budget time for
-  `eic-mcp setup` (first build) and connecting opencode to a model.
+  the first `eic-mcp up` (one-time bootstrap) and connecting opencode to a model.
 * **Common snag:** the assistant stays in "one-shot" mode and only prints code. Have learners
   confirm **Agent/edit mode** in Episode 2's first-contact exercise.
 * **Servers not connected:** if `/mcp` shows nothing, check `eic-mcp status` and that
-  `opencode.jsonc` is in the directory where `opencode` was launched.
+  `opencode.jsonc` (generate it with `eic-mcp config opencode`) is in the directory where
+  `opencode` was launched.
 * **Statistics:** peak clarity scales with how many `root://` files the assistant processes — a
   few files show a modest excess; tens of files give a clean fit. Set expectations accordingly.
 

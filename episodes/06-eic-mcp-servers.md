@@ -63,7 +63,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ## One protocol, many tools
 
-MCP is a standard ([Episode 3](03-mcp-servers.md)), so the collaboration exposes each piece of its infrastructure as a small server. Connect each as you connected `uproot`: `eic-mcp up`, then point your assistant at its SSE URL.
+MCP is a standard ([Episode 3](03-mcp-servers.md)), so the collaboration exposes each piece of its infrastructure as a small server. Connect each as you connected `uproot`: `eic-mcp up`, then point your assistant at its URL (`eic-mcp config <client>`).
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%

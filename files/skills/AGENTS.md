@@ -5,14 +5,17 @@ Reconstruct Lambda0 -> p pi- in ePIC EDM4eic data and fit the invariant-mass
 peak near 1.115683 GeV.
 
 ## Environment
-- Python 3.10+ with: uproot, awkward, numpy, scipy, matplotlib.
-- Docker, for the uproot MCP tool server (ghcr.io/eic/uproot-mcp-server:latest).
-- Example data: files/data/lambda_skim.root (committed); full sample via a file list.
+- Everything runs inside eic-shell; the MCP servers are started with `eic-mcp up`.
+- Data lives on the grid: find a DIS dataset with the `rucio` tools and read its
+  root:// files in place with `uproot` — no download.
 
 ## Tools
+- Use the `rucio` MCP server (list_dids, list_files, list_file_replicas) to locate
+  a dataset and resolve its root:// URLs.
+- Use the `xrootd` MCP server (check_file_exists, get_file_info) to verify a file.
 - Use the `uproot` MCP server (get_file_structure, get_tree_info, histogram_branch,
-  execute_kernel, and the dataset/async tools) for all ROOT file access.
-- Do NOT write bespoke file I/O; the server already handles it.
+  execute_kernel, execute_kernel_dataset) for all ROOT file access.
+- Do NOT write bespoke file I/O; the servers already handle it.
 
 ## Data model
 - Tree: events.  Collection: ReconstructedChargedParticles.

@@ -3,7 +3,7 @@ title: Setup
 ---
 
 This lesson runs inside **eic-shell**, the ePIC software container. Install an AI assistant (your
-choice), then one command builds the tool servers. No Docker, no grid certificate, no data
+choice), then one command starts the tool servers. No Docker, no grid certificate, no data
 download — the MCP servers reuse the container's own `uproot`, `xrdfs`, and `rucio` (already logged
 in to the shared read-only `eicread` account).
 
@@ -13,7 +13,7 @@ in to the shared read-only `eicread` account).
 
 * [ ] **eic-shell** working (`./eic-shell` drops you into the container).
 * [ ] One **AI assistant** installed and connected to a free model.
-* [ ] **`eic-mcp setup`** run once (builds the three MCP servers).
+* [ ] **`eic-mcp up`** starts the three MCP servers (the first run bootstraps them automatically).
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -78,18 +78,20 @@ shows code, switch on agent/edit mode — executing, not suggesting, is what thi
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## 4. Build the MCP servers — `eic-mcp setup`
+## 4. Start the MCP servers — `eic-mcp up`
 
-The lesson ships a launcher, `bin/eic-mcp`, that clones and builds the three servers (uproot,
-xrootd, rucio) inside eic-shell. Run it once:
+The lesson ships a launcher, `bin/eic-mcp`, that runs the three servers (uproot, xrootd, rucio)
+inside eic-shell:
 
 ```bash
-eic-mcp setup
+eic-mcp up
 ```
 
-The first run takes a few minutes. You start and stop the servers per session in
+If your eic_xl image already ships the servers, they just start; otherwise the **first** run
+bootstraps them automatically (a one-time clone and build, a few minutes). Every later `eic-mcp up`
+starts in seconds. You start and stop the servers per session in
 [Episode 3](../episodes/03-mcp-servers.md) with `eic-mcp up` / `eic-mcp down`; point your assistant
-at them with [`files/mcp-config/opencode.jsonc`](../files/mcp-config/opencode.jsonc).
+at them with `eic-mcp config opencode` (see Episode 3).
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 

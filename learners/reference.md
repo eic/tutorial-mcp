@@ -74,8 +74,8 @@ skill
 
 stdio transport
 :   The MCP transport in which the client launches the server as a subprocess and exchanges JSON-RPC
-    on standard input/output. This lesson instead uses the **SSE** transport: the servers run inside
-    eic-shell (`eic-mcp up`) and the client connects over `http://127.0.0.1:910x/sse`.
+    on standard input/output. This lesson instead uses the **streamable HTTP** transport: the servers
+    run inside eic-shell (`eic-mcp up`) and the client connects over `http://127.0.0.1:910x/mcp`.
 
 tool
 :   An operation the model may invoke through a typed interface (name, arguments, return schema). The

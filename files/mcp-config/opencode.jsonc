@@ -1,6 +1,7 @@
 {
   // opencode MCP config — point the assistant at the three EIC servers.
-  // Copy this to the directory where you launch `opencode` (or to
+  // Generate this file with:  eic-mcp config opencode > opencode.jsonc
+  // in the directory where you launch `opencode` (or write it to
   // ~/.config/opencode/). Start the servers first with:  eic-mcp up
   //
   // The servers run inside eic-shell and reuse the container's own
@@ -9,8 +10,8 @@
   // network, so these 127.0.0.1 URLs work from inside or outside eic-shell.
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "rucio":  { "type": "remote", "url": "http://127.0.0.1:9103/sse", "enabled": true },
-    "xrootd": { "type": "remote", "url": "http://127.0.0.1:9102/sse", "enabled": true },
-    "uproot": { "type": "remote", "url": "http://127.0.0.1:9101/sse", "enabled": true }
+    "uproot": { "type": "remote", "url": "http://127.0.0.1:9101/mcp", "enabled": true },
+    "xrootd": { "type": "remote", "url": "http://127.0.0.1:9102/mcp", "enabled": true },
+    "rucio":  { "type": "remote", "url": "http://127.0.0.1:9103/mcp", "enabled": true }
   }
 }

@@ -5,10 +5,9 @@ Same physics as the stand-alone uproot example, expressed in ROOT's columnar
 RDataFrame. A small JIT-compiled C++ helper builds the per-event proton x pi-
 invariant masses; RDataFrame histograms them in one declarative pass.
 
-Environment: ROOT (e.g. inside eic-shell / Key4hep). Run with:
-    eic-shell -- python3 lambda_rdf.py /path/to/file.root
-or, with the bundled skim:
-    eic-shell -- python3 lambda_rdf.py ../../files/data/lambda_skim.root
+Environment: ROOT (e.g. inside eic-shell / Key4hep). Run with any EDM4eic
+reconstruction file, read in place over root:// (discover one as in Episode 3):
+    eic-shell -- python3 lambda_rdf.py root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/.../file.root
 
 Output: lambda_rdf.pdf  (and the peak bin centre printed to stdout, ~1.1157 GeV).
 """
@@ -59,4 +58,6 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "../../files/data/lambda_skim.root")
+    if len(sys.argv) < 2:
+        sys.exit("usage: lambda_rdf.py <EDM4eic .root file (local path or root:// URL)>")
+    main(sys.argv[1])

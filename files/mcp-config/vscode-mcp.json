@@ -1,28 +1,12 @@
 {
   "//": "GitHub Copilot / VS Code MCP configuration.",
-  "//1": "Save as .vscode/mcp.json in your workspace (or paste the 'servers' block",
-  "//2": "into your user settings.json under an \"mcp\" key). Then open the Copilot",
-  "//3": "Chat view, switch to Agent mode, and the 'uproot' tools appear.",
-  "//4": "The payload is the SAME docker command every MCP client uses.",
+  "//1": "Generate this file with:  eic-mcp config copilot > .vscode/mcp.json",
+  "//2": "Start the servers first with `eic-mcp up` (inside eic-shell). Then open",
+  "//3": "the Copilot Chat view, switch to Agent mode, and the tools appear.",
+  "//4": "Same URLs as every other MCP client; only the wrapper file differs.",
   "servers": {
-    "uproot": {
-      "type": "stdio",
-      "command": "docker",
-      "args": ["run", "-i", "--rm",
-               "-v", "${workspaceFolder}/files/data:/data",
-               "ghcr.io/eic/uproot-mcp-server:latest"]
-    },
-    "xrootd": {
-      "type": "stdio",
-      "command": "docker",
-      "args": ["run", "-i", "--rm",
-               "-e", "XROOTD_SERVER",
-               "-e", "XROOTD_BASE_DIR",
-               "ghcr.io/eic/xrootd-mcp-server:latest"],
-      "env": {
-        "XROOTD_SERVER": "root://dtn-eic.jlab.org",
-        "XROOTD_BASE_DIR": "/volatile/eic/EPIC"
-      }
-    }
+    "uproot": { "type": "http", "url": "http://127.0.0.1:9101/mcp" },
+    "xrootd": { "type": "http", "url": "http://127.0.0.1:9102/mcp" },
+    "rucio":  { "type": "http", "url": "http://127.0.0.1:9103/mcp" }
   }
 }

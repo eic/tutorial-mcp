@@ -13,17 +13,19 @@ Any request to find, fit, or quantify the Lambda0 (or its antiparticle) in ePIC
 reconstructed data via the proton-pion invariant mass.
 
 ## Inputs
-- file:      one EDM4eic .root file (default files/data/lambda_skim.root), or
-- file_list: a text file of paths/URLs for the full sample.
+- file: one EDM4eic .root URL (a root:// file from a DIS dataset), or
+- file_list: the dataset's root:// files for the full sample
+  (resolve both with the rucio tools: list_dids, list_files, list_file_replicas).
 
 ## Steps
 1. Confirm the uproot MCP server is connected: get_file_structure on the input.
-2. Build the histogram via execute_kernel (one file) or submit_kernel_dataset
-   (a file list), using files/code/lambda_kernel_mcp.py (KERNEL_CODE, BRANCHES).
-   For a large sample, call estimate_dataset_cost first and cap the file count.
-3. Save the returned histogram to output/lambda_hist.json.
-4. Fit it:  python3 files/code/fit_lambda.py --in output/lambda_hist.json
-5. Report mu, sigma, signal yield S, and chi2/ndf; show output/lambda_fit.png.
+2. Build the proton-pion invariant-mass histogram with execute_kernel (one file)
+   or execute_kernel_dataset (many files), tree_name 'events' and the
+   ReconstructedChargedParticles momentum/PDG branches. For a large sample, cap
+   the file count first.
+3. Fit the histogram with a second execute_kernel call (Gaussian + 2nd-order
+   polynomial over [1.08, 1.16] GeV; NumPy/awkward only, no imports).
+4. Report mu, sigma, signal yield S, and chi2/ndf.
 
 ## Success criteria (check before reporting success)
 - |mu - 1.115683 GeV| < 0.005 GeV.
@@ -34,8 +36,3 @@ If any check fails, report the failure and the fit diagnostics, not a result.
 ## Provenance
 List the tool calls and their parameters, and the dataset used (campaign and
 file list), so the run can be reproduced.
-
-## Bundled scripts
-A self-contained copy of this skill would also include the two scripts it calls:
-  - lambda_kernel_mcp.py  (from files/code/)
-  - fit_lambda.py         (from files/code/)

@@ -61,13 +61,31 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-::::::::::::::::::::::::::::::::::::::::::::: callout
+## Run it in your client
 
-## Status of this episode
+Everything below runs from the same three-step setup, whatever assistant you use:
 
-Specification of the end-to-end run, building on Episodes 1–3. Fixes the pipeline, scaling options, and acceptance criteria; the per-client walkthrough is to be added.
+1. Inside eic-shell, start the servers: `eic-mcp up`.
+2. In your analysis directory, connect your client and put the Episode 4 files in place:
 
-:::::::::::::::::::::::::::::::::::::::::::::
+   ```bash
+   eic-mcp config opencode > opencode.jsonc
+   cp -r /path/to/tutorial-mcp/files/skills/AGENTS.md .
+   cp -r /path/to/tutorial-mcp/files/skills/lambda-fit skills/lambda-fit
+   ```
+
+3. Launch `opencode`, check `/mcp` lists `uproot`, `xrootd`, and `rucio`, and paste the pipeline
+   prompt below.
+
+::::::::::::::: callout
+
+## Same pipeline, other clients
+
+Only step 2 changes: `eic-mcp config copilot > .vscode/mcp.json` (VS Code/Copilot, Agent mode),
+`eic-mcp config cursor > .cursor/mcp.json`, or `eic-mcp config claude > .mcp.json` (Claude Code).
+The servers, skills, and prompts are identical.
+
+:::::::::::::::
 
 ## The composed pipeline
 
