@@ -38,6 +38,9 @@ terms.
 | --- | --- | --- |
 | [opencode](https://opencode.ai) | terminal | open source (MIT); free hosted models (no key), bring your own key, or a local model |
 | [GitHub Copilot](https://github.com/features/copilot) | [VS Code](https://code.visualstudio.com/), CLI | free tier; free Pro for verified students/educators/OSS maintainers |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | terminal | open source; generous free tier with a personal Google account |
+| [Codex](https://developers.openai.com/codex) | terminal, IDE | included with ChatGPT plans |
+| [Claude Code](https://claude.com/claude-code) | terminal, IDE | included with Claude plans |
 | [Cursor](https://cursor.com/) | dedicated editor | free tier |
 | [Cline](https://cline.bot/) / [Continue](https://continue.dev/) | VS Code extensions | open source; bring your own key |
 

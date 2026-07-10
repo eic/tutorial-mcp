@@ -165,9 +165,11 @@ Within a session, `/mcp` lists the connected servers and their tools.
 The HTTP endpoints work with any MCP client, and `eic-mcp config` writes the matching file:
 
 ```bash
-$ eic-mcp config copilot > .vscode/mcp.json   # VS Code / Copilot
-$ eic-mcp config cursor  > .cursor/mcp.json   # Cursor
-$ eic-mcp config claude  > .mcp.json          # Claude Code
+$ eic-mcp config copilot > .vscode/mcp.json      # VS Code / Copilot
+$ eic-mcp config cursor  > .cursor/mcp.json      # Cursor
+$ eic-mcp config claude  > .mcp.json             # Claude Code
+$ eic-mcp config gemini  > .gemini/settings.json # Gemini CLI
+$ eic-mcp config codex  >> ~/.codex/config.toml  # Codex (TOML, appended)
 ```
 
 :::::::::::::::

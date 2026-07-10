@@ -12,7 +12,7 @@
 #   eic-mcp list              # show the server registry
 #   eic-mcp up                # start them (http://127.0.0.1:910x/mcp)
 #   eic-mcp status            # which are listening
-#   eic-mcp config CLIENT     # print client config (opencode|claude|copilot|cursor)
+#   eic-mcp config CLIENT     # print client config (opencode|claude|copilot|cursor|gemini|codex)
 #   eic-mcp logs NAME         # tail a server log
 #   eic-mcp down | restart
 #   eic-mcp setup             # optional pre-build ('up' does this automatically)
@@ -284,7 +284,8 @@ cmd_logs() {
 # streamable-HTTP URLs. Redirect it to the client's config file:
 #   opencode → opencode.jsonc (launch dir) or ~/.config/opencode/opencode.jsonc
 #   claude   → .mcp.json          copilot|vscode → .vscode/mcp.json
-#   cursor   → .cursor/mcp.json
+#   cursor   → .cursor/mcp.json   gemini → .gemini/settings.json
+#   codex    → append (>>) to ~/.codex/config.toml
 cmd_config() {
   local client="${1:-opencode}" n url first=1
   case "$client" in
@@ -327,7 +328,22 @@ cmd_config() {
       done
       echo; echo '  }'; echo '}'
       ;;
-    *) echo "unknown client '$client' (use: opencode | claude | copilot | cursor)" >&2; exit 2 ;;
+    gemini)   # Gemini CLI .gemini/settings.json (httpUrl = streamable HTTP; url would mean SSE)
+      echo '{'; echo '  "mcpServers": {'
+      for n in $(resolved_servers); do
+        url="http://$BIND_HOST:${SRV_PORT[$n]}/mcp"
+        [ $first -eq 1 ] || echo ','; first=0
+        printf '    "%s": { "httpUrl": "%s" }' "$n" "$url"
+      done
+      echo; echo '  }'; echo '}'
+      ;;
+    codex)    # Codex CLI ~/.codex/config.toml (TOML — append with >>)
+      for n in $(resolved_servers); do
+        echo "[mcp_servers.$n]"
+        echo "url = \"http://$BIND_HOST:${SRV_PORT[$n]}/mcp\""
+      done
+      ;;
+    *) echo "unknown client '$client' (use: opencode | claude | copilot | cursor | gemini | codex)" >&2; exit 2 ;;
   esac
 }
 

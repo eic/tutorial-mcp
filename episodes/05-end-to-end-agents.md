@@ -83,8 +83,10 @@ Everything below runs from the same three-step setup, whatever assistant you use
 ## Same pipeline, other clients
 
 Only step 2 changes: `eic-mcp config copilot > .vscode/mcp.json` (VS Code/Copilot, Agent mode),
-`eic-mcp config cursor > .cursor/mcp.json`, or `eic-mcp config claude > .mcp.json` (Claude Code).
-The servers, skills, and prompts are identical.
+`eic-mcp config cursor > .cursor/mcp.json`, `eic-mcp config claude > .mcp.json` (Claude Code),
+`eic-mcp config gemini > .gemini/settings.json` (Gemini CLI), or
+`eic-mcp config codex >> ~/.codex/config.toml` (Codex). The servers, skills, and prompts are
+identical.
 
 :::::::::::::::
 
