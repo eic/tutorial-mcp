@@ -182,6 +182,10 @@ prefetch_bridge() {  # make sure the stdio→SSE bridge is runnable before wait_
 # Every EIC server is a stdio MCP server; expose it over streamable HTTP with
 # supergateway (stateful: one MCP session per client, so clients can reconnect —
 # its SSE mode reuses a single session and crashes on the second connection).
+# The bridge runs under a restart loop: supergateway also dies when a client
+# disconnects mid tool call (the SDK throws on sending the late reply), and the
+# loop turns that into a 1-second blip instead of a dead server. `eic-mcp down`
+# still stops everything (the loop lives in the same setsid process group).
 # Installed command and installed bridge are preferred; both fall back to the
 # bootstrapped checkout / npx. Resolution happens at exec time INSIDE the
 # container, so it never depends on the host PATH.
@@ -190,7 +194,7 @@ run_cmd() {  # echo the shell command that runs server $1 as an MCP-over-HTTP se
   local n=$1 port envfn env=""
   port=${SRV_PORT[$n]}; envfn=${SRV_ENV[$n]}
   [ -n "$envfn" ] && env="$($envfn) && "
-  echo "${env}$NPM_CACHE && STDIO=\"\$(command -v '${SRV_CMD[$n]}' || echo \"$(local_stdio "$n")\")\" && if command -v supergateway >/dev/null 2>&1; then exec supergateway --stdio \"\$STDIO\" --port $port $BRIDGE_ARGS; else exec npx -y supergateway --stdio \"\$STDIO\" --port $port $BRIDGE_ARGS; fi"
+  echo "${env}$NPM_CACHE && STDIO=\"\$(command -v '${SRV_CMD[$n]}' || echo \"$(local_stdio "$n")\")\" && while :; do if command -v supergateway >/dev/null 2>&1; then supergateway --stdio \"\$STDIO\" --port $port $BRIDGE_ARGS; else npx -y supergateway --stdio \"\$STDIO\" --port $port $BRIDGE_ARGS; fi; echo \"[eic-mcp] bridge exited (\$?) — restarting in 1s\" >&2; sleep 1; done"
 }
 
 # ---- commands ---------------------------------------------------------------
