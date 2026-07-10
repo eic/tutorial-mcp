@@ -1,16 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" width="96" height="64" role="img" aria-label="a plain gold ring">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" width="120" height="80" role="img" aria-label="gold ring engraved with the words EIC collider">
   <defs>
     <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffe9a8"/>
-      <stop offset="45%" stop-color="#e8b64c"/>
-      <stop offset="100%" stop-color="#9c6b1f"/>
+      <stop offset="0%" stop-color="#ffedb0"/>
+      <stop offset="45%" stop-color="#e9b64d"/>
+      <stop offset="100%" stop-color="#96661e"/>
     </linearGradient>
     <radialGradient id="glow" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#ffd76e" stop-opacity="0.35"/>
       <stop offset="100%" stop-color="#ffd76e" stop-opacity="0"/>
     </radialGradient>
+    <path id="band" d="M 20,40 A 40,17 0 0 1 100,40" fill="none"/>
   </defs>
-  <ellipse cx="48" cy="32" rx="44" ry="26" fill="url(#glow)"/>
-  <ellipse cx="48" cy="32" rx="30" ry="13" fill="none" stroke="url(#gold)" stroke-width="8"/>
-  <ellipse cx="48" cy="30.5" rx="30" ry="13" fill="none" stroke="#fff3c9" stroke-width="1.6" opacity="0.8"/>
+  <ellipse cx="60" cy="40" rx="56" ry="34" fill="url(#glow)"/>
+  <ellipse cx="60" cy="40" rx="40" ry="17" fill="none" stroke="url(#gold)" stroke-width="14"/>
+  <ellipse cx="60" cy="33.5" rx="40" ry="17" fill="none" stroke="#fff3c9" stroke-width="1.4" opacity="0.75"/>
+  <ellipse cx="60" cy="47" rx="40" ry="17" fill="none" stroke="#6b4212" stroke-width="1.2" opacity="0.55"/>
+  <text font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="bold"
+        font-size="9.5" letter-spacing="1.2" fill="#8a3b0e" opacity="0.9">
+    <textPath href="#band" startOffset="50%" text-anchor="middle">⌁ EIC ✦ COLLIDER ⌁</textPath>
+  </text>
 </svg>

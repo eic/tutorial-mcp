@@ -26,7 +26,7 @@ everything below runs **inside** it. (New to ePIC? Start with the
 
 ## 2. Choose an AI assistant
 
-![a plain gold ring](fig/one-ring.svg){alt='a plain gold ring' width='72px'}
+![](fig/one-ring.svg){alt='gold ring engraved with the words EIC collider' width='96px'}
 
 **One assistant to rule them all?** Fortunately not: any **agentic** assistant — one that can
 read/write your files and run commands, not just emit text — works, and MCP keeps you free to
