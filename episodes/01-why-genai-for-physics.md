@@ -57,12 +57,10 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Distinguish a chat completion from an agentic loop.
-- Name the four harness parts: model, context, tools, loop.
-- Describe the four loop levels: agent → verification → operation → improvement.
-- List the harness extensions (MCP, subagents, hooks, …).
-- Explain why verification beats model confidence.
-- Justify MCP as the basis for a portable workflow.
+- Trace one pass of the agent loop for a physics task, naming what enters the context at each step.
+- Draft acceptance criteria precise enough that a grader — human or agent — can apply them.
+- Place a given automation (a format-on-edit hook, a nightly report, a prompt tweak) at the right loop level.
+- Choose between a tool, a skill, and a subagent when adding a new capability.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 

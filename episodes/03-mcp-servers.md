@@ -55,17 +55,17 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Describe MCP as a client–server tool protocol.
-- List the uproot tools and the `execute_kernel` sandbox limits.
-- Start the servers (`eic-mcp up`) and connect opencode.
-- Drive the assistant to find data, histogram a branch, and verify.
+- Bring the servers up, check them, and read a log when one misbehaves (`eic-mcp up`/`status`/`logs`).
+- Generate the connection file for your own client with `eic-mcp config`.
+- Discover a real DIS dataset by prompting, without hard-coding names or paths.
+- Judge which returned quantities are worth verifying, and against what.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## The interoperability problem
 
 Tools are the only channel through which an assistant acts
-([Episode 1](01-why-genai-for-physics.md)). Historically each assistant needed bespoke integrations for each data source — an N×M problem. The
+([Episode 1](01-why-genai-for-physics.md)). The
 **Model Context Protocol (MCP)** standardises the interface: implement a tool once as a **server**,
 and any MCP-compliant **client** (the assistant) can use it.
 
@@ -184,11 +184,18 @@ The MCP servers always run *inside* eic-shell, but your AI client doesn't have t
   The `http://127.0.0.1:910x/mcp` URLs work identically from inside the container and from the
   host — install your client on the host, run `eic-mcp config <client>` (the launcher finds your
   eic_xl image automatically), and connect.
-* **macOS:** eic-shell runs via Docker, whose generated launch script publishes no ports, so the
-  endpoints are *not* reachable from the host by default. Simplest fix: run the client inside
-  eic-shell (opencode is a terminal program and installs fine in the container). Alternatively, add
-  `-p 127.0.0.1:9101-9104:9101-9104` to the `docker run` line of your `eic-shell` script and
-  restart it.
+* **macOS:** your `./eic-shell` script runs Docker under the hood, and it publishes no ports, so
+  the endpoints are *not* reachable from the host by default. Simplest fix: run the client inside
+  eic-shell (opencode is a terminal program and installs fine in the container). Otherwise, either
+  open the `eic-shell` script the installer generated and add
+  `-p 127.0.0.1:9101-9104:9101-9104` to its `docker run` line, or start the container with the
+  full command yourself (this is what `./eic-shell` runs, plus the port flag):
+
+  ```bash
+  docker run --platform linux/amd64 -p 127.0.0.1:9101-9104:9101-9104 \
+    -v /Users:/Users -v /Volumes:/Volumes -v /tmp:/tmp -w=$PWD -it --rm \
+    -e EIC_SHELL_PREFIX=$PWD/local eicweb/eic_xl:nightly eic-shell
+  ```
 
 :::::::::::::::
 
@@ -301,7 +308,7 @@ ReconstructedChargedParticles collection:
 ```
 
 The names are read from the file, not inferred — eliminating the schema-hallucination failure mode
-from Episode 1.
+from Episode 1. These *are* the branches you're looking for.
 
 :::::::::::::::
 

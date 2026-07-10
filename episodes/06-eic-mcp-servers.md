@@ -54,9 +54,9 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Locate the EIC MCP servers and what each fronts.
-- Use the DISpatcher bot for zero-setup, tool-grounded questions.
-- Recognise two harness patterns worth reusing: tiered tool exposure and fabrication checks.
+- Decide when to run the servers yourself and when the hosted bot is enough.
+- Ask DISpatcher a tool-grounded question about data, software, or production.
+- Reuse tiered tool exposure and fabrication checks in your own harness.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -115,7 +115,7 @@ flowchart TB
 
 ## Current status
 
-Snapshot from mid-2026. uproot/xrootd/rucio/zenodo work today and you ran three of them yourself; the LXR MCP server exists but is deployed inside the BNL-hosted services rather than as a package you run locally; indico is maintained by an individual, not the `eic` org; the production tools are reachable through the bot. See the [eic GitHub organisation](https://github.com/eic) and the [ePIC dev-cloud](https://epic-devcloud.org/doc/) for the current set.
+uproot/xrootd/rucio/zenodo work today and you ran three of them yourself; the LXR MCP server exists but is deployed inside the BNL-hosted services rather than as a package you run locally; indico is maintained by an individual, not the `eic` org; the production tools are reachable through the bot. See the [eic GitHub organisation](https://github.com/eic) and the [ePIC dev-cloud](https://epic-devcloud.org/doc/) for the current set.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -199,7 +199,7 @@ In Episode 3 you configured your own client. The collaboration also provides a h
 The bot runs a small, low-cost model, which exposes at scale the failure modes this lesson warned about. Two of its countermeasures apply to any harness:
 
 * **Tiered tool exposure.** Tool use degrades past roughly 30–50 tools, and the bot has ~100. So its system prompt carries only a compact list of everything; a harness loads full descriptions for just the tools each request needs; the bot can still reach the rest on demand. The same context-economy principle as skills' progressive loading in [Episode 4](04-skills.md).
-* **The fabrication check.** The bot's biggest problem is making answers up instead of calling a tool. The harness hands the model a secret token **only when a tool is actually called** and requires it in the response; no token, and the user is warned the answer was probably fabricated. Verification over confidence ([Episode 1](01-why-genai-for-physics.md)), enforced mechanically.
+* **The fabrication check.** The bot's biggest problem is making answers up instead of calling a tool — cheerfully reporting "this is fine" when nothing was actually checked. The harness hands the model a secret token **only when a tool is actually called** and requires it in the response; no token, and the user is warned the answer was probably fabricated. Verification over confidence ([Episode 1](01-why-genai-for-physics.md)), enforced mechanically.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -223,6 +223,6 @@ The direction of travel is what this lesson taught in miniature: centrally hoste
 - The DISpatcher bot is the zero-setup path: ~100 MCP tools behind a Mattermost account, no client configuration at all.
 - corun-ai/codoc-ai is the long-latency complement: high-level models, preserved and expert-curated outputs, grounded in nightly-indexed code knowledge.
 - Patterns to reuse: tiered tool exposure (context economy at scale) and the secret-token fabrication check (verification over confidence, enforced).
-- This catalogue is a mid-2026 snapshot — check the eic GitHub organisation and the ePIC dev-cloud for the current list.
+- This catalogue dates quickly — check the eic GitHub organisation and the ePIC dev-cloud for the current list.
 
 :::::::::::::::::::::::::::::::::::::::::::::

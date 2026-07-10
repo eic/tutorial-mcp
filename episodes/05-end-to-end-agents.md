@@ -55,9 +55,9 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Run the full chain (resolve → histogram → fit → report) from one request.
-- Scale the kernel from one file to the full sample.
-- Extract the Λ⁰ yield and apply an audit checklist.
+- Set up any MCP client for the end-to-end run in three commands.
+- Pick the right kernel tool for the sample size (`execute_kernel` vs `execute_kernel_dataset`).
+- Sign off — or reject — an agent-produced yield using the audit checklist.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 

@@ -49,6 +49,6 @@ same peak in uproot, RDataFrame, TTreeReader, and PODIO.
 
 ## Currency of the market table
 
-The Setup page's assistant table is a dated snapshot (mid-2026). Pricing and free tiers change often —
+The Setup page's assistant table dates quickly. Pricing and free tiers change often —
 check current vendor docs before teaching, and update the table. The *MCP* portability message is
 the stable part.

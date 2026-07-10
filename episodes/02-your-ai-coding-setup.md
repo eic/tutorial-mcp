@@ -34,8 +34,8 @@ exercises: 0
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Explain the p π⁻ peak and its combinatorial background.
-- Identify the EDM4eic collections, branches, and units.
+- Compute m(p, π) by hand from the four momentum branches and the PDG masses.
+- Sketch the expected spectrum — peak position, width scale, background shape — before touching data.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 

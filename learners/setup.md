@@ -2,10 +2,10 @@
 title: Setup
 ---
 
-This lesson runs inside **eic-shell**, the ePIC software container. Install an AI assistant (your
-choice), then one command starts the tool servers. Nothing beyond eic-shell — no grid certificate,
-no data download — the MCP servers reuse the container's own `uproot`, `xrdfs`, and `rucio`
-(already logged in to the shared read-only `eicread` account).
+Everything runs inside **eic-shell**. Install an AI assistant (your choice), get `eic-mcp`, and
+one command starts the tool servers. Nothing else — no grid certificate, no data download — the
+MCP servers reuse the container's own `uproot`, `xrdfs`, and `rucio` (already logged in to the
+shared read-only `eicread` account).
 
 ::::::::::::::::::::::::::::::::::::::::::::: checklist
 
@@ -13,26 +13,24 @@ no data download — the MCP servers reuse the container's own `uproot`, `xrdfs`
 
 * [ ] **eic-shell** working (`./eic-shell` drops you into the container).
 * [ ] One **AI assistant** installed and connected to a free model.
+* [ ] **`eic-mcp`** on your `PATH` (one `git clone`).
 * [ ] **`eic-mcp up`** starts the three MCP servers (the first run bootstraps them automatically).
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## 1. eic-shell
 
-If you don't have it yet, follow the ePIC
-[setup guide](https://eic.github.io/tutorial-setting-up-environment/), then:
-
-```bash
-./eic-shell
-```
-
-Everything below runs **inside** that shell.
+You already use it every day, so just make sure `./eic-shell` drops you into the container —
+everything below runs **inside** it. (New to ePIC? Start with the
+[environment setup guide](https://eic.github.io/tutorial-setting-up-environment/).)
 
 ## 2. Choose an AI assistant
 
-You need one. Any **agentic** assistant — one that can read/write your files and run commands, not
-just emit text — works; the method is identical. This is a mid-2026 snapshot, so verify current
-terms.
+![a plain gold ring](fig/one-ring.svg){alt='a plain gold ring' width='72px'}
+
+**One assistant to rule them all?** Fortunately not: any **agentic** assistant — one that can
+read/write your files and run commands, not just emit text — works, and MCP keeps you free to
+switch. Terms and free tiers change quickly, so verify before relying on them.
 
 | Tool | Interface | Free access |
 | --- | --- | --- |
@@ -62,8 +60,9 @@ This lesson uses **[opencode](https://opencode.ai)** — terminal, native MCP, f
 
 ```bash
 curl -fsSL https://opencode.ai/install | bash
-opencode auth login    # pick Google Gemini (free tier), GitHub Models, or a local Ollama model
 ```
+
+The free hosted models work out of the box — no key, no login.
 
 Prefer an editor? Install [VS Code](https://code.visualstudio.com/) plus the
 [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and
@@ -83,8 +82,14 @@ shows code, switch on agent/edit mode — executing, not suggesting, is what thi
 
 ## 4. Start the MCP servers — `eic-mcp up`
 
-The lesson ships a launcher, `bin/eic-mcp`, that runs the three servers (uproot, xrootd, rucio)
-inside eic-shell:
+The launcher lives in its own repository; clone it once and put it on your `PATH`:
+
+```bash
+git clone https://github.com/eic/eic-mcp
+export PATH=$PWD/eic-mcp/bin:$PATH    # add this line to your shell profile
+```
+
+It runs the three servers (uproot, xrootd, rucio) inside eic-shell:
 
 ```bash
 eic-mcp up
