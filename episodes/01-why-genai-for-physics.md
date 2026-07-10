@@ -1,6 +1,6 @@
 ---
 title: "Generative AI as an agentic research tool"
-teaching: 40
+teaching: 45
 exercises: 10
 ---
 
@@ -51,6 +51,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 - What are the parts of an LLM "harness"?
 - How is the harness extended (MCP, subagents, hooks, …)?
 - How do we get trustworthy results from a stochastic model?
+- What loops sit around the agent loop, and what does each add?
 - Why build on an open protocol, not one product?
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -61,6 +62,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 - Name the four harness parts: model, context, tools, loop.
 - List the harness extensions (MCP, subagents, hooks, …).
 - Explain why verification beats model confidence.
+- Describe the loop stack: agent → verification → operation → improvement.
 - Justify MCP as the basis for a portable workflow.
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -209,6 +211,62 @@ So favour tools that return compact, inspectable quantities — counts, edges, f
 keep a record of what was run. Reproducibility and provenance are the criteria by which an automated
 result earns trust.
 
+## Loops around the loop
+
+Verification generalises. The agent loop is the *innermost* of a stack of feedback loops; each
+outer loop wraps the one inside it, and each adds a different kind of value. Most attention goes to
+prompt wording; in practice the leverage is in designing these loops.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
+flowchart TB
+    accTitle: {The loop stack}
+    accDescr: {The loop stack}
+    subgraph L4["④ improvement loop — refine the harness from what actually happened"]
+        subgraph L3["③ operation loop — run on schedules and events, not keystrokes"]
+            subgraph L2["② verification loop — grade the result, feed failures back"]
+                L1["① agent loop<br/>propose → execute → observe"]:::core
+            end
+        end
+    end
+    classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
+    style L2 fill:#e6f7ed20,stroke:#2f9e44,stroke-width:1.5px;
+    style L3 fill:#fff4e020,stroke:#f08c00,stroke-width:1.5px;
+    style L4 fill:#f3e8ff20,stroke:#7048e8,stroke-width:1.5px;
+```
+
+* **① The agent loop** — the harness above: one task, one context, interactive. Everything in
+  Episodes 2–3 lives here.
+* **② The verification loop** — a *grader* around the agent: the result is checked against
+  explicit acceptance criteria before it is accepted, and a failure goes back in as feedback for
+  another attempt. Grading costs time and tokens; it is the right trade wherever correctness
+  matters more than speed — in physics, almost always. In this lesson the grader is the skill's
+  **success criteria** (peak position, width, $\chi^2/\mathrm{ndf}$ —
+  [Episode 4](04-skills.md)); at collaboration scale it is mechanical, like the secret-token
+  fabrication check in [Episode 6](06-eic-mcp-servers.md).
+* **③ The operation loop** — the agent stops being something you invoke and becomes a *component*:
+  triggered by a schedule, a finished job, a new pull request. Hooks and monitors are the
+  entry-level version; Episode 6's documentation runs regenerated against current code are the
+  collaboration-scale version.
+* **④ The improvement loop** — periodically look at what the agent actually did — transcripts,
+  failed fits, wrong tool choices — and feed that back into the *harness*: sharpen `AGENTS.md`,
+  tighten a skill's criteria, add the missing tool. Each pass around the outer loop makes every
+  inner loop more effective, which is where the compounding gain lives.
+
+::::::::::::::::::::::::::::::::::::::::::::: callout
+
+## Where a human belongs in each loop
+
+Autonomy does not mean absence of judgement — each loop has a natural checkpoint: approving a
+sensitive tool call (①), signing off a graded result (②), reviewing what runs unattended (③),
+and deciding which harness changes to keep (④). Put yourself at the checkpoints, not in the
+middle of the loop.
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+In this lesson you will build ① by hand, encode ② as a skill, and see ③ and ④ running at
+collaboration scale in Episode 6.
+
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
 ## Discussion: what does the loop buy you?
@@ -264,7 +322,7 @@ assistant on the [Setup](../learners/setup.md) page.
 - A harness has four parts: the model, the context window, a set of typed tools, and a control loop.
 - Modern assistants extend the loop with MCP tools, subagents, LSP code intelligence, hooks, and monitors; plugins bundle these to share.
 - LLM output is stochastic and must be treated as a hypothesis to be checked against data, fits, and known values.
-- The agentic loop makes self-verification possible: the assistant can run the analysis and react to the result.
+- The agent loop is the innermost of a stack: a verification loop grades results against acceptance criteria, an operation loop runs the agent on events and schedules, and an improvement loop refines the harness itself.
 - Building on the open Model Context Protocol keeps tools portable across assistants and supports reproducibility.
 
 :::::::::::::::::::::::::::::::::::::::::::::
