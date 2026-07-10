@@ -113,7 +113,7 @@ flowchart TB
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
-## Status, honestly
+## Current status
 
 Snapshot from mid-2026. uproot/xrootd/rucio/zenodo work today and you ran three of them yourself; the LXR MCP server exists but is deployed inside the BNL-hosted services rather than as a package you run locally; indico is maintained by an individual, not the `eic` org; the production tools are reachable through the bot. See the [eic GitHub organisation](https://github.com/eic) and the [ePIC dev-cloud](https://epic-devcloud.org/doc/) for the current set.
 
@@ -178,7 +178,7 @@ Snapshot from mid-2026. uproot/xrootd/rucio/zenodo work today and you ran three 
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
-## LXR-mcp — the LLM's eyes on the code base  ·  *available (BNL-hosted)*
+## LXR-mcp — source cross-reference for the assistant  ·  *available (BNL-hosted)*
 
 The EIC runs an [LXR source cross-reference browser](https://eic-code-browser.sdcc.bnl.gov/lxr/source) over 55+ ePIC and related repositories, **re-indexed nightly** against the head of every repository. Its MCP server lets an assistant find where any symbol is defined and used, search the whole code base, and read source — so software answers are grounded in *current* code, not the model's training data (the same schema-hallucination cure you saw in Episode 3, applied to source). Paired with the standard **GitHub MCP** for PRs, commits, and issues.
 
@@ -186,7 +186,7 @@ The EIC runs an [LXR source cross-reference browser](https://eic-code-browser.sd
 
 ## Zero setup: the DISpatcher bot
 
-You spent Episode 3 configuring your own client. The collaboration also runs the opposite trade-off: **DISpatcher**, a Mattermost bot in an open channel — [chat.epic-eic.org → `dispatcher`](https://chat.epic-eic.org/main/channels/dispatcher) — that anyone in ePIC can use, in the channel or by DM. All the complexity you just learned about lives in its back end; you need nothing but your Mattermost account. It is wired to **roughly 100 MCP tools**: production diagnostics (PanDA — why did my jobs fail?), the physics samples in production (PCS), the data tools you used in this lesson (rucio, xrootd, uproot), software knowledge (LXR + GitHub), and documents (Zenodo, plus a documentation RAG).
+In Episode 3 you configured your own client. The collaboration also provides a hosted alternative: **DISpatcher**, a Mattermost bot in an open channel — [chat.epic-eic.org → `dispatcher`](https://chat.epic-eic.org/main/channels/dispatcher) — that anyone in ePIC can use, in the channel or by DM. All the complexity you just learned about lives in its back end; you need nothing but your Mattermost account. It is wired to **roughly 100 MCP tools**: production diagnostics (PanDA — why did my jobs fail?), the physics samples in production (PCS), the data tools you used in this lesson (rucio, xrootd, uproot), software knowledge (LXR + GitHub), and documents (Zenodo, plus a documentation RAG).
 
 ```{.ai-prompt}
 (in the dispatcher channel)  Summarise the physics tags in the PCS — which processes are covered, and which tags are still draft?
@@ -194,9 +194,9 @@ You spent Episode 3 configuring your own client. The collaboration also runs the
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
-## Two harness patterns worth stealing
+## Two reusable harness patterns
 
-The bot runs a small, cheap model, which exposes at scale the failure modes this lesson warned about — with two reusable responses:
+The bot runs a small, low-cost model, which exposes at scale the failure modes this lesson warned about. Two of its countermeasures apply to any harness:
 
 * **Tiered tool exposure.** Tool use degrades past roughly 30–50 tools, and the bot has ~100. So its system prompt carries only a compact list of everything; a harness loads full descriptions for just the tools each request needs; the bot can still reach the rest on demand. The same context-economy principle as skills' progressive loading in [Episode 4](04-skills.md).
 * **The fabrication check.** The bot's biggest problem is making answers up instead of calling a tool. The harness hands the model a secret token **only when a tool is actually called** and requires it in the response; no token, and the user is warned the answer was probably fabricated. Verification over confidence ([Episode 1](01-why-genai-for-physics.md)), enforced mechanically.
@@ -211,7 +211,7 @@ The bot answers in seconds from a small model, and its answers recede into chat 
 * documentation pages re-runnable against current code;
 * one-click review of any open ePIC pull request.
 
-Anyone can submit runs and comment — ask Torre for an account. ([`eic/corun-mcp-server`](https://github.com/eic/corun-mcp-server) wraps it as an MCP server, so your own assistant can browse and submit too.) The services currently run on the open internet with LLM costs on personal accounts — deliberately early, moving to lab hosting later.
+Anyone can submit runs and comment — ask Torre for an account. ([`eic/corun-mcp-server`](https://github.com/eic/corun-mcp-server) wraps it as an MCP server, so your own assistant can browse and submit too.) The services are at an early stage, currently hosted on the open internet; a move to lab hosting is planned.
 
 ## Where this is going
 
@@ -222,7 +222,7 @@ The direction of travel is what this lesson taught in miniature: centrally hoste
 - The EIC exposes its infrastructure through MCP: analysis (uproot), data (xrootd, rucio), records (zenodo, indico), code (LXR + GitHub), and production (PanDA, PCS) — three of which you ran yourself.
 - The DISpatcher bot is the zero-setup path: ~100 MCP tools behind a Mattermost account, no client configuration at all.
 - corun-ai/codoc-ai is the long-latency complement: high-level models, preserved and expert-curated outputs, grounded in nightly-indexed code knowledge.
-- Patterns to steal: tiered tool exposure (context economy at scale) and the secret-token fabrication check (verification over confidence, enforced).
+- Patterns to reuse: tiered tool exposure (context economy at scale) and the secret-token fabrication check (verification over confidence, enforced).
 - This catalogue is a mid-2026 snapshot — check the eic GitHub organisation and the ePIC dev-cloud for the current list.
 
 :::::::::::::::::::::::::::::::::::::::::::::
