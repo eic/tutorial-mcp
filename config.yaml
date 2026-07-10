@@ -35,7 +35,7 @@ life_cycle: 'beta'
 license: 'CC-BY 4.0'
 
 # Link to the source repository for this lesson
-source: 'https://github.com/aprozo/tutorial-mcp'
+source: 'https://github.com/eic/tutorial-mcp'
 
 # Default branch of your lesson
 branch: 'main'

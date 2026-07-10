@@ -153,7 +153,7 @@ Don't copy your rules into a second file; two copies drift within a week. **Keep
 Follow the project rules in AGENTS.md.
 ```
 
-Now every assistant reads the same source of truth. Copy the ready-made bridge: [`copilot-instructions.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
+Now every assistant reads the same source of truth. Copy the ready-made bridge: [`copilot-instructions.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
 
 ## SKILL.md — a named procedure
 
@@ -218,7 +218,7 @@ An assistant with a native skill mechanism reads skills from a `skills/` directo
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-Copy both example files: [`files/skills/AGENTS.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/AGENTS.md) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/aprozo/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md).
+Copy both example files: [`files/skills/AGENTS.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md).
 
 ## When to use which
 

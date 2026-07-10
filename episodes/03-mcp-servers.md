@@ -144,7 +144,7 @@ $ eic-mcp config opencode > opencode.jsonc
 ```
 
 which prints the three server URLs
-(committed as the example [`files/mcp-config/opencode.jsonc`](https://github.com/aprozo/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc)):
+(committed as the example [`files/mcp-config/opencode.jsonc`](https://github.com/eic/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc)):
 
 ```json
 {
