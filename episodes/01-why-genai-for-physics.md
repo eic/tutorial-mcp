@@ -49,9 +49,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 - How does an agentic assistant differ from a chat model?
 - What are the parts of an LLM "harness"?
-- How is the harness extended (MCP, subagents, hooks, …)?
-- How do we get trustworthy results from a stochastic model?
 - What loops sit around the agent loop, and what does each add?
+- How do we get trustworthy results from a stochastic model?
 - Why build on an open protocol, not one product?
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -60,9 +59,9 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 - Distinguish a chat completion from an agentic loop.
 - Name the four harness parts: model, context, tools, loop.
+- Describe the four loop levels: agent → verification → operation → improvement.
 - List the harness extensions (MCP, subagents, hooks, …).
 - Explain why verification beats model confidence.
-- Describe the loop stack: agent → verification → operation → improvement.
 - Justify MCP as the basis for a portable workflow.
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -96,25 +95,32 @@ learning for reconstruction or particle identification. The object of study is t
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## Anatomy of a harness
+That loop is the first of **four**, each wrapped around the one before it. This episode walks up
+the stack; the rest of the lesson has you build the inner two yourself and shows the outer two
+running at collaboration scale.
 
-A model plus the machinery that makes it useful is a **harness**, with four components.
+## Level 1 — the agent loop
+
+The basic cycle could not be simpler: the model calls a tool, looks at what came back, and decides
+whether it is done.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
-    accTitle: {AI agent harness}
-    accDescr: {AI agent harness}
-    U["Task specification"]:::user --> M
-    C["Context window<br/>files · history · instructions"]:::core --> M["Model<br/>LLM: reasoning + generation"]:::core
-    M -->|"proposes a typed tool call"| T["Tools<br/>read/write files · run code · query a server"]:::tool
-    T -->|"observation appended to context"| C
-    M -->|"stopping condition met"| R["Result + provenance"]:::out
+    accTitle: {Level 1 the agent loop}
+    accDescr: {Level 1 the agent loop}
+    Q["task"]:::user --> M["model"]:::core
+    M -->|"tool call"| T["tools<br/>read files · run code · query a server"]:::tool
+    T -->|"result appended to context"| D{"task<br/>complete?"}:::core
+    D -->|"no"| M
+    D -->|"yes"| R["result + provenance"]:::out
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
     classDef user fill:#f1f3f5,stroke:#868e96,stroke-width:1.5px,color:#212529;
 ```
+
+A model plus the machinery that runs this cycle is a **harness**, and it has exactly four parts:
 
 * **Model** — reasoning and code generation. *Interchangeable*: provider and model are an
   implementation choice, not part of the method.
@@ -136,7 +142,7 @@ misplaced. A single completion cannot, because it never observes a consequence o
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## Extending the harness: the modern toolkit
+### Extending the harness: the modern toolkit
 
 Production assistants keep that small core and surround it with standard extension points. The
 vocabulary recurs in every modern assistant's documentation.
@@ -187,85 +193,85 @@ flowchart TB
 | Monitors | watch & react to background work | mentioned for long jobs |
 | Plugins | bundle & share all of the above | the collaboration's distribution model |
 
-::::::::::::::::::::::::::::::::::::::::::::: callout
+## Level 2 — the verification loop
 
-## Plugins are how this becomes shareable
-
-A *plugin* is a container for the other components — commands, subagents, skills, hooks, MCP
-servers — so an entire workflow installs in one step. For a collaboration, that is the path from "I
-configured my assistant" to "everyone runs the same vetted setup."
-
-:::::::::::::::::::::::::::::::::::::::::::::
-
-## Correctness comes from verification, not confidence
-
-All this machinery serves one thing: results you can trust. That is hard, because an LLM is
-stochastic — identical prompts can yield different outputs, and a confident answer is not evidence
-of a correct one.
-
-The discipline: treat every model output as a **hypothesis**, accepted only after checking it
-against something external — the data, a fit statistic, a known physical value, or an independent
-implementation. The agentic loop makes such checks cheap and automatic.
-
-So favour tools that return compact, inspectable quantities — counts, edges, fit parameters — and
-keep a record of what was run. Reproducibility and provenance are the criteria by which an automated
-result earns trust.
-
-## Loops around the loop
-
-Verification generalises. The agent loop is the *innermost* of a stack of feedback loops; each
-outer loop wraps the one inside it, and each adds a different kind of value. Most attention goes to
-prompt wording; in practice the leverage is in designing these loops.
+A level-1 agent stops when *it* thinks the task is complete — and an LLM is stochastic: identical
+prompts can yield different outputs, and a confident answer is not evidence of a correct one. The
+fix is a second loop around the first: a **grader** checks the agent's result against explicit
+acceptance criteria before it is accepted, and a failure goes back in as feedback for another
+attempt.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
-flowchart TB
-    accTitle: {The loop stack}
-    accDescr: {The loop stack}
-    subgraph L4["④ improvement loop — refine the harness from what actually happened"]
-        subgraph L3["③ operation loop — run on schedules and events, not keystrokes"]
-            subgraph L2["② verification loop — grade the result, feed failures back"]
-                L1["① agent loop<br/>propose → execute → observe"]:::core
-            end
-        end
-    end
+flowchart TD
+    accTitle: {Level 2 the verification loop}
+    accDescr: {Level 2 the verification loop}
+    A["agent loop  ①"]:::core -->|"draft result"| G["grader<br/>explicit success criteria"]:::tool
+    G --> P{"pass?"}:::core
+    P -->|"no — feedback into context"| A
+    P -->|"yes"| R["accepted result"]:::out
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
-    style L2 fill:#e6f7ed20,stroke:#2f9e44,stroke-width:1.5px;
-    style L3 fill:#fff4e020,stroke:#f08c00,stroke-width:1.5px;
-    style L4 fill:#f3e8ff20,stroke:#7048e8,stroke-width:1.5px;
+    classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
+    classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
 ```
 
-* **① The agent loop** — the harness above: one task, one context, interactive. Everything in
-  Episodes 2–3 lives here.
-* **② The verification loop** — a *grader* around the agent: the result is checked against
-  explicit acceptance criteria before it is accepted, and a failure goes back in as feedback for
-  another attempt. Grading costs time and tokens; it is the right trade wherever correctness
-  matters more than speed — in physics, almost always. In this lesson the grader is the skill's
-  **success criteria** (peak position, width, $\chi^2/\mathrm{ndf}$ —
-  [Episode 4](04-skills.md)); at collaboration scale it is mechanical, like the secret-token
-  fabrication check in [Episode 6](06-eic-mcp-servers.md).
-* **③ The operation loop** — the agent stops being something you invoke and becomes a *component*:
-  triggered by a schedule, a finished job, a new pull request. Hooks and monitors are the
-  entry-level version; Episode 6's documentation runs regenerated against current code are the
-  collaboration-scale version.
-* **④ The improvement loop** — periodically look at what the agent actually did — transcripts,
-  failed fits, wrong tool choices — and feed that back into the *harness*: sharpen `AGENTS.md`,
-  tighten a skill's criteria, add the missing tool. Each pass around the outer loop makes every
-  inner loop more effective, which is where the compounding gain lives.
+The discipline behind it: treat every model output as a **hypothesis**, accepted only after
+checking it against something external — the data, a fit statistic, a known physical value, or an
+independent implementation. For the $\Lambda^0$ measurement the criteria are physical and
+checkable: $|\mu - 1.115683\,\mathrm{GeV}| < 5\,\mathrm{MeV}$, $\sigma$ consistent with detector
+resolution, $\chi^2/\mathrm{ndf}$ of order 1. In [Episode 4](04-skills.md) you will write exactly
+this grader into the lambda-fit skill's **success criteria** — and a passing agent reports the
+numbers, while a failing one must report the failure, not a result.
+
+Grading costs time and tokens. It is the right trade wherever correctness matters more than speed —
+in physics, almost always. So favour tools that return compact, inspectable quantities — counts,
+edges, fit parameters — and keep a record of what was run: reproducibility and provenance are the
+criteria by which an automated result earns trust. At collaboration scale the grader can be
+mechanical, like the secret-token fabrication check in [Episode 6](06-eic-mcp-servers.md).
+
+## Level 3 — the operation loop
+
+With verification in place, the agent no longer needs you to press enter. A third loop makes it a
+*component*: an event — a schedule, a finished production job, a new pull request — triggers the
+agent, its verified output updates something (a report, a documentation page, an alert), and the
+system goes back to waiting.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
+flowchart LR
+    accTitle: {Level 3 the operation loop}
+    accDescr: {Level 3 the operation loop}
+    E["event<br/>schedule · finished job · new PR"]:::pkg --> A["agent + verification<br/>① + ②"]:::core
+    A --> U["system update<br/>report · doc page · alert"]:::out
+    U -.->|"wait for the next event"| E
+    classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
+    classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
+    classDef pkg fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;
+```
+
+Hooks and monitors (above) are the entry-level version of this. The collaboration-scale version is
+in [Episode 6](06-eic-mcp-servers.md): documentation regenerated on schedule against the current
+code base, and pull-request reviews triggered per PR.
+
+## Level 4 — the improvement loop, in a word
+
+There is one more loop, around everything: periodically look at what the agent *actually did* —
+transcripts, failed fits, wrong tool choices — and feed that back into the **harness itself**:
+sharpen `AGENTS.md`, tighten a skill's success criteria, add the missing tool. Levels 1–3 make the
+agent do the work; level 4 makes the agent *better at* the work, which is where the gains compound.
+You will practise a small version of it every time a prompt in this lesson goes wrong and you fix
+the instructions instead of retyping the request.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Where a human belongs in each loop
 
-Autonomy does not mean absence of judgement — each loop has a natural checkpoint: approving a
+Autonomy does not mean absence of judgement — each level has a natural checkpoint: approving a
 sensitive tool call (①), signing off a graded result (②), reviewing what runs unattended (③),
 and deciding which harness changes to keep (④). Put yourself at the checkpoints, not in the
 middle of the loop.
 
 :::::::::::::::::::::::::::::::::::::::::::::
-
-In this lesson you will build ① by hand, encode ② as a skill, and see ③ and ④ running at
-collaboration scale in Episode 6.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
@@ -282,7 +288,8 @@ agentic loop removes.
 2. **Unvalidated fit.** A one-shot model cannot know whether its fit converged or where the peak
    landed. An agent can execute the fit, read $\mu$, $\sigma$, and $\chi^2/\mathrm{ndf}$, and iterate.
 
-Both are the same principle: conditioning on observations beats conditioning on the prior.
+Both are the same principle: conditioning on observations beats conditioning on the prior. The
+first is fixed at level 1 (observe, don't guess), the second at level 2 (grade, don't trust).
 
 :::::::::::::::
 
@@ -319,10 +326,12 @@ assistant on the [Setup](../learners/setup.md) page.
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
 - A conversational model returns text; an agentic harness executes tools and conditions on their output.
-- A harness has four parts: the model, the context window, a set of typed tools, and a control loop.
-- Modern assistants extend the loop with MCP tools, subagents, LSP code intelligence, hooks, and monitors; plugins bundle these to share.
-- LLM output is stochastic and must be treated as a hypothesis to be checked against data, fits, and known values.
-- The agent loop is the innermost of a stack: a verification loop grades results against acceptance criteria, an operation loop runs the agent on events and schedules, and an improvement loop refines the harness itself.
+- Level 1, the agent loop, runs in a harness with four parts: the model, the context window, a set of typed tools, and a control loop — extended by MCP tools, subagents, LSP, hooks, and monitors, with plugins to bundle and share.
+- Level 2 wraps the agent in a verification loop: a grader checks each result against explicit success criteria, because stochastic output must be treated as a hypothesis, not an answer.
+- Level 3 runs the verified agent on events and schedules; level 4 feeds what actually happened back into the harness, where gains compound.
 - Building on the open Model Context Protocol keeps tools portable across assistants and supports reproducibility.
 
 :::::::::::::::::::::::::::::::::::::::::::::
+
+<small>The four-level loop schematics are adapted from
+[*The Art of Loop Engineering*](https://www.langchain.com/blog/the-art-of-loop-engineering).</small>
