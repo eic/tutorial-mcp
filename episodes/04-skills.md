@@ -88,7 +88,7 @@ flowchart TD
 
 ## AGENTS.md — project context
 
-`AGENTS.md` is plain Markdown at your project root (subdirectories may override it for files beneath them). opencode, Cursor, and others read it automatically; where a tool uses a different name (Copilot's `copilot-instructions.md`, a `.cursorrules`), the content transfers unchanged.
+`AGENTS.md` is plain Markdown at your project root (subdirectories may override it for files beneath them). opencode, Codex, Gemini CLI, Zed, and others read it automatically; where a tool uses a different name (Copilot's `copilot-instructions.md`, Cursor's `.cursorrules`), the content transfers unchanged.
 
 It is loaded on every turn, so keep it short and factual:
 

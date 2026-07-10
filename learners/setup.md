@@ -3,9 +3,9 @@ title: Setup
 ---
 
 This lesson runs inside **eic-shell**, the ePIC software container. Install an AI assistant (your
-choice), then one command starts the tool servers. No Docker, no grid certificate, no data
-download — the MCP servers reuse the container's own `uproot`, `xrdfs`, and `rucio` (already logged
-in to the shared read-only `eicread` account).
+choice), then one command starts the tool servers. Nothing beyond eic-shell — no grid certificate,
+no data download — the MCP servers reuse the container's own `uproot`, `xrdfs`, and `rucio`
+(already logged in to the shared read-only `eicread` account).
 
 ::::::::::::::::::::::::::::::::::::::::::::: checklist
 
