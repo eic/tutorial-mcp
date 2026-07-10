@@ -154,14 +154,11 @@ flowchart TB
     accDescr: {AI agent harness}
     MCP["MCP servers<br/>external tools & data"]:::tool --> H
     SUB["subagents<br/>specialised, isolated context"]:::tool --> H
-    LSP["LSP<br/>code intelligence"]:::tool --> H
     HOOKS["hooks<br/>lifecycle automation"]:::tool --> H
     MON["monitors<br/>watch & react"]:::tool --> H
     H(["harness core<br/>model + context + tools + loop"]):::core
-    H -. "packaged & shared by" .-> PLUG["plugins<br/>bundle & share all of the above"]:::pkg
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
-    classDef pkg fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;
 ```
 
 * **MCP servers** — the *tools* layer, standardised. A server exposes tools, data, and prompts over
@@ -171,27 +168,22 @@ flowchart TB
   instructions, spawned for a sub-task. They isolate context and enable divide-and-conquer.
 * **Skills** — packaged, versioned *procedures* (a `SKILL.md` plus scripts) loaded on demand when a
   request matches ([Episode 4](04-skills.md)). A tool is a capability; a skill is a recipe.
-* **LSP (Language Server Protocol)** — the language servers behind editor autocomplete, giving real
-  code intelligence: go-to-definition, references, types, and *compiler diagnostics*.
-* **Hooks** — user scripts triggered on lifecycle events (before/after a tool call, on prompt
-  submit, on session stop). They enforce policy deterministically — format after an edit, block a
-  dangerous command, record a provenance log.
-* **Monitors** — watch long-running background state (a build, a job queue, files) and react,
-  notifying you or re-invoking the assistant when something finishes. They close the loop around work
-  that outlives a single turn.
-* **Plugins** — the *packaging* layer. A plugin bundles commands, subagents, skills, hooks, and MCP
-  servers into one installable, versioned unit, so a collaboration shares a whole capability set at
-  once.
 
 | Component | What it adds to the core loop | In this tutorial |
 | --- | --- | --- |
 | MCP servers | external tools & data, client-agnostic | Episodes 3 & 5 (the [uproot](https://github.com/eic/uproot-mcp-server)/[xrootd](https://github.com/eic/xrootd-mcp-server) servers) |
 | Subagents | isolated, specialised helpers | discussed in Episode 5 |
 | Skills | reusable, versioned procedures | Episode 4 (`SKILL.md`) |
-| LSP | code intelligence & diagnostics | background (your editor) |
-| Hooks | deterministic lifecycle automation | mentioned as best practice |
-| Monitors | watch & react to background work | mentioned for long jobs |
-| Plugins | bundle & share all of the above | the collaboration's distribution model |
+
+Two smaller helpers matter for the loops later in this episode:
+
+* **Hooks** — small scripts the harness runs automatically at fixed moments (before or after a tool
+  call, at session end). Simple examples: re-format code after every edit; refuse any command that
+  would delete data; append each tool call to a provenance log.
+* **Monitors** — watchers for work that outlives a single turn: they follow background state and
+  re-invoke the assistant when it changes. Simple examples: watch a long fit or batch job and wake
+  the assistant with the result when it finishes; watch a directory and react when a new file
+  appears.
 
 ## Level 2 — the verification loop
 
@@ -326,7 +318,7 @@ assistant on the [Setup](../learners/setup.md) page.
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
 - A conversational model returns text; an agentic harness executes tools and conditions on their output.
-- Level 1, the agent loop, runs in a harness with four parts: the model, the context window, a set of typed tools, and a control loop — extended by MCP tools, subagents, LSP, hooks, and monitors, with plugins to bundle and share.
+- Level 1, the agent loop, runs in a harness with four parts: the model, the context window, a set of typed tools, and a control loop — extended by MCP tools, subagents, skills, hooks, and monitors.
 - Level 2 wraps the agent in a verification loop: a grader checks each result against explicit success criteria, because stochastic output must be treated as a hypothesis, not an answer.
 - Level 3 runs the verified agent on events and schedules; level 4 feeds what actually happened back into the harness, where gains compound.
 - Building on the open Model Context Protocol keeps tools portable across assistants and supports reproducibility.
