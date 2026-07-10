@@ -31,6 +31,9 @@
     <loc>https://eic.github.io/tutorial-mcp/about-the-physics.html</loc>
   </url>
   <url>
+    <loc>https://eic.github.io/tutorial-mcp/aio.html</loc>
+  </url>
+  <url>
     <loc>https://eic.github.io/tutorial-mcp/analysis-approaches.html</loc>
   </url>
   <url>
@@ -38,6 +41,9 @@
   </url>
   <url>
     <loc>https://eic.github.io/tutorial-mcp/discuss.html</loc>
+  </url>
+  <url>
+    <loc>https://eic.github.io/tutorial-mcp/images.html</loc>
   </url>
   <url>
     <loc>https://eic.github.io/tutorial-mcp/index.html</loc>
@@ -73,6 +79,9 @@
     <loc>https://eic.github.io/tutorial-mcp/instructor/about-the-physics.html</loc>
   </url>
   <url>
+    <loc>https://eic.github.io/tutorial-mcp/instructor/aio.html</loc>
+  </url>
+  <url>
     <loc>https://eic.github.io/tutorial-mcp/instructor/analysis-approaches.html</loc>
   </url>
   <url>
@@ -82,13 +91,28 @@
     <loc>https://eic.github.io/tutorial-mcp/instructor/discuss.html</loc>
   </url>
   <url>
+    <loc>https://eic.github.io/tutorial-mcp/instructor/images.html</loc>
+  </url>
+  <url>
     <loc>https://eic.github.io/tutorial-mcp/instructor/index.html</loc>
+  </url>
+  <url>
+    <loc>https://eic.github.io/tutorial-mcp/instructor/instructor-notes.html</loc>
+  </url>
+  <url>
+    <loc>https://eic.github.io/tutorial-mcp/instructor/key-points.html</loc>
   </url>
   <url>
     <loc>https://eic.github.io/tutorial-mcp/instructor/profiles.html</loc>
   </url>
   <url>
     <loc>https://eic.github.io/tutorial-mcp/instructor/reference.html</loc>
+  </url>
+  <url>
+    <loc>https://eic.github.io/tutorial-mcp/instructor-notes.html</loc>
+  </url>
+  <url>
+    <loc>https://eic.github.io/tutorial-mcp/key-points.html</loc>
   </url>
   <url>
     <loc>https://eic.github.io/tutorial-mcp/profiles.html</loc>
