@@ -123,6 +123,6 @@ The fitted μ should lie within a few MeV of 1.115683 GeV (a residual offset ref
 integrated signal is $S = A\sqrt{2\pi}\,\sigma / (\text{bin width})$. Build the proton–π⁻ mass spectrum by asking
 [opencode](https://opencode.ai) to run the uproot `execute_kernel_dataset` tool (tree `events`, with the proton and pion
 branches) across the dataset's `root://` files, then fit it with the form above. Reference result
-below, from ~100 files of the 25.10.2 sample: μ ≈ 1.1163 GeV, σ ≈ 2.7 MeV, χ²/ndf ≈ 1.2.
+below: μ ≈ 1.1163 GeV, σ ≈ 2.7 MeV, χ²/ndf ≈ 1.2.
 
 ![Fitted Λ⁰ and Λ̄ invariant-mass spectra with Gaussian-plus-polynomial fits](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks'}

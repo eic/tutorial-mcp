@@ -139,9 +139,9 @@ with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the 
 report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.
 ```
 
-The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute, which is exactly where many clients cut a tool call off. For anything bigger, the async route is the right one — `submit_kernel_dataset`, then poll `get_job_status`/`get_job_result`. The reference spectrum below comes from ~100 files of this sample in campaign 25.10.2 (67,300 events; today's 26.04.1 files hold ~1,220 events each, so ~55 of them give the same statistics): a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
+The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute, which is exactly where many clients cut a tool call off. For anything bigger, the async route is the right one — `submit_kernel_dataset`, then poll `get_job_status`/`get_job_result`. Over ~100 files this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
 
-![Fitted Λ⁰ and Λ̄ invariant-mass spectra (reference fit, campaign 25.10.2)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
+![Fitted Λ⁰ and Λ̄ invariant-mass spectra (reference fit)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
 
 ```output
 Lambda      -> p pi-:   mu = 1116.30 +/- 0.32 MeV   sigma = 2.72 +/- 0.33 MeV   S = 123   chi2/ndf = 1.16
