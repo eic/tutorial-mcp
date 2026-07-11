@@ -72,7 +72,9 @@ EOF
 )"
 PY
 }
-xrootd_env() { echo "export XROOTD_SERVER='${XROOTD_SERVER:-root://dtn-eic.jlab.org}' XROOTD_BASE_DIR='${XROOTD_BASE_DIR:-/volatile/eic/EPIC}'"; }
+# BNL disk serves current campaigns (25.12.0+); the JLab store stops at 25.10.x.
+# For older data: XROOTD_SERVER=root://dtn-eic.jlab.org XROOTD_BASE_DIR=/volatile/eic/EPIC
+xrootd_env() { echo "export XROOTD_SERVER='${XROOTD_SERVER:-root://epicxrd1.sdcc.bnl.gov:1095}' XROOTD_BASE_DIR='${XROOTD_BASE_DIR:-/eic/EPIC}'"; }
 zenodo_env() { [ -n "${ZENODO_API_KEY:-}" ] && echo "export ZENODO_API_KEY='$ZENODO_API_KEY'" || echo ":"; }
 
 # --- built-in EIC servers ---

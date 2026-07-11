@@ -12,7 +12,7 @@ same Lambda peak with nothing but eic-shell, while this path needs the full stac
 
 Environment: eic-shell / Key4hep. Run with any EDM4eic reconstruction file,
 read in place over root:// (discover one as in Episode 3):
-    eic-shell -- python3 lambda_podio.py root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/.../file.root
+    eic-shell -- python3 lambda_podio.py root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC/RECO/<campaign>/.../file.root
 
 Output: the peak window count printed to stdout (peak near 1.1157 GeV).
 """

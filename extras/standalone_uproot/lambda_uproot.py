@@ -12,9 +12,9 @@ No ROOT, no PODIO, no Key4hep install needed.
 
 Usage (pass any EDM4eic reconstruction file, read in place over root:// —
 discover one as in Episode 3, or browse with
-`xrdfs root://dtn-eic.jlab.org ls /volatile/eic/EPIC/RECO`):
+`xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO`):
 
-    python3 lambda_uproot.py root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/.../file.root
+    python3 lambda_uproot.py root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC/RECO/<campaign>/.../file.root
 
 The histogram is written to output/lambda_hist_uproot.json; fit it as in Episode 5.
 """

@@ -113,7 +113,7 @@ With the three servers running and the lambda-fit skill available, one request r
 
 ```{.ai-prompt}
 Using the lambda-fit skill, measure the Lambda0 peak in this file:
-root://dtn-eic.jlab.org//... (one of the dataset's root:// files).
+root://epicxrd1.sdcc.bnl.gov:1095//... (one of the dataset's root:// files).
 Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
 fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot.
 ```
@@ -180,6 +180,17 @@ Before treating an automated result as final, confirm it meets the skill's crite
 * Run the single-file chain through your assistant and report $\mu$, $\sigma$, $S$, and $\chi^2/\text{ndf}$.
 * Process 10 files with `execute_kernel_dataset` and compare the fitted parameters to the ~100-file result; comment on the change in statistical uncertainty.
 * Complete the audit checklist for your run, attaching the recorded tool calls as provenance.
+
+::::::::::::::::::::::::::::::::::::::::::::: callout
+
+## Try a different beam
+
+Nothing here is tied to the eCu sample — point the skill at any reconstructed-DIS DID and the
+same prompt works. Nuclear beams (eCu, eAu) give the most Λ per event; plain ep samples need a
+few times more files for the same peak, but have thousands to spare. Find the DIDs with
+`list_dids` as in Episode 3.
+
+:::::::::::::::::::::::::::::::::::::::::::::
 
 You now have the complete workflow: a free assistant, a portable tool server, a versioned skill, and a reproducible Λ⁰ measurement whose every step you can verify. The [final episode](06-eic-mcp-servers.md) catalogues the other MCP servers the EIC provides.
 

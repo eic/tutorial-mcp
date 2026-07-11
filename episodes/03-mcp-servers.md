@@ -139,9 +139,14 @@ ports `9101`, `9102`, `9103`. Stop them with `eic-mcp down`. The assistant conne
 ## If rucio answers but xrootd/uproot time out
 
 The rucio catalogue and the data store are different services. If dataset queries work but every
-file access hangs, the JLab XRootD endpoint may be temporarily down — check with
-`xrdfs root://dtn-eic.jlab.org ls /volatile/eic/EPIC` (inside eic-shell) and retry later. Your
-setup is fine; the store isn't answering.
+file access hangs, the XRootD store may be temporarily down — check with
+`xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO` (inside eic-shell) and retry later.
+Your setup is fine; the store isn't answering.
+
+Current campaigns (25.12.0 onward) are served from BNL disk, which is what `eic-mcp` points the
+xrootd server at by default. Older campaigns (up to 25.10.x) live on the JLab store instead —
+browse those with `XROOTD_SERVER=root://dtn-eic.jlab.org XROOTD_BASE_DIR=/volatile/eic/EPIC
+eic-mcp up`. Either way, `rucio` replicas always tell you where a file really is.
 
 :::::::::::::::
 
@@ -249,13 +254,13 @@ store you can use `xrootd-mcp` alone.
 
 ## List the available campaigns
 
-ePIC data is organised by **production campaign** — a version such as `25.12.0` — together with the
+ePIC data is organised by **production campaign** — a version such as `26.06.0` — together with the
 beam/target and physics, all encoded in the rucio DID
-(e.g. `epic:/RECO/25.12.0/epic_craterlake/DIS/CC/18x275/...`). Before locating a specific dataset,
-see which campaigns exist so you target a current one:
+(e.g. `epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...`). Before
+locating a specific dataset, see which campaigns exist so you target a current one:
 
 ```{.ai-prompt}
-Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 25.12.0). Show the most recent few and roughly how many datasets each holds.
+Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.
 ```
 
 The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic`,
@@ -270,7 +275,7 @@ browses the same structure on the store directly.)
 With `rucio` and `xrootd` connected (no credentials — see the callout), ask your assistant:
 
 ```{.ai-prompt}
-Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 25.10.2, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.
+Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.
 ```
 
 ::::::::::::::: solution
@@ -288,7 +293,7 @@ with `list_dids`, not hard-coded — what you want when campaign names change.
 ## Inspect the dataset
 
 You specify the operation in natural language and the assistant issues the matching tool calls. Take
-one of the `root://` URLs from the previous exercise — written below as `root://dtn-eic.jlab.org//…`
+one of the `root://` URLs from the previous exercise — written below as `root://epicxrd1.sdcc.bnl.gov:1095//…`
 — and analyse it **in place**.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
@@ -298,7 +303,7 @@ one of the `root://` URLs from the previous exercise — written below as `root:
 Issue the request:
 
 ```{.ai-prompt}
-Using the uproot tools, report the structure of root://dtn-eic.jlab.org//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
+Using the uproot tools, report the structure of root://epicxrd1.sdcc.bnl.gov:1095//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
 ```
 
 ::::::::::::::: solution
@@ -307,7 +312,7 @@ The assistant calls `get_file_structure` (returning the `events` tree) then `get
 reports something like:
 
 ```output
-File:  root://dtn-eic.jlab.org//…/<dataset-file>.root
+File:  root://epicxrd1.sdcc.bnl.gov:1095//…/<dataset-file>.root
 Tree:  events   — branches grouped by collection
 
 ReconstructedChargedParticles collection:

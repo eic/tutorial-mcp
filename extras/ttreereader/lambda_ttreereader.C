@@ -8,7 +8,7 @@
 //
 // Environment: ROOT (e.g. inside eic-shell / Key4hep). Run with any EDM4eic
 // reconstruction file, read in place over root:// (discover one as in Episode 3):
-//   eic-shell -- root -l -b -q 'lambda_ttreereader.C("root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/.../file.root")'
+//   eic-shell -- root -l -b -q 'lambda_ttreereader.C("root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC/RECO/<campaign>/.../file.root")'
 //
 // Output: lambda_ttreereader.pdf, plus the peak bin centre printed to stdout.
 //

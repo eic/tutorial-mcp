@@ -7,7 +7,7 @@ invariant masses; RDataFrame histograms them in one declarative pass.
 
 Environment: ROOT (e.g. inside eic-shell / Key4hep). Run with any EDM4eic
 reconstruction file, read in place over root:// (discover one as in Episode 3):
-    eic-shell -- python3 lambda_rdf.py root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/.../file.root
+    eic-shell -- python3 lambda_rdf.py root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC/RECO/<campaign>/.../file.root
 
 Output: lambda_rdf.pdf  (and the peak bin centre printed to stdout, ~1.1157 GeV).
 """

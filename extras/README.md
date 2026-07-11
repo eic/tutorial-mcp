@@ -14,12 +14,12 @@ and reads it in place over `root://`. Find one from inside eic-shell, either by 
 store directly:
 
 ```bash
-xrdfs root://dtn-eic.jlab.org ls /volatile/eic/EPIC/RECO
+xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO
 ```
 
 or by letting your assistant discover a dataset with the rucio/xrootd MCP tools
 ([Episode 3](../episodes/03-mcp-servers.md)). Below, `$FILE` stands for the full URL, e.g.
-`root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/<campaign>/epic_craterlake/DIS/...root`.
+`root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC/RECO/<campaign>/epic_craterlake/DIS/...root`.
 
 ## Run them
 

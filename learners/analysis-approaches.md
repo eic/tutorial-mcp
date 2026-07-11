@@ -7,7 +7,7 @@ The main episodes read EDM4eic data with **uproot** through an MCP server. Here 
 reads a dataset `root://` file directly, selects protons (PDG `2212`) and π⁻ (PDG `-211`), builds
 proton–π⁻ pairs, and histograms the invariant mass. Full scripts:
 [`extras/`](https://github.com/eic/tutorial-mcp/tree/main/extras). Replace
-`root://dtn-eic.jlab.org//...` with the file you located.
+`root://epicxrd1.sdcc.bnl.gov:1095//...` with the file you located.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
@@ -25,7 +25,7 @@ a `pip` venv with `uproot awkward numpy`. Script:
 [`extras/standalone_uproot/lambda_uproot.py`](https://github.com/eic/tutorial-mcp/blob/main/extras/standalone_uproot/lambda_uproot.py)
 
 ```bash
-$ python3 extras/standalone_uproot/lambda_uproot.py root://dtn-eic.jlab.org//...
+$ python3 extras/standalone_uproot/lambda_uproot.py root://epicxrd1.sdcc.bnl.gov:1095//...
 ```
 
 ```python
@@ -41,7 +41,7 @@ histograms it in one pass. Scales to many files and cores. Environment: ROOT (e.
 Script: [`extras/rdataframe/lambda_rdf.py`](https://github.com/eic/tutorial-mcp/blob/main/extras/rdataframe/lambda_rdf.py)
 
 ```bash
-$ eic-shell -- python3 extras/rdataframe/lambda_rdf.py root://dtn-eic.jlab.org//...
+$ eic-shell -- python3 extras/rdataframe/lambda_rdf.py root://epicxrd1.sdcc.bnl.gov:1095//...
 ```
 
 ```python
@@ -58,7 +58,7 @@ branches are `float`, so the `TTreeReaderArray` must be templated on `<float>`. 
 [`extras/ttreereader/lambda_ttreereader.C`](https://github.com/eic/tutorial-mcp/blob/main/extras/ttreereader/lambda_ttreereader.C)
 
 ```bash
-$ eic-shell -- root -l -b -q 'extras/ttreereader/lambda_ttreereader.C("root://dtn-eic.jlab.org//...")'
+$ eic-shell -- root -l -b -q 'extras/ttreereader/lambda_ttreereader.C("root://epicxrd1.sdcc.bnl.gov:1095//...")'
 ```
 
 ## 4. Native PODIO Frame API
@@ -69,7 +69,7 @@ dictionaries — the **heaviest** to set up. Script:
 [`extras/podio_frame/lambda_podio.py`](https://github.com/eic/tutorial-mcp/blob/main/extras/podio_frame/lambda_podio.py)
 
 ```bash
-$ eic-shell -- python3 extras/podio_frame/lambda_podio.py root://dtn-eic.jlab.org//...
+$ eic-shell -- python3 extras/podio_frame/lambda_podio.py root://epicxrd1.sdcc.bnl.gov:1095//...
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
