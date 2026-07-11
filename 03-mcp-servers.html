@@ -326,7 +326,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Tool servers and the Model Context Protocol (MCP)</h1>
-        <p>Last updated on 2026-07-10 |
+        <p>Last updated on 2026-07-11 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/03-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -450,10 +450,12 @@ sessions.</p>
 </div>
 </section><section><h2 class="section-heading" id="the-uproot-tool-server">The uproot tool server<a class="anchor" aria-label="anchor" href="#the-uproot-tool-server"></a></h2>
 <hr class="half-width"><p>The ePIC <a href="https://github.com/eic/uproot-mcp-server" class="external-link">uproot
-tool server</a> reads ROOT/EDM4eic files with <a href="reference.html">uproot</a> and returns <strong>compact,
-JSON-serialisable summaries</strong> — edges, counts, statistics, fit
-inputs — not raw arrays, keeping payloads inside the model’s context
-budget. It exposes 15 tools in four groups:</p>
+tool server</a> reads ROOT/EDM4eic files with <a href="reference.html">uproot</a> and returns <strong>JSON
+summaries</strong> — edges, counts, statistics, fit inputs — not raw
+arrays. One caveat: <code>get_file_structure</code> on an EDM4eic file
+lists all ~6,000 branches (megabytes of JSON); for schema questions
+<code>get_tree_info</code> is the compact choice. It exposes 15 tools in
+four groups:</p>
 <table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>Group</th>
 <th>Representative tools</th>
 <th>Purpose</th>
@@ -512,7 +514,35 @@ image doesn’t ship them yet — see <a href="index.html#setup">Setup</a>):</p>
 <p>This launches the uproot, xrootd, and rucio servers as MCP-over-HTTP
 endpoints on <code>127.0.0.1</code>, ports <code>9101</code>,
 <code>9102</code>, <code>9103</code>. Stop them with
-<code>eic-mcp down</code>. The assistant connects to those URLs.</p>
+<code>eic-mcp down</code>; <code>eic-mcp status</code> shows what is
+listening, and <code>eic-mcp logs xrootd</code> tails a server’s log
+when something misbehaves. The assistant connects to those URLs.</p>
+<div id="if-rucio-answers-but-xrootduproot-time-out" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="if-rucio-answers-but-xrootduproot-time-out" class="callout-inner">
+<h3 class="callout-title">If rucio answers but xrootd/uproot time
+out</h3>
+<div class="callout-content">
+<p>The rucio catalogue and the data store are different services. If
+dataset queries work but every file access hangs, the XRootD store may
+be temporarily down — check with
+<code>xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO</code>
+(inside eic-shell) and retry later. Your setup is fine; the store isn’t
+answering.</p>
+<p>Current campaigns (25.12.0 onward) are served from BNL disk, which is
+what <code>eic-mcp</code> points the xrootd server at by default. Older
+campaigns (up to 25.10.x) live on the JLab store instead — browse those
+with
+<code>XROOTD_SERVER=root://dtn-eic.jlab.org XROOTD_BASE_DIR=/volatile/eic/EPIC eic-mcp restart</code>
+(a plain <code>up</code> skips servers that are already running, so the
+new setting would never take effect). Either way, <code>rucio</code>
+replicas always tell you where a file really is.</p>
+</div>
+</div>
+</div>
 </section><section><h2 class="section-heading" id="connect-the-assistant">Connect the assistant<a class="anchor" aria-label="anchor" href="#connect-the-assistant"></a></h2>
 <hr class="half-width"><p>opencode reads its server list from a JSON config. Generate it in the
 directory where you launch opencode (or write it to
@@ -527,12 +557,13 @@ directory where you launch opencode (or write it to
 <h3 class="code-label">JSON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode json" tabindex="0"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="fu">{</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a>  <span class="dt">"mcp"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a>    <span class="dt">"uproot"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9101/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">},</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1" aria-label="code-block-4-4"></a>    <span class="dt">"xrootd"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9102/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">},</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1" aria-label="code-block-4-5"></a>    <span class="dt">"rucio"</span><span class="fu">:</span>  <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9103/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">}</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1" aria-label="code-block-4-6"></a>  <span class="fu">}</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1" aria-label="code-block-4-7"></a><span class="fu">}</span></span></code></pre>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a>  <span class="dt">"$schema"</span><span class="fu">:</span> <span class="st">"https://opencode.ai/config.json"</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a>  <span class="dt">"mcp"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1" aria-label="code-block-4-4"></a>    <span class="dt">"uproot"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9101/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">},</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1" aria-label="code-block-4-5"></a>    <span class="dt">"xrootd"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9102/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">},</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1" aria-label="code-block-4-6"></a>    <span class="dt">"rucio"</span><span class="fu">:</span>  <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9103/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">}</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1" aria-label="code-block-4-7"></a>  <span class="fu">}</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1" aria-label="code-block-4-8"></a><span class="fu">}</span></span></code></pre>
 </div>
 <p>Within a session, <code>/mcp</code> lists the connected servers and
 their tools.</p>
@@ -549,11 +580,11 @@ their tools.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> eic-mcp config copilot <span class="op">&gt;</span> .vscode/mcp.json      <span class="co"># VS Code / Copilot</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="ex">$</span> eic-mcp config cursor  <span class="op">&gt;</span> .cursor/mcp.json      <span class="co"># Cursor</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="ex">$</span> eic-mcp config claude  <span class="op">&gt;</span> .mcp.json             <span class="co"># Claude Code</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="ex">$</span> eic-mcp config gemini  <span class="op">&gt;</span> .gemini/settings.json <span class="co"># Gemini CLI</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">$</span> eic-mcp config codex  <span class="op">&gt;&gt;</span> ~/.codex/config.toml  <span class="co"># Codex (TOML, appended)</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .vscode <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config copilot <span class="op">&gt;</span> .vscode/mcp.json      <span class="co"># VS Code / Copilot</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .cursor <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config cursor  <span class="op">&gt;</span> .cursor/mcp.json      <span class="co"># Cursor</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="ex">$</span> eic-mcp config claude  <span class="op">&gt;</span> .mcp.json                                 <span class="co"># Claude Code</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .gemini <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config gemini  <span class="op">&gt;</span> .gemini/settings.json <span class="co"># Gemini CLI</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">$</span> eic-mcp config codex  <span class="op">&gt;&gt;</span> ~/.codex/config.toml                      <span class="co"># Codex (TOML, appended)</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -645,18 +676,19 @@ alone.</p>
 </div>
 </section><section><h2 class="section-heading" id="list-the-available-campaigns">List the available campaigns<a class="anchor" aria-label="anchor" href="#list-the-available-campaigns"></a></h2>
 <hr class="half-width"><p>ePIC data is organised by <strong>production campaign</strong> — a
-version such as <code>25.12.0</code> — together with the beam/target and
+version such as <code>26.06.0</code> — together with the beam/target and
 physics, all encoded in the rucio DID
-(e.g. <code>epic:/RECO/25.12.0/epic_craterlake/DIS/CC/18x275/...</code>).
+(e.g. <code>epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...</code>).
 Before locating a specific dataset, see which campaigns exist so you
 target a current one:</p>
-<pre class="ai-prompt"><code>Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 25.12.0). Show the most recent few and roughly how many datasets each holds.</code></pre>
+<pre class="ai-prompt"><code>Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.</code></pre>
 <p>The assistant calls <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>list_dids</code></a>
-on scope <code>epic</code>, groups the DIDs by their campaign component,
-and reports the campaigns — so you pick a version that still exists
-instead of guessing one that has moved on. (The <code>xrootd</code>
-server’s <code>list_campaigns</code> browses the same structure on the
-store directly.)</p>
+on scope <code>epic</code> and groups the DIDs by their campaign
+component. Watch its method here: the catalogue holds thousands of DIDs
+and pages are not sorted newest-first, so a lazy one-page sample can
+miss the current campaigns entirely. Narrowing with a version wildcard
+(<code>/RECO/26.*</code>) — or one call to the <code>xrootd</code>
+server’s <code>list_campaigns</code> — gets the honest answer.</p>
 <div id="exercise-locate-a-dataset-10-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
@@ -667,7 +699,7 @@ store directly.)</p>
 <div class="callout-content">
 <p>With <code>rucio</code> and <code>xrootd</code> connected (no
 credentials — see the callout), ask your assistant:</p>
-<pre class="ai-prompt"><code>Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 25.10.2, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.</code></pre>
+<pre class="ai-prompt"><code>Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.</code></pre>
 </div>
 </div>
 </div>
@@ -676,17 +708,20 @@ credentials — see the callout), ask your assistant:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>The assistant calls <code>list_scopes</code>/<code>list_dids</code>
 (scope <code>epic</code>, narrowing by a name glob on the campaign and
-beam/target) to find the DID, <code>list_files</code> to enumerate it,
-and <code>list_file_replicas</code> for the <code>root://</code> URLs.
-It then switches to <code>xrootd-mcp</code> (<code>list_datasets</code>,
-<code>check_file_exists</code>,
-<code>get_dataset_event_statistics</code>) to verify the files and total
-the events. The DID is <em>discovered</em> with <code>list_dids</code>,
-not hard-coded — what you want when campaign names change.</p>
+beam/target) to find the DID, <code>list_files</code> to enumerate it
+(374 files), and <code>list_file_replicas</code> for the
+<code>root://</code> URLs. It then switches to <code>xrootd-mcp</code>
+(<code>list_directory_filtered</code>, <code>check_file_exists</code>)
+to verify the files. For the event total, note what a sensible assistant
+does: rucio does not carry event counts, and scanning all 374 files
+would take an hour — it checks a few files (≈ 1,220 events each) and
+extrapolates. The DID is <em>discovered</em> with
+<code>list_dids</code>, not hard-coded — what you want when campaign
+names change.</p>
 </div>
 </div>
 </div>
@@ -695,8 +730,8 @@ not hard-coded — what you want when campaign names change.</p>
 <hr class="half-width"><p>You specify the operation in natural language and the assistant
 issues the matching tool calls. Take one of the <code>root://</code>
 URLs from the previous exercise — written below as
-<code>root://dtn-eic.jlab.org//…</code> — and analyse it <strong>in
-place</strong>.</p>
+<code>root://epicxrd1.sdcc.bnl.gov:1095//…</code> — and analyse it
+<strong>in place</strong>.</p>
 <div id="exercise-enumerate-the-schema-10-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
@@ -706,7 +741,7 @@ place</strong>.</p>
 <h3 class="callout-title">Exercise: enumerate the schema (≈ 10 min)</h3>
 <div class="callout-content">
 <p>Issue the request:</p>
-<pre class="ai-prompt"><code>Using the uproot tools, report the structure of root://dtn-eic.jlab.org//&lt;your-discovered-file&gt;.root and list the members of the ReconstructedChargedParticles collection.</code></pre>
+<pre class="ai-prompt"><code>Using the uproot tools, report the structure of root://epicxrd1.sdcc.bnl.gov:1095//&lt;your-discovered-file&gt;.root and list the members of the ReconstructedChargedParticles collection.</code></pre>
 </div>
 </div>
 </div>
@@ -715,15 +750,16 @@ place</strong>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
-<p>The assistant calls <code>get_file_structure</code> (returning the
-<code>events</code> tree) then <code>get_tree_info</code>, and reports
-something like:</p>
+<p>The assistant calls <code>get_tree_info</code> on the
+<code>events</code> tree (not the full <code>get_file_structure</code>
+dump, which runs to megabytes on an EDM4eic file) and reports something
+like:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>File:  root://dtn-eic.jlab.org//…/&lt;dataset-file&gt;.root
+<pre class="output" tabindex="0"><code>File:  root://epicxrd1.sdcc.bnl.gov:1095//…/&lt;dataset-file&gt;.root
 Tree:  events   — branches grouped by collection
 
 ReconstructedChargedParticles collection:
@@ -731,7 +767,7 @@ ReconstructedChargedParticles collection:
   ReconstructedChargedParticles.momentum.x   float[]   p_x [GeV]
   ReconstructedChargedParticles.momentum.y   float[]   p_y [GeV]
   ReconstructedChargedParticles.momentum.z   float[]   p_z [GeV]
-(each member has a companion nReconstructedChargedParticles.* count branch)</code></pre>
+  … energy, charge, mass, type, referencePoint.*, covMatrix.*</code></pre>
 </div>
 <p>The names are read from the file, not inferred — eliminating the
 schema-hallucination failure mode from Episode 1. These <em>are</em> the
@@ -750,7 +786,7 @@ branches you’re looking for.</p>
 min)</h3>
 <div class="callout-content">
 <p>Issue the request:</p>
-<pre class="ai-prompt"><code>Histogram ReconstructedChargedParticles.PDG so I can see the reconstructed particle species in the file.</code></pre>
+<pre class="ai-prompt"><code>Histogram ReconstructedChargedParticles.PDG with one bin per integer code, so I can see the reconstructed particle species in the file.</code></pre>
 </div>
 </div>
 </div>
@@ -759,11 +795,13 @@ min)</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
-<p>The assistant calls <code>histogram_branch</code>. The distribution
-is discrete — spikes at the PDG codes present. Counting over a
-reconstructed-DIS file gives, for example:</p>
+<p>The assistant calls <code>histogram_branch</code>, setting the bins
+and range so each integer code gets its own bin (the default
+auto-binning would merge neighbouring codes, e.g. 0 and 11). The
+distribution is discrete — spikes at the PDG codes present. Counting
+over a reconstructed-DIS file gives, for example:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -924,8 +962,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/03-mcp-servers.html",
   "identifier": "https://eic.github.io/tutorial-mcp/03-mcp-servers.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-10",
-  "datePublished": "2026-07-10"
+  "dateModified": "2026-07-11",
+  "datePublished": "2026-07-11"
 }
 
   </script><script>

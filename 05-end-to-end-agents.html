@@ -325,7 +325,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>An end-to-end, reproducible Λ⁰ analysis</h1>
-        <p>Last updated on 2026-07-10 |
+        <p>Last updated on 2026-07-11 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/05-end-to-end-agents.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -394,7 +394,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="card-body">
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
-<ul><li>Set up any MCP client for the end-to-end run in three commands.</li>
+<ul><li>Set up any MCP client for the end-to-end run in three steps.</li>
 <li>Pick the right kernel tool for the sample size
 (<code>execute_kernel</code> vs
 <code>execute_kernel_dataset</code>).</li>
@@ -417,9 +417,9 @@ Episode 4 files in place:</p>
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">eic-mcp</span> config opencode <span class="op">&gt;</span> opencode.jsonc</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a><span class="fu">cp</span> /path/to/tutorial-mcp/files/skills/AGENTS.md .</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a><span class="fu">mkdir</span> <span class="at">-p</span> skills</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1" aria-label="code-block-1-4"></a><span class="fu">cp</span> <span class="at">-r</span> /path/to/tutorial-mcp/files/skills/lambda-fit skills/</span></code></pre>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a><span class="fu">cp</span> ~/tutorial-mcp/files/skills/AGENTS.md .</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a><span class="fu">mkdir</span> <span class="at">-p</span> .opencode/skills</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1" aria-label="code-block-1-4"></a><span class="fu">ln</span> <span class="at">-s</span> ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit</span></code></pre>
 </div>
 </li>
 <li><p>Launch <code>opencode</code>, check <code>/mcp</code> lists
@@ -434,13 +434,15 @@ paste the pipeline prompt below.</p></li>
 <h3 class="callout-title">Same pipeline, other clients</h3>
 <div class="callout-content">
 <p>Only step 2 changes:
-<code>eic-mcp config copilot &gt; .vscode/mcp.json</code> (VS
-Code/Copilot, Agent mode),
-<code>eic-mcp config cursor &gt; .cursor/mcp.json</code>,
+<code>mkdir -p .vscode &amp;&amp; eic-mcp config copilot &gt; .vscode/mcp.json</code>
+(VS Code/Copilot, Agent mode),
+<code>mkdir -p .cursor &amp;&amp; eic-mcp config cursor &gt; .cursor/mcp.json</code>,
 <code>eic-mcp config claude &gt; .mcp.json</code> (Claude Code),
-<code>eic-mcp config gemini &gt; .gemini/settings.json</code> (Gemini
-CLI), or <code>eic-mcp config codex &gt;&gt; ~/.codex/config.toml</code>
-(Codex). The servers, skills, and prompts are identical.</p>
+<code>mkdir -p .gemini &amp;&amp; eic-mcp config gemini &gt; .gemini/settings.json</code>
+(Gemini CLI), or
+<code>eic-mcp config codex &gt;&gt; ~/.codex/config.toml</code> (Codex).
+The servers and prompts are identical; put the skill where your client
+reads skills (<code>.claude/skills/</code> for Claude Code).</p>
 </div>
 </div>
 </div>
@@ -467,7 +469,7 @@ to find a DIS dataset and <code>list_file_replicas</code> for the URLs,
 <code>xrootd</code> to confirm the file is there, then reads it in
 place:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, measure the Lambda0 peak in this file:
-root://dtn-eic.jlab.org//... (one of the dataset's root:// files).
+root://epicxrd1.sdcc.bnl.gov:1095//... (one of the dataset's root:// files).
 Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
 fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot.</code></pre>
 <p>The assistant calls <code>execute_kernel</code> (tree
@@ -506,10 +508,15 @@ with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the 
 report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.</code></pre>
 <p>The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the
 assistant returns the merged histogram and runs a follow-up fit prompt.
-Over ~100 files this gives the full-statistics spectrum below: a clear
-Λ⁰ (and Λ̄) peak over the combinatorial background.</p>
-<figure><img src="fig/lambda_fit.svg" alt="Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV" class="figure mx-auto d-block"><div class="figcaption">Fitted Λ⁰ and Λ̄ invariant-mass spectra (100-file
-reference)</div>
+One practical limit: a synchronous <code>execute_kernel_dataset</code>
+call over ~8 files already takes about a minute, which is exactly where
+many clients cut a tool call off. For anything bigger, the async route
+is the right one — <code>submit_kernel_dataset</code>, then poll
+<code>get_job_status</code>/<code>get_job_result</code>. Over ~100 files
+this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over
+the combinatorial background.</p>
+<figure><img src="fig/lambda_fit.svg" alt="Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV" class="figure mx-auto d-block"><div class="figcaption">Fitted Λ⁰ and Λ̄ invariant-mass spectra
+(reference fit)</div>
 </figure><div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -572,9 +579,25 @@ compare the fitted parameters to the ~100-file result; comment on the
 change in statistical uncertainty.</li>
 <li>Complete the audit checklist for your run, attaching the recorded
 tool calls as provenance.</li>
-</ul><p>You now have the complete workflow: a free assistant, a portable tool
-server, a versioned skill, and a reproducible Λ⁰ measurement whose every
-step you can verify. The <a href="06-eic-mcp-servers.html">final
+</ul><div id="try-a-different-beam" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="try-a-different-beam" class="callout-inner">
+<h3 class="callout-title">Try a different beam</h3>
+<div class="callout-content">
+<p>Nothing here is tied to the eCu sample — point the skill at any
+reconstructed-DIS DID and the same prompt works. Nuclear beams (eCu,
+eAu) give the most Λ per event; plain ep samples need a few times more
+files for the same peak, but have thousands to spare. Find the DIDs with
+<code>list_dids</code> as in Episode 3.</p>
+</div>
+</div>
+</div>
+<p>You now have the complete workflow: a free assistant, portable tool
+servers, a versioned skill, and a reproducible Λ⁰ measurement whose
+every step you can verify. The <a href="06-eic-mcp-servers.html">final
 episode</a> catalogues the other MCP servers the EIC provides.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
@@ -583,11 +606,12 @@ episode</a> catalogues the other MCP servers the EIC provides.</p>
 <span class="callout-header">Key Points</span>
 <div class="callout-inner">
 <div class="callout-content">
-<ul><li>The full analysis composes Episodes 2–4: an assistant, the uproot
-MCP tools, and the lambda-fit skill.</li>
+<ul><li>The full analysis composes Episodes 1, 3, and 4: the agentic loop,
+the uproot MCP tools, and the lambda-fit skill.</li>
 <li>The same kernel scales from <code>execute_kernel</code> (one root://
-file) to <code>execute_kernel_dataset</code> (the full sample), merging
-into one histogram.</li>
+file) through <code>execute_kernel_dataset</code> (a small batch) to the
+async <code>submit_kernel_dataset</code> (the full sample), merging into
+one histogram.</li>
 <li>The yield comes from a Gaussian-plus-polynomial fit; report <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(S\)</span>, and <span class="math inline">\(\chi^2/\text{ndf}\)</span>, not a bare count.</li>
 <li>Pinning inputs and recording tool calls make the measurement
 reproducible and auditable.</li>
@@ -658,8 +682,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/05-end-to-end-agents.html",
   "identifier": "https://eic.github.io/tutorial-mcp/05-end-to-end-agents.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-10",
-  "datePublished": "2026-07-10"
+  "dateModified": "2026-07-11",
+  "datePublished": "2026-07-11"
 }
 
   </script><script>

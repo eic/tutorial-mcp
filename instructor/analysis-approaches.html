@@ -300,7 +300,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Alternative Analysis Approaches</h1>
-        <p>Last updated on 2026-07-10 |
+        <p>Last updated on 2026-07-11 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/learners/analysis-approaches.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -321,8 +321,8 @@ analysis written four ways — each reproduces the peak near
 <code>root://</code> file directly, selects protons (PDG
 <code>2212</code>) and π⁻ (PDG <code>-211</code>), builds proton–π⁻
 pairs, and histograms the invariant mass. Full scripts: <a href="https://github.com/eic/tutorial-mcp/tree/main/extras" class="external-link"><code>extras/</code></a>.
-Replace <code>root://dtn-eic.jlab.org//...</code> with the file you
-located.</p>
+Replace <code>root://epicxrd1.sdcc.bnl.gov:1095//...</code> with the
+file you located.</p>
 <div id="all-four-agree" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -344,7 +344,7 @@ runs internally. Environment: a <code>pip</code> venv with
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">$</span> python3 extras/standalone_uproot/lambda_uproot.py root://dtn-eic.jlab.org//...</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">$</span> python3 extras/standalone_uproot/lambda_uproot.py root://epicxrd1.sdcc.bnl.gov:1095//...</span></code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -361,7 +361,7 @@ Script: <a href="https://github.com/eic/tutorial-mcp/blob/main/extras/rdataframe
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-shell <span class="at">--</span> python3 extras/rdataframe/lambda_rdf.py root://dtn-eic.jlab.org//...</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-shell <span class="at">--</span> python3 extras/rdataframe/lambda_rdf.py root://epicxrd1.sdcc.bnl.gov:1095//...</span></code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -379,7 +379,7 @@ Reconstructed momentum branches are <code>float</code>, so the
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> eic-shell <span class="at">--</span> root <span class="at">-l</span> <span class="at">-b</span> <span class="at">-q</span> <span class="st">'extras/ttreereader/lambda_ttreereader.C("root://dtn-eic.jlab.org//...")'</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> eic-shell <span class="at">--</span> root <span class="at">-l</span> <span class="at">-b</span> <span class="at">-q</span> <span class="st">'extras/ttreereader/lambda_ttreereader.C("root://epicxrd1.sdcc.bnl.gov:1095//...")'</span></span></code></pre>
 </div>
 </section><section><h2 class="section-heading" id="native-podio-frame-api">4. Native PODIO Frame API<a class="anchor" aria-label="anchor" href="#native-podio-frame-api"></a></h2>
 <hr class="half-width"><p>PODIO deserialises each event into a <code>Frame</code>; you iterate
@@ -391,7 +391,7 @@ up. Script: <a href="https://github.com/eic/tutorial-mcp/blob/main/extras/podio_
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="ex">$</span> eic-shell <span class="at">--</span> python3 extras/podio_frame/lambda_podio.py root://dtn-eic.jlab.org//...</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="ex">$</span> eic-shell <span class="at">--</span> python3 extras/podio_frame/lambda_podio.py root://epicxrd1.sdcc.bnl.gov:1095//...</span></code></pre>
 </div>
 <div id="same-physics-lower-barrier" class="callout">
 <div class="callout-square">
@@ -466,8 +466,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/analysis-approaches.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/analysis-approaches.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-10",
-  "datePublished": "2026-07-10"
+  "dateModified": "2026-07-11",
+  "datePublished": "2026-07-11"
 }
 
   </script><script>

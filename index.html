@@ -333,8 +333,8 @@ portable; and</li>
 <code>SKILL.md</code>) — versioned context and procedures that make a
 run repeatable and auditable.</li>
 </ul><p>The treatment is tool-agnostic: the method is demonstrated with
-several free assistants, and the component you build (an MCP tool
-server) works with any of them.</p>
+several free assistants, and the components you assemble (MCP tool
+servers, a skill) work with any of them.</p>
 <div id="what-you-will-produce" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -397,7 +397,8 @@ logged in to the shared read-only <code>eicread</code> account).</p>
 <li><label><input type="checkbox">One <strong>AI assistant</strong>
 installed and connected to a free model.</label></li>
 <li><label><input type="checkbox"><strong><code>eic-mcp</code></strong> on your
-<code>PATH</code> (one <code>git clone</code>).</label></li>
+<code>PATH</code>, <strong><code>~/tutorial-mcp</code></strong> cloned
+(two <code>git clone</code>s).</label></li>
 <li><label><input type="checkbox"><strong><code>eic-mcp up</code></strong> starts the
 three MCP servers (the first run bootstraps them
 automatically).</label></li>
@@ -494,13 +495,15 @@ that prints the PDG Λ⁰ baryon mass in GeV, then run it.”</em> It should
 </div>
 </section><section><h2 class="section-heading" id="start-the-mcp-servers-eic-mcp-up">4. Start the MCP servers — <code>eic-mcp up</code>
 <a class="anchor" aria-label="anchor" href="#start-the-mcp-servers-eic-mcp-up"></a></h2>
-<hr class="half-width"><p>The launcher lives in its own repository; clone it once and put it on
-your <code>PATH</code>:</p>
+<hr class="half-width"><p>The launcher lives in its own repository. Clone it — and this
+lesson’s repository, whose example files Episodes 4–5 use — into your
+home directory, so every command in the lesson can be pasted as-is:</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="va">$PWD</span>/eic-mcp/bin:<span class="va">$PATH</span>    <span class="co"># add this line to your shell profile</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp ~/eic-mcp</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="fu">git</span> clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1" aria-label="code-block-2-3"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$HOME</span><span class="st">/eic-mcp/bin:</span><span class="va">$PATH</span><span class="st">"</span>    <span class="co"># re-run in each new shell (eic-shell skips your profile)</span></span></code></pre>
 </div>
 <p>It runs the three servers (uproot, xrootd, rucio) inside
 eic-shell:</p>
@@ -588,8 +591,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/index.html",
   "identifier": "https://eic.github.io/tutorial-mcp/index.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-10",
-  "datePublished": "2026-07-10"
+  "dateModified": "2026-07-11",
+  "datePublished": "2026-07-11"
 }
 
   </script><script>

@@ -410,13 +410,18 @@ server signs in automatically with the shared read-only
 <li>Have learners run <code>eic-mcp up</code> once ahead of time — the
 first run bootstraps the three servers automatically, which takes a few
 minutes; every later start is seconds.</li>
+<li>The Episode 3 exercise pins a campaign (currently
+<code>26.04.1</code>). Campaigns retire — run the campaign-listing
+prompt from Episode 3 beforehand and bump the version in the exercise if
+production has moved on.</li>
 </ul></section><section><h2 class="section-heading" id="timing-and-pitfalls">Timing and pitfalls<a class="anchor" aria-label="anchor" href="#timing-and-pitfalls"></a>
 </h2>
 <hr class="half-width">
 <ul>
-<li>Total ≈ 2 h teaching + 1.5 h exercises (a half day). Episode 3 is
-the longest; budget time for the first <code>eic-mcp up</code> (one-time
-bootstrap) and connecting opencode to a model.</li>
+<li>Total ≈ 2 h 45 m teaching + 1.5 h exercises (a full day with
+breaks). Episode 3 is the longest; budget time for the first
+<code>eic-mcp up</code> (one-time bootstrap) and connecting opencode to
+a model.</li>
 <li>
 <strong>Common snag:</strong> the assistant stays in “one-shot” mode
 and only prints code. Have learners confirm <strong>Agent/edit
@@ -432,6 +437,21 @@ nothing, check <code>eic-mcp status</code> and that
 <code>root://</code> files the assistant processes — a few files show a
 modest excess; tens of files give a clean fit. Set expectations
 accordingly.</li>
+<li>
+<strong>Free-tier throttling:</strong> at busy hours the free hosted
+models can take minutes per agent turn (the MCP tool context makes each
+request large). If the session drags, switch the class to another free
+model in the opencode picker, or keep one paid key as backup.</li>
+<li>
+<strong>Store outage:</strong> if rucio queries work but all
+xrootd/uproot file access times out, the XRootD store is likely down —
+verify with
+<code>xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO</code>
+before the session, and have a fallback ready (Episodes 1–2 material, or
+a locally cached file). BNL disk serves campaigns 25.12.0 onward (the
+<code>eic-mcp</code> default); the JLab store
+(<code>root://dtn-eic.jlab.org</code>, <code>/volatile/eic/EPIC</code>)
+has campaigns up to 25.10.x.</li>
 </ul></section><section><h2 class="section-heading" id="verifying-your-own-setup">Verifying your own setup<a class="anchor" aria-label="anchor" href="#verifying-your-own-setup"></a>
 </h2>
 <hr class="half-width">
@@ -501,8 +521,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor-notes.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor-notes.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-10",
-  "datePublished": "2026-07-10"
+  "dateModified": "2026-07-11",
+  "datePublished": "2026-07-11"
 }
 
   </script><script>
