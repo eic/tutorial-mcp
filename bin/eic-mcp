@@ -94,11 +94,32 @@ srv_dir() { echo "$EIC_MCP_DIR/$(basename "${SRV_REPO[$1]}" .git)"; }
 # ---- run inside the EIC software stack --------------------------------------
 # apptainer markers, or /etc/eic-env.sh for the Docker eic_xl image (macOS)
 in_container() { [ -n "${APPTAINER_CONTAINER:-}" ] || [ -n "${SINGULARITY_CONTAINER:-}" ] || [ -e /.singularity.d ] || [ -e /singularity ] || [ -e /etc/eic-env.sh ]; }
+# Locate the eic_xl image the same way an eic-shell install lays it out:
+# EIC_MCP_SIF (remembered), the last hit (cached), EIC_SHELL_PREFIX, the
+# PREFIX= recorded in an eic-shell launcher (./eic-shell or on PATH), then
+# $PWD and the quickstart default ~/eic. Any eic_xl-*.sif version counts.
 find_sif() {
-  [ -n "$EIC_MCP_SIF" ] && { echo "$EIC_MCP_SIF"; return; }
-  for p in "$HOME/dev/eic/local/lib/eic_xl-nightly.sif" "$HOME/eic/local/lib/eic_xl-nightly.sif" "$PWD/local/lib/eic_xl-nightly.sif"; do
-    [ -e "$p" ] && { echo "$p"; return; }
-  done; echo ""
+  local cache="$EIC_MCP_STATE/sif" d s launcher
+  if [ -n "$EIC_MCP_SIF" ]; then
+    mkdir -p "$EIC_MCP_STATE"; printf '%s\n' "$EIC_MCP_SIF" >"$cache"
+    echo "$EIC_MCP_SIF"; return
+  fi
+  if [ -f "$cache" ]; then
+    s="$(cat "$cache")"; [ -e "$s" ] && { echo "$s"; return; }
+  fi
+  local prefixes=()
+  [ -n "${EIC_SHELL_PREFIX:-}" ] && prefixes+=("$EIC_SHELL_PREFIX" "${EIC_SHELL_PREFIX%/local}")
+  for launcher in "$PWD/eic-shell" "$(command -v eic-shell 2>/dev/null || true)"; do
+    [ -n "$launcher" ] && [ -f "$launcher" ] && \
+      prefixes+=("$(sed -n '/^PREFIX=/{s/^PREFIX=//;s/^"//;s/"$//;p;q}' "$launcher")")
+  done
+  prefixes+=("$PWD" "$HOME/eic")
+  for d in "${prefixes[@]}"; do
+    [ -n "$d" ] || continue
+    s="$(ls -1t "$d"/local/lib/eic_xl-*.sif "$d"/lib/eic_xl-*.sif 2>/dev/null | head -1)"
+    [ -n "$s" ] && { mkdir -p "$EIC_MCP_STATE"; printf '%s\n' "$s" >"$cache"; echo "$s"; return; }
+  done
+  echo ""
 }
 # Run in the EIC environment the way eic-shell/entrypoint.sh do: source
 # /etc/eic-env.sh explicitly, with --norc --noprofile so user/system dotfiles
@@ -107,7 +128,7 @@ ENV_PRELUDE='. /etc/eic-env.sh 2>/dev/null; '
 run_in_env() {
   if in_container; then bash --norc --noprofile -c "$ENV_PRELUDE$1"; else
     local sif; sif="$(find_sif)"
-    [ -z "$sif" ] && { echo "ERROR: not inside eic-shell and no eic_xl .sif found (set EIC_MCP_SIF)." >&2; exit 1; }
+    [ -z "$sif" ] && { echo "ERROR: no eic_xl .sif found — run from your eic-shell install directory, or set EIC_MCP_SIF=/path/to/eic_xl-*.sif once (it is remembered)." >&2; exit 1; }
     apptainer exec "$sif" bash --norc --noprofile -c "$ENV_PRELUDE$1"
   fi
 }
@@ -116,7 +137,7 @@ run_in_env_bg() {  # cmd pidfile logfile  — setsid → own process group for r
   if in_container; then
     setsid bash --norc --noprofile -c "$ENV_PRELUDE$cmd" >"$logfile" 2>&1 </dev/null & echo $! >"$pidfile"
   else
-    sif="$(find_sif)"; [ -z "$sif" ] && { echo "ERROR: no eic_xl .sif found (set EIC_MCP_SIF)." >&2; return 1; }
+    sif="$(find_sif)"; [ -z "$sif" ] && { echo "ERROR: no eic_xl .sif found — run from your eic-shell install directory, or set EIC_MCP_SIF=/path/to/eic_xl-*.sif once (it is remembered)." >&2; return 1; }
     setsid apptainer exec "$sif" bash --norc --noprofile -c "$ENV_PRELUDE$cmd" >"$logfile" 2>&1 </dev/null & echo $! >"$pidfile"
   fi
 }
