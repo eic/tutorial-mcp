@@ -226,8 +226,10 @@ the tutorial's copy keeps it current:
 
 ```bash
 mkdir -p .opencode/skills
-ln -s /path/to/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
+ln -s ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
 ```
+
+(`~/tutorial-mcp` is where [Setup](../learners/setup.md) cloned this lesson's repository.)
 
 Loading is the model's decision, triggered by the skill's `description` — a small model may answer
 without it unless you name the skill in your prompt, which is why every prompt in this lesson says

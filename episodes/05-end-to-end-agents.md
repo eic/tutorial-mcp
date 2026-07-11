@@ -70,9 +70,9 @@ Everything below runs from the same three-step setup, whatever assistant you use
 
    ```bash
    eic-mcp config opencode > opencode.jsonc
-   cp /path/to/tutorial-mcp/files/skills/AGENTS.md .
+   cp ~/tutorial-mcp/files/skills/AGENTS.md .
    mkdir -p .opencode/skills
-   ln -s /path/to/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
+   ln -s ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
    ```
 
 3. Launch `opencode`, check `/mcp` lists `uproot`, `xrootd`, and `rucio`, and paste the pipeline
