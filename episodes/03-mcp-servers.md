@@ -134,6 +134,17 @@ $ eic-mcp up
 This launches the uproot, xrootd, and rucio servers as MCP-over-HTTP endpoints on `127.0.0.1`,
 ports `9101`, `9102`, `9103`. Stop them with `eic-mcp down`. The assistant connects to those URLs.
 
+::::::::::::::: callout
+
+## If rucio answers but xrootd/uproot time out
+
+The rucio catalogue and the data store are different services. If dataset queries work but every
+file access hangs, the JLab XRootD endpoint may be temporarily down — check with
+`xrdfs root://dtn-eic.jlab.org ls /volatile/eic/EPIC` (inside eic-shell) and retry later. Your
+setup is fine; the store isn't answering.
+
+:::::::::::::::
+
 ## Connect the assistant
 
 opencode reads its server list from a JSON config. Generate it in the directory where you launch

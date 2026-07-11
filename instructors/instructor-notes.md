@@ -40,6 +40,10 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   `opencode` was launched.
 * **Statistics:** peak clarity scales with how many `root://` files the assistant processes — a
   few files show a modest excess; tens of files give a clean fit. Set expectations accordingly.
+* **Store outage:** if rucio queries work but all xrootd/uproot file access times out, the JLab
+  XRootD endpoint (`dtn-eic.jlab.org:1094`) is likely down — verify with
+  `xrdfs root://dtn-eic.jlab.org ls /volatile/eic/EPIC` before the session, and have a fallback
+  ready (Episodes 1–2 material, or a locally cached file).
 
 ## Verifying your own setup
 
