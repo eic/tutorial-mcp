@@ -43,6 +43,9 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   `opencode` was launched.
 * **Statistics:** peak clarity scales with how many `root://` files the assistant processes — a
   few files show a modest excess; tens of files give a clean fit. Set expectations accordingly.
+* **Free-tier throttling:** at busy hours the free hosted models can take minutes per agent turn
+  (the MCP tool context makes each request large). If the session drags, switch the class to
+  another free model in the opencode picker, or keep one paid key as backup.
 * **Store outage:** if rucio queries work but all xrootd/uproot file access times out, the
   XRootD store is likely down — verify with
   `xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO` before the session, and have a
