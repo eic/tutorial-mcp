@@ -100,8 +100,9 @@ one environment runs both analysis and tools. `eic-mcp up` starts them as backgr
 ## The uproot tool server
 
 The ePIC [uproot tool server](https://github.com/eic/uproot-mcp-server) reads ROOT/EDM4eic files
-with [uproot](../learners/reference.md) and returns **compact, JSON-serialisable summaries** — edges,
-counts, statistics, fit inputs — not raw arrays, keeping payloads inside the model's context budget.
+with [uproot](../learners/reference.md) and returns **JSON summaries** — edges, counts, statistics,
+fit inputs — not raw arrays. One caveat: `get_file_structure` on an EDM4eic file lists all ~6,000
+branches (megabytes of JSON); for schema questions `get_tree_info` is the compact choice.
 It exposes 15 tools in four groups:
 
 | Group | Representative tools | Purpose |
@@ -263,10 +264,11 @@ locating a specific dataset, see which campaigns exist so you target a current o
 Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.
 ```
 
-The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic`,
-groups the DIDs by their campaign component, and reports the campaigns — so you pick a version that
-still exists instead of guessing one that has moved on. (The `xrootd` server's `list_campaigns`
-browses the same structure on the store directly.)
+The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic` and
+groups the DIDs by their campaign component. Watch its method here: the catalogue holds thousands
+of DIDs and pages are not sorted newest-first, so a lazy one-page sample can miss the current
+campaigns entirely. Narrowing with a version wildcard (`/RECO/26.*`) — or one call to the `xrootd`
+server's `list_campaigns` — gets the honest answer.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
@@ -281,10 +283,12 @@ Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eC
 ::::::::::::::: solution
 
 The assistant calls `list_scopes`/`list_dids` (scope `epic`, narrowing by a name glob on the
-campaign and beam/target) to find the DID, `list_files` to enumerate it, and `list_file_replicas`
-for the `root://` URLs. It then switches to `xrootd-mcp` (`list_datasets`, `check_file_exists`,
-`get_dataset_event_statistics`) to verify the files and total the events. The DID is *discovered*
-with `list_dids`, not hard-coded — what you want when campaign names change.
+campaign and beam/target) to find the DID, `list_files` to enumerate it (374 files), and
+`list_file_replicas` for the `root://` URLs. It then switches to `xrootd-mcp`
+(`list_directory_filtered`, `check_file_exists`) to verify the files. For the event total, note
+what a sensible assistant does: rucio does not carry event counts, and scanning all 374 files
+would take an hour — it checks a few files (≈ 1,220 events each) and extrapolates. The DID is
+*discovered* with `list_dids`, not hard-coded — what you want when campaign names change.
 
 :::::::::::::::
 
@@ -308,8 +312,8 @@ Using the uproot tools, report the structure of root://epicxrd1.sdcc.bnl.gov:109
 
 ::::::::::::::: solution
 
-The assistant calls `get_file_structure` (returning the `events` tree) then `get_tree_info`, and
-reports something like:
+The assistant calls `get_tree_info` on the `events` tree (not the full `get_file_structure` dump,
+which runs to megabytes on an EDM4eic file) and reports something like:
 
 ```output
 File:  root://epicxrd1.sdcc.bnl.gov:1095//…/<dataset-file>.root
@@ -320,7 +324,7 @@ ReconstructedChargedParticles collection:
   ReconstructedChargedParticles.momentum.x   float[]   p_x [GeV]
   ReconstructedChargedParticles.momentum.y   float[]   p_y [GeV]
   ReconstructedChargedParticles.momentum.z   float[]   p_z [GeV]
-(each member has a companion nReconstructedChargedParticles.* count branch)
+  … energy, charge, mass, type, referencePoint.*, covMatrix.*
 ```
 
 The names are read from the file, not inferred — eliminating the schema-hallucination failure mode
@@ -337,13 +341,15 @@ from Episode 1. These *are* the branches you're looking for.
 Issue the request:
 
 ```{.ai-prompt}
-Histogram ReconstructedChargedParticles.PDG so I can see the reconstructed particle species in the file.
+Histogram ReconstructedChargedParticles.PDG with one bin per integer code, so I can see the reconstructed particle species in the file.
 ```
 
 ::::::::::::::: solution
 
-The assistant calls `histogram_branch`. The distribution is discrete — spikes at the PDG codes
-present. Counting over a reconstructed-DIS file gives, for example:
+The assistant calls `histogram_branch`, setting the bins and range so each integer code gets its
+own bin (the default auto-binning would merge neighbouring codes, e.g. 0 and 11). The distribution
+is discrete — spikes at the PDG codes present. Counting over a reconstructed-DIS file gives, for
+example:
 
 ```output
    PDG  species   count

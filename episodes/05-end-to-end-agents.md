@@ -138,7 +138,7 @@ with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the 
 report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.
 ```
 
-The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. Over ~100 files this gives the full-statistics spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
+The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute, which is exactly where many clients cut a tool call off. For anything bigger, the async route is the right one — `submit_kernel_dataset`, then poll `get_job_status`/`get_job_result`. Over ~100 files this gives the full-statistics spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
 
 ![Fitted Λ⁰ and Λ̄ invariant-mass spectra (100-file reference)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
 
