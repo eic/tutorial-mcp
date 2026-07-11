@@ -92,7 +92,8 @@ enabled_servers() { echo "${EIC_MCP_SERVERS:-uproot xrootd rucio}"; }
 srv_dir() { echo "$EIC_MCP_DIR/$(basename "${SRV_REPO[$1]}" .git)"; }
 
 # ---- run inside the EIC software stack --------------------------------------
-in_container() { [ -n "${APPTAINER_CONTAINER:-}" ] || [ -n "${SINGULARITY_CONTAINER:-}" ] || [ -e /.singularity.d ] || [ -e /singularity ]; }
+# apptainer markers, or /etc/eic-env.sh for the Docker eic_xl image (macOS)
+in_container() { [ -n "${APPTAINER_CONTAINER:-}" ] || [ -n "${SINGULARITY_CONTAINER:-}" ] || [ -e /.singularity.d ] || [ -e /singularity ] || [ -e /etc/eic-env.sh ]; }
 find_sif() {
   [ -n "$EIC_MCP_SIF" ] && { echo "$EIC_MCP_SIF"; return; }
   for p in "$HOME/dev/eic/local/lib/eic_xl-nightly.sif" "$HOME/eic/local/lib/eic_xl-nightly.sif" "$PWD/local/lib/eic_xl-nightly.sif"; do
