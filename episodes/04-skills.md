@@ -292,10 +292,71 @@ Write each instruction once, in the shared open format — `AGENTS.md` for conte
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## Exercises
+::::::::::::::::::::::::::::::::::::::::::::: challenge
 
-* Write a minimal `SKILL.md` for "summarise the contents of any EDM4eic file" that calls `get_file_structure` and `get_tree_info`.
-* Extend the provenance section of `lambda-fit` so it also records the number of input files and the total number of candidate pairs.
+## Exercise: a summary skill (≈ 10 min)
+
+Write a minimal `SKILL.md` for "summarise the contents of any EDM4eic file", place it where your
+client loads skills, and try it on a file from Episode 3.
+
+::::::::::::::: solution
+
+```markdown
+---
+name: edm4eic-summary
+description: >
+  Summarise the contents of an EDM4eic .root file. Use when asked what a
+  reconstruction file contains, which trees or collections it holds, or
+  how many events it has.
+---
+
+# EDM4eic file summary
+
+## Steps
+1. get_tree_info on the `events` tree: entry count and collection names.
+   (Skip get_file_structure — on EDM4eic files it returns megabytes.)
+2. get_tree_info on `runs` and `podio_metadata` for provenance.
+3. Return a compact summary: each tree with its entry count, and the
+   top-level collections grouped by kind (truth, tracking, calorimetry,
+   PID, reconstructed).
+
+## Success criteria
+Every tree named with its entry count; if a tree is missing, say so
+rather than guessing.
+```
+
+Save it as `.opencode/skills/edm4eic-summary/SKILL.md` and name it in the prompt
+("Using the edm4eic-summary skill, …") — the description alone may not tempt a small model.
+
+:::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: challenge
+
+## Exercise: richer provenance (≈ 5 min)
+
+Extend the provenance section of `lambda-fit` so a run also records the number of input files and
+the total number of candidate pairs.
+
+::::::::::::::: solution
+
+Replace the skill's Provenance section with:
+
+```markdown
+## Provenance
+List the tool calls and their parameters, the dataset used (campaign and
+file list), the number of input files processed, and the total number of
+proton-pion candidate pairs entering the histogram, so the run can be
+reproduced.
+```
+
+The pair count comes for free: have the kernel return it next to the histogram
+(e.g. `{"counts": ..., "n_pairs": int(len(m))}`) and sum it over files.
+
+:::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::::::::
 
 The [next episode](05-end-to-end-agents.md) runs this skill end to end and scales it from one file to the full sample.
 
