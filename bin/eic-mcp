@@ -40,9 +40,9 @@ NPM_CACHE='export npm_config_cache="$HOME/.cache/eic-mcp/npm"'
 # ---- server registry --------------------------------------------------------
 # register NAME PORT COMMAND REPO KIND [ENV_HOOK]
 #   COMMAND  = the installed stdio MCP server command (preferred when on PATH,
-#              i.e. /opt/local/bin/<cmd>). Exposed over SSE via supergateway.
+#              i.e. /opt/local/bin/<cmd>). Exposed over streamable HTTP via supergateway.
 #   REPO     = upstream git URL used to bootstrap when COMMAND is not installed
-#   KIND     = py | node  (bootstrap build recipe; runtime is always stdio→SSE)
+#   KIND     = py | node  (bootstrap build recipe; runtime is always stdio→streamable HTTP)
 #   ENV_HOOK = a function name that echoes `export …` lines (auth/config)
 declare -A SRV_PORT SRV_CMD SRV_REPO SRV_KIND SRV_ENV
 SRV_ORDER=()
@@ -198,7 +198,7 @@ ensure_server() {  # make server $1 runnable; no-op once installed or bootstrapp
   echo "==> $n: not shipped in this eic_xl image yet — bootstrapping once (clone + build, may take a few minutes)"
   bootstrap_server "$n"
 }
-prefetch_bridge() {  # make sure the stdio→SSE bridge is runnable before wait_ready's clock starts
+prefetch_bridge() {  # make sure the stdio→HTTP bridge is runnable before wait_ready's clock starts
   run_in_env "command -v supergateway >/dev/null 2>&1 || { $NPM_CACHE; npx -y supergateway --version >/dev/null 2>&1 || true; }"
 }
 

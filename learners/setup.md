@@ -89,7 +89,7 @@ as-is:
 ```bash
 git clone https://github.com/eic/eic-mcp ~/eic-mcp
 git clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp
-export PATH="$HOME/eic-mcp/bin:$PATH"    # add this line to your shell profile
+export PATH="$HOME/eic-mcp/bin:$PATH"    # re-run in each new shell (eic-shell skips your profile)
 ```
 
 It runs the three servers (uproot, xrootd, rucio) inside eic-shell:

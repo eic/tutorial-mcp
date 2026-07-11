@@ -170,7 +170,7 @@ flowchart TB
 | Component | What it adds to the core loop | In this tutorial |
 | --- | --- | --- |
 | MCP servers | external tools & data, client-agnostic | Episodes 3 & 5 (the [uproot](https://github.com/eic/uproot-mcp-server)/[xrootd](https://github.com/eic/xrootd-mcp-server) servers) |
-| Subagents | isolated, specialised helpers | discussed in Episode 5 |
+| Subagents | isolated, specialised helpers | concept introduced here; not used hands-on |
 | Skills | reusable, versioned procedures | Episode 4 (`SKILL.md`) |
 
 Two smaller helpers matter for the loops later in this episode:
@@ -290,8 +290,8 @@ first is fixed at level 1 (observe, don't guess), the second at level 2 (grade, 
 Generative AI is already part of the research software ecosystem — code development and review,
 navigating large codebases, searching technical documentation. The ePIC collaboration, which
 produced the data used here, applies these tools in several such roles. This lesson is a
-self-contained, low-cost entry point: with a free assistant and a single tool server you will carry
-out a complete measurement on real ePIC data.
+self-contained, low-cost entry point: with a free assistant and a few small tool servers you will
+carry out a complete measurement on real ePIC data.
 
 ## Portability through an open protocol
 

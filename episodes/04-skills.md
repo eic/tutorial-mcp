@@ -278,9 +278,10 @@ lambda-analysis/
 │   └── copilot-instructions.md      # points to AGENTS.md   (bridge for Copilot)
 ├── .cursorrules                     # points to AGENTS.md   (bridge for Cursor)
 ├── opencode.jsonc                   # MCP server connections — `eic-mcp config opencode` (Episode 3)
-└── skills/
-    └── lambda-fit/
-        └── SKILL.md                 # the procedure, loaded on demand
+└── .opencode/
+    └── skills/
+        └── lambda-fit/              # soft link to the tutorial's copy (see callout above;
+            └── SKILL.md             #  `.claude/skills/` for Claude Code)
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout

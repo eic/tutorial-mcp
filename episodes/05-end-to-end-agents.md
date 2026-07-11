@@ -55,7 +55,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Set up any MCP client for the end-to-end run in three commands.
+- Set up any MCP client for the end-to-end run in three steps.
 - Pick the right kernel tool for the sample size (`execute_kernel` vs `execute_kernel_dataset`).
 - Sign off — or reject — an agent-produced yield using the audit checklist.
 
@@ -82,11 +82,12 @@ Everything below runs from the same three-step setup, whatever assistant you use
 
 ## Same pipeline, other clients
 
-Only step 2 changes: `eic-mcp config copilot > .vscode/mcp.json` (VS Code/Copilot, Agent mode),
-`eic-mcp config cursor > .cursor/mcp.json`, `eic-mcp config claude > .mcp.json` (Claude Code),
-`eic-mcp config gemini > .gemini/settings.json` (Gemini CLI), or
-`eic-mcp config codex >> ~/.codex/config.toml` (Codex). The servers, skills, and prompts are
-identical.
+Only step 2 changes: `mkdir -p .vscode && eic-mcp config copilot > .vscode/mcp.json`
+(VS Code/Copilot, Agent mode), `mkdir -p .cursor && eic-mcp config cursor > .cursor/mcp.json`,
+`eic-mcp config claude > .mcp.json` (Claude Code),
+`mkdir -p .gemini && eic-mcp config gemini > .gemini/settings.json` (Gemini CLI), or
+`eic-mcp config codex >> ~/.codex/config.toml` (Codex). The servers and prompts are identical;
+put the skill where your client reads skills (`.claude/skills/` for Claude Code).
 
 :::::::::::::::
 
@@ -138,9 +139,9 @@ with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the 
 report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.
 ```
 
-The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute, which is exactly where many clients cut a tool call off. For anything bigger, the async route is the right one — `submit_kernel_dataset`, then poll `get_job_status`/`get_job_result`. Over ~100 files this gives the full-statistics spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
+The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute, which is exactly where many clients cut a tool call off. For anything bigger, the async route is the right one — `submit_kernel_dataset`, then poll `get_job_status`/`get_job_result`. The reference spectrum below comes from ~100 files of this sample in campaign 25.10.2 (67,300 events; today's 26.04.1 files hold ~1,220 events each, so ~55 of them give the same statistics): a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
 
-![Fitted Λ⁰ and Λ̄ invariant-mass spectra (100-file reference)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
+![Fitted Λ⁰ and Λ̄ invariant-mass spectra (reference fit, campaign 25.10.2)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
 
 ```output
 Lambda      -> p pi-:   mu = 1116.30 +/- 0.32 MeV   sigma = 2.72 +/- 0.33 MeV   S = 123   chi2/ndf = 1.16
@@ -192,12 +193,12 @@ few times more files for the same peak, but have thousands to spare. Find the DI
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-You now have the complete workflow: a free assistant, a portable tool server, a versioned skill, and a reproducible Λ⁰ measurement whose every step you can verify. The [final episode](06-eic-mcp-servers.md) catalogues the other MCP servers the EIC provides.
+You now have the complete workflow: a free assistant, portable tool servers, a versioned skill, and a reproducible Λ⁰ measurement whose every step you can verify. The [final episode](06-eic-mcp-servers.md) catalogues the other MCP servers the EIC provides.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
-- The full analysis composes Episodes 2–4: an assistant, the uproot MCP tools, and the lambda-fit skill.
-- The same kernel scales from `execute_kernel` (one root:// file) to `execute_kernel_dataset` (the full sample), merging into one histogram.
+- The full analysis composes Episodes 1, 3, and 4: the agentic loop, the uproot MCP tools, and the lambda-fit skill.
+- The same kernel scales from `execute_kernel` (one root:// file) through `execute_kernel_dataset` (a small batch) to the async `submit_kernel_dataset` (the full sample), merging into one histogram.
 - The yield comes from a Gaussian-plus-polynomial fit; report $\mu$, $\sigma$, $S$, and $\chi^2/\text{ndf}$, not a bare count.
 - Pinning inputs and recording tool calls make the measurement reproducible and auditable.
 

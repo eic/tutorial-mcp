@@ -34,7 +34,7 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
 
 ## Timing and pitfalls
 
-* Total ≈ 2 h teaching + 1.5 h exercises (a half day). Episode 3 is the longest; budget time for
+* Total ≈ 2 h 45 m teaching + 1.5 h exercises (a full day with breaks). Episode 3 is the longest; budget time for
   the first `eic-mcp up` (one-time bootstrap) and connecting opencode to a model.
 * **Common snag:** the assistant stays in "one-shot" mode and only prints code. Have learners
   confirm **Agent/edit mode** in the Setup page's "Check it works" exercise.

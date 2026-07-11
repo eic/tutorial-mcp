@@ -133,7 +133,9 @@ $ eic-mcp up
 ```
 
 This launches the uproot, xrootd, and rucio servers as MCP-over-HTTP endpoints on `127.0.0.1`,
-ports `9101`, `9102`, `9103`. Stop them with `eic-mcp down`. The assistant connects to those URLs.
+ports `9101`, `9102`, `9103`. Stop them with `eic-mcp down`; `eic-mcp status` shows what is
+listening, and `eic-mcp logs xrootd` tails a server's log when something misbehaves. The assistant
+connects to those URLs.
 
 ::::::::::::::: callout
 
@@ -147,7 +149,8 @@ Your setup is fine; the store isn't answering.
 Current campaigns (25.12.0 onward) are served from BNL disk, which is what `eic-mcp` points the
 xrootd server at by default. Older campaigns (up to 25.10.x) live on the JLab store instead —
 browse those with `XROOTD_SERVER=root://dtn-eic.jlab.org XROOTD_BASE_DIR=/volatile/eic/EPIC
-eic-mcp up`. Either way, `rucio` replicas always tell you where a file really is.
+eic-mcp restart` (a plain `up` skips servers that are already running, so the new setting would
+never take effect). Either way, `rucio` replicas always tell you where a file really is.
 
 :::::::::::::::
 
@@ -165,6 +168,7 @@ which prints the three server URLs
 
 ```json
 {
+  "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "uproot": { "type": "remote", "url": "http://127.0.0.1:9101/mcp", "enabled": true },
     "xrootd": { "type": "remote", "url": "http://127.0.0.1:9102/mcp", "enabled": true },
@@ -182,11 +186,11 @@ Within a session, `/mcp` lists the connected servers and their tools.
 The HTTP endpoints work with any MCP client, and `eic-mcp config` writes the matching file:
 
 ```bash
-$ eic-mcp config copilot > .vscode/mcp.json      # VS Code / Copilot
-$ eic-mcp config cursor  > .cursor/mcp.json      # Cursor
-$ eic-mcp config claude  > .mcp.json             # Claude Code
-$ eic-mcp config gemini  > .gemini/settings.json # Gemini CLI
-$ eic-mcp config codex  >> ~/.codex/config.toml  # Codex (TOML, appended)
+$ mkdir -p .vscode && eic-mcp config copilot > .vscode/mcp.json      # VS Code / Copilot
+$ mkdir -p .cursor && eic-mcp config cursor  > .cursor/mcp.json      # Cursor
+$ eic-mcp config claude  > .mcp.json                                 # Claude Code
+$ mkdir -p .gemini && eic-mcp config gemini  > .gemini/settings.json # Gemini CLI
+$ eic-mcp config codex  >> ~/.codex/config.toml                      # Codex (TOML, appended)
 ```
 
 :::::::::::::::
