@@ -76,7 +76,7 @@ flowchart TD
     accTitle: {Skills and AGENTS.md}
     accDescr: {Skills and AGENTS.md}
     R["your project"] --> AG["AGENTS.md<br/>whole file always in context"]:::always
-    R --> SK["skills/lambda-fit/SKILL.md<br/>only its description is indexed"]:::ondemand
+    R --> SK[".opencode/skills/lambda-fit/SKILL.md<br/>only its description is indexed"]:::ondemand
     AG --> M(["model context"]):::core
     SK -. "body loaded only when a<br/>request matches its description" .-> M
     classDef always fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
@@ -220,11 +220,23 @@ file list), so the run can be reproduced.
 
 ## How clients load a skill
 
-An assistant with a native skill mechanism reads skills from a `skills/` directory and loads one when a request matches its `description`. Clients without one reach the same end by referencing the procedure from `AGENTS.md`. The form — a versioned, self-contained specification that drives the MCP tools — is portable even where the loading mechanism is not.
+opencode reads skills from `.opencode/skills/<name>/SKILL.md` in the project directory (or
+`~/.config/opencode/skills/` for all projects); Claude Code uses `.claude/skills/`. A soft link to
+the tutorial's copy keeps it current:
+
+```bash
+mkdir -p .opencode/skills
+ln -s /path/to/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
+```
+
+Loading is the model's decision, triggered by the skill's `description` — a small model may answer
+without it unless you name the skill in your prompt, which is why every prompt in this lesson says
+"Using the lambda-fit skill". Clients without a skill mechanism reach the same end by referencing
+the procedure from `AGENTS.md`.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-Copy both example files: [`files/skills/AGENTS.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md).
+Get both example files in place: [`files/skills/AGENTS.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md) (copy it to your analysis directory) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md) (link it as above).
 
 ## When to use which
 
