@@ -13,7 +13,7 @@ shared read-only `eicread` account).
 
 * [ ] **eic-shell** working (`./eic-shell` drops you into the container).
 * [ ] One **AI assistant** installed and connected to a free model.
-* [ ] **`eic-mcp`** on your `PATH` (one `git clone`).
+* [ ] **`eic-mcp`** on your `PATH`, **`~/tutorial-mcp`** cloned (two `git clone`s).
 * [ ] **`eic-mcp up`** starts the three MCP servers (the first run bootstraps them automatically).
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -82,11 +82,14 @@ shows code, switch on agent/edit mode — executing, not suggesting, is what thi
 
 ## 4. Start the MCP servers — `eic-mcp up`
 
-The launcher lives in its own repository; clone it once and put it on your `PATH`:
+The launcher lives in its own repository. Clone it — and this lesson's repository, whose example
+files Episodes 4–5 use — into your home directory, so every command in the lesson can be pasted
+as-is:
 
 ```bash
-git clone https://github.com/eic/eic-mcp
-export PATH=$PWD/eic-mcp/bin:$PATH    # add this line to your shell profile
+git clone https://github.com/eic/eic-mcp ~/eic-mcp
+git clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp
+export PATH="$HOME/eic-mcp/bin:$PATH"    # re-run in each new shell (eic-shell skips your profile)
 ```
 
 It runs the three servers (uproot, xrootd, rucio) inside eic-shell:

@@ -28,10 +28,13 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   shared read-only `eicread` account, and the assistant reads files over `root://` in place.
 * Have learners run `eic-mcp up` once ahead of time — the first run bootstraps the three servers
   automatically, which takes a few minutes; every later start is seconds.
+* The Episode 3 exercise pins a campaign (currently `26.04.1`). Campaigns retire — run the
+  campaign-listing prompt from Episode 3 beforehand and bump the version in the exercise if
+  production has moved on.
 
 ## Timing and pitfalls
 
-* Total ≈ 2 h teaching + 1.5 h exercises (a half day). Episode 3 is the longest; budget time for
+* Total ≈ 2 h 45 m teaching + 1.5 h exercises (a full day with breaks). Episode 3 is the longest; budget time for
   the first `eic-mcp up` (one-time bootstrap) and connecting opencode to a model.
 * **Common snag:** the assistant stays in "one-shot" mode and only prints code. Have learners
   confirm **Agent/edit mode** in the Setup page's "Check it works" exercise.
@@ -40,6 +43,15 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   `opencode` was launched.
 * **Statistics:** peak clarity scales with how many `root://` files the assistant processes — a
   few files show a modest excess; tens of files give a clean fit. Set expectations accordingly.
+* **Free-tier throttling:** at busy hours the free hosted models can take minutes per agent turn
+  (the MCP tool context makes each request large). If the session drags, switch the class to
+  another free model in the opencode picker, or keep one paid key as backup.
+* **Store outage:** if rucio queries work but all xrootd/uproot file access times out, the
+  XRootD store is likely down — verify with
+  `xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO` before the session, and have a
+  fallback ready (Episodes 1–2 material, or a locally cached file). BNL disk serves campaigns
+  25.12.0 onward (the `eic-mcp` default); the JLab store (`root://dtn-eic.jlab.org`,
+  `/volatile/eic/EPIC`) has campaigns up to 25.10.x.
 
 ## Verifying your own setup
 

@@ -55,7 +55,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Set up any MCP client for the end-to-end run in three commands.
+- Set up any MCP client for the end-to-end run in three steps.
 - Pick the right kernel tool for the sample size (`execute_kernel` vs `execute_kernel_dataset`).
 - Sign off — or reject — an agent-produced yield using the audit checklist.
 
@@ -70,9 +70,9 @@ Everything below runs from the same three-step setup, whatever assistant you use
 
    ```bash
    eic-mcp config opencode > opencode.jsonc
-   cp /path/to/tutorial-mcp/files/skills/AGENTS.md .
-   mkdir -p skills
-   cp -r /path/to/tutorial-mcp/files/skills/lambda-fit skills/
+   cp ~/tutorial-mcp/files/skills/AGENTS.md .
+   mkdir -p .opencode/skills
+   ln -s ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
    ```
 
 3. Launch `opencode`, check `/mcp` lists `uproot`, `xrootd`, and `rucio`, and paste the pipeline
@@ -82,11 +82,12 @@ Everything below runs from the same three-step setup, whatever assistant you use
 
 ## Same pipeline, other clients
 
-Only step 2 changes: `eic-mcp config copilot > .vscode/mcp.json` (VS Code/Copilot, Agent mode),
-`eic-mcp config cursor > .cursor/mcp.json`, `eic-mcp config claude > .mcp.json` (Claude Code),
-`eic-mcp config gemini > .gemini/settings.json` (Gemini CLI), or
-`eic-mcp config codex >> ~/.codex/config.toml` (Codex). The servers, skills, and prompts are
-identical.
+Only step 2 changes: `mkdir -p .vscode && eic-mcp config copilot > .vscode/mcp.json`
+(VS Code/Copilot, Agent mode), `mkdir -p .cursor && eic-mcp config cursor > .cursor/mcp.json`,
+`eic-mcp config claude > .mcp.json` (Claude Code),
+`mkdir -p .gemini && eic-mcp config gemini > .gemini/settings.json` (Gemini CLI), or
+`eic-mcp config codex >> ~/.codex/config.toml` (Codex). The servers and prompts are identical;
+put the skill where your client reads skills (`.claude/skills/` for Claude Code).
 
 :::::::::::::::
 
@@ -113,7 +114,7 @@ With the three servers running and the lambda-fit skill available, one request r
 
 ```{.ai-prompt}
 Using the lambda-fit skill, measure the Lambda0 peak in this file:
-root://dtn-eic.jlab.org//... (one of the dataset's root:// files).
+root://epicxrd1.sdcc.bnl.gov:1095//... (one of the dataset's root:// files).
 Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
 fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot.
 ```
@@ -138,9 +139,9 @@ with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the 
 report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.
 ```
 
-The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. Over ~100 files this gives the full-statistics spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
+The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute, which is exactly where many clients cut a tool call off. For anything bigger, the async route is the right one — `submit_kernel_dataset`, then poll `get_job_status`/`get_job_result`. Over ~100 files this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
 
-![Fitted Λ⁰ and Λ̄ invariant-mass spectra (100-file reference)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
+![Fitted Λ⁰ and Λ̄ invariant-mass spectra (reference fit)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
 
 ```output
 Lambda      -> p pi-:   mu = 1116.30 +/- 0.32 MeV   sigma = 2.72 +/- 0.33 MeV   S = 123   chi2/ndf = 1.16
@@ -181,12 +182,23 @@ Before treating an automated result as final, confirm it meets the skill's crite
 * Process 10 files with `execute_kernel_dataset` and compare the fitted parameters to the ~100-file result; comment on the change in statistical uncertainty.
 * Complete the audit checklist for your run, attaching the recorded tool calls as provenance.
 
-You now have the complete workflow: a free assistant, a portable tool server, a versioned skill, and a reproducible Λ⁰ measurement whose every step you can verify. The [final episode](06-eic-mcp-servers.md) catalogues the other MCP servers the EIC provides.
+::::::::::::::::::::::::::::::::::::::::::::: callout
+
+## Try a different beam
+
+Nothing here is tied to the eCu sample — point the skill at any reconstructed-DIS DID and the
+same prompt works. Nuclear beams (eCu, eAu) give the most Λ per event; plain ep samples need a
+few times more files for the same peak, but have thousands to spare. Find the DIDs with
+`list_dids` as in Episode 3.
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+You now have the complete workflow: a free assistant, portable tool servers, a versioned skill, and a reproducible Λ⁰ measurement whose every step you can verify. The [final episode](06-eic-mcp-servers.md) catalogues the other MCP servers the EIC provides.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
-- The full analysis composes Episodes 2–4: an assistant, the uproot MCP tools, and the lambda-fit skill.
-- The same kernel scales from `execute_kernel` (one root:// file) to `execute_kernel_dataset` (the full sample), merging into one histogram.
+- The full analysis composes Episodes 1, 3, and 4: the agentic loop, the uproot MCP tools, and the lambda-fit skill.
+- The same kernel scales from `execute_kernel` (one root:// file) through `execute_kernel_dataset` (a small batch) to the async `submit_kernel_dataset` (the full sample), merging into one histogram.
 - The yield comes from a Gaussian-plus-polynomial fit; report $\mu$, $\sigma$, $S$, and $\chi^2/\text{ndf}$, not a bare count.
 - Pinning inputs and recording tool calls make the measurement reproducible and auditable.
 

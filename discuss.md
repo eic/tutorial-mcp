@@ -10,9 +10,10 @@ your own:
 * **Central ePIC infrastructure.** Instead of every collaborator running their own MCP servers,
   the collaboration could host shared servers and MCP *proxies*, a vetted library of *skills*,
   and agent harnesses that anyone can reuse. What belongs centrally, and what stays local?
-* **More tools, same pattern.** The `uproot-mcp-server` is one tool. What other ePIC workflows —
-  data discovery, calibration lookups, documentation search (cf. BNL's codoc/corun-ai) — would
-  benefit from an MCP server?
+* **More tools, same pattern.** This lesson already ran three servers — uproot for analysis,
+  rucio and xrootd for data discovery — and Episode 6 catalogues documentation search. What
+  other ePIC workflows — calibration lookups, run planning, detector conditions — deserve a
+  server next?
 * **Trust and reproducibility at scale.** The trust checklist (check the result, make it
   repeatable, keep a record, watch the cost, stay in the loop) matters more, not less, as
   analyses get more automated. How do we make an automatic result as solid as a hand-made one?

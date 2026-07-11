@@ -100,8 +100,9 @@ one environment runs both analysis and tools. `eic-mcp up` starts them as backgr
 ## The uproot tool server
 
 The ePIC [uproot tool server](https://github.com/eic/uproot-mcp-server) reads ROOT/EDM4eic files
-with [uproot](../learners/reference.md) and returns **compact, JSON-serialisable summaries** — edges,
-counts, statistics, fit inputs — not raw arrays, keeping payloads inside the model's context budget.
+with [uproot](../learners/reference.md) and returns **JSON summaries** — edges, counts, statistics,
+fit inputs — not raw arrays. One caveat: `get_file_structure` on an EDM4eic file lists all ~6,000
+branches (megabytes of JSON); for schema questions `get_tree_info` is the compact choice.
 It exposes 15 tools in four groups:
 
 | Group | Representative tools | Purpose |
@@ -132,7 +133,26 @@ $ eic-mcp up
 ```
 
 This launches the uproot, xrootd, and rucio servers as MCP-over-HTTP endpoints on `127.0.0.1`,
-ports `9101`, `9102`, `9103`. Stop them with `eic-mcp down`. The assistant connects to those URLs.
+ports `9101`, `9102`, `9103`. Stop them with `eic-mcp down`; `eic-mcp status` shows what is
+listening, and `eic-mcp logs xrootd` tails a server's log when something misbehaves. The assistant
+connects to those URLs.
+
+::::::::::::::: callout
+
+## If rucio answers but xrootd/uproot time out
+
+The rucio catalogue and the data store are different services. If dataset queries work but every
+file access hangs, the XRootD store may be temporarily down — check with
+`xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO` (inside eic-shell) and retry later.
+Your setup is fine; the store isn't answering.
+
+Current campaigns (25.12.0 onward) are served from BNL disk, which is what `eic-mcp` points the
+xrootd server at by default. Older campaigns (up to 25.10.x) live on the JLab store instead —
+browse those with `XROOTD_SERVER=root://dtn-eic.jlab.org XROOTD_BASE_DIR=/volatile/eic/EPIC
+eic-mcp restart` (a plain `up` skips servers that are already running, so the new setting would
+never take effect). Either way, `rucio` replicas always tell you where a file really is.
+
+:::::::::::::::
 
 ## Connect the assistant
 
@@ -148,6 +168,7 @@ which prints the three server URLs
 
 ```json
 {
+  "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "uproot": { "type": "remote", "url": "http://127.0.0.1:9101/mcp", "enabled": true },
     "xrootd": { "type": "remote", "url": "http://127.0.0.1:9102/mcp", "enabled": true },
@@ -165,11 +186,11 @@ Within a session, `/mcp` lists the connected servers and their tools.
 The HTTP endpoints work with any MCP client, and `eic-mcp config` writes the matching file:
 
 ```bash
-$ eic-mcp config copilot > .vscode/mcp.json      # VS Code / Copilot
-$ eic-mcp config cursor  > .cursor/mcp.json      # Cursor
-$ eic-mcp config claude  > .mcp.json             # Claude Code
-$ eic-mcp config gemini  > .gemini/settings.json # Gemini CLI
-$ eic-mcp config codex  >> ~/.codex/config.toml  # Codex (TOML, appended)
+$ mkdir -p .vscode && eic-mcp config copilot > .vscode/mcp.json      # VS Code / Copilot
+$ mkdir -p .cursor && eic-mcp config cursor  > .cursor/mcp.json      # Cursor
+$ eic-mcp config claude  > .mcp.json                                 # Claude Code
+$ mkdir -p .gemini && eic-mcp config gemini  > .gemini/settings.json # Gemini CLI
+$ eic-mcp config codex  >> ~/.codex/config.toml                      # Codex (TOML, appended)
 ```
 
 :::::::::::::::
@@ -238,19 +259,20 @@ store you can use `xrootd-mcp` alone.
 
 ## List the available campaigns
 
-ePIC data is organised by **production campaign** — a version such as `25.12.0` — together with the
+ePIC data is organised by **production campaign** — a version such as `26.06.0` — together with the
 beam/target and physics, all encoded in the rucio DID
-(e.g. `epic:/RECO/25.12.0/epic_craterlake/DIS/CC/18x275/...`). Before locating a specific dataset,
-see which campaigns exist so you target a current one:
+(e.g. `epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...`). Before
+locating a specific dataset, see which campaigns exist so you target a current one:
 
 ```{.ai-prompt}
-Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 25.12.0). Show the most recent few and roughly how many datasets each holds.
+Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.
 ```
 
-The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic`,
-groups the DIDs by their campaign component, and reports the campaigns — so you pick a version that
-still exists instead of guessing one that has moved on. (The `xrootd` server's `list_campaigns`
-browses the same structure on the store directly.)
+The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic` and
+groups the DIDs by their campaign component. Watch its method here: the catalogue holds thousands
+of DIDs and pages are not sorted newest-first, so a lazy one-page sample can miss the current
+campaigns entirely. Narrowing with a version wildcard (`/RECO/26.*`) — or one call to the `xrootd`
+server's `list_campaigns` — gets the honest answer.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
@@ -259,16 +281,18 @@ browses the same structure on the store directly.)
 With `rucio` and `xrootd` connected (no credentials — see the callout), ask your assistant:
 
 ```{.ai-prompt}
-Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 25.10.2, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.
+Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.
 ```
 
 ::::::::::::::: solution
 
 The assistant calls `list_scopes`/`list_dids` (scope `epic`, narrowing by a name glob on the
-campaign and beam/target) to find the DID, `list_files` to enumerate it, and `list_file_replicas`
-for the `root://` URLs. It then switches to `xrootd-mcp` (`list_datasets`, `check_file_exists`,
-`get_dataset_event_statistics`) to verify the files and total the events. The DID is *discovered*
-with `list_dids`, not hard-coded — what you want when campaign names change.
+campaign and beam/target) to find the DID, `list_files` to enumerate it (374 files), and
+`list_file_replicas` for the `root://` URLs. It then switches to `xrootd-mcp`
+(`list_directory_filtered`, `check_file_exists`) to verify the files. For the event total, note
+what a sensible assistant does: rucio does not carry event counts, and scanning all 374 files
+would take an hour — it checks a few files (≈ 1,220 events each) and extrapolates. The DID is
+*discovered* with `list_dids`, not hard-coded — what you want when campaign names change.
 
 :::::::::::::::
 
@@ -277,7 +301,7 @@ with `list_dids`, not hard-coded — what you want when campaign names change.
 ## Inspect the dataset
 
 You specify the operation in natural language and the assistant issues the matching tool calls. Take
-one of the `root://` URLs from the previous exercise — written below as `root://dtn-eic.jlab.org//…`
+one of the `root://` URLs from the previous exercise — written below as `root://epicxrd1.sdcc.bnl.gov:1095//…`
 — and analyse it **in place**.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
@@ -287,16 +311,16 @@ one of the `root://` URLs from the previous exercise — written below as `root:
 Issue the request:
 
 ```{.ai-prompt}
-Using the uproot tools, report the structure of root://dtn-eic.jlab.org//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
+Using the uproot tools, report the structure of root://epicxrd1.sdcc.bnl.gov:1095//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
 ```
 
 ::::::::::::::: solution
 
-The assistant calls `get_file_structure` (returning the `events` tree) then `get_tree_info`, and
-reports something like:
+The assistant calls `get_tree_info` on the `events` tree (not the full `get_file_structure` dump,
+which runs to megabytes on an EDM4eic file) and reports something like:
 
 ```output
-File:  root://dtn-eic.jlab.org//…/<dataset-file>.root
+File:  root://epicxrd1.sdcc.bnl.gov:1095//…/<dataset-file>.root
 Tree:  events   — branches grouped by collection
 
 ReconstructedChargedParticles collection:
@@ -304,7 +328,7 @@ ReconstructedChargedParticles collection:
   ReconstructedChargedParticles.momentum.x   float[]   p_x [GeV]
   ReconstructedChargedParticles.momentum.y   float[]   p_y [GeV]
   ReconstructedChargedParticles.momentum.z   float[]   p_z [GeV]
-(each member has a companion nReconstructedChargedParticles.* count branch)
+  … energy, charge, mass, type, referencePoint.*, covMatrix.*
 ```
 
 The names are read from the file, not inferred — eliminating the schema-hallucination failure mode
@@ -321,13 +345,15 @@ from Episode 1. These *are* the branches you're looking for.
 Issue the request:
 
 ```{.ai-prompt}
-Histogram ReconstructedChargedParticles.PDG so I can see the reconstructed particle species in the file.
+Histogram ReconstructedChargedParticles.PDG with one bin per integer code, so I can see the reconstructed particle species in the file.
 ```
 
 ::::::::::::::: solution
 
-The assistant calls `histogram_branch`. The distribution is discrete — spikes at the PDG codes
-present. Counting over a reconstructed-DIS file gives, for example:
+The assistant calls `histogram_branch`, setting the bins and range so each integer code gets its
+own bin (the default auto-binning would merge neighbouring codes, e.g. 0 and 11). The distribution
+is discrete — spikes at the PDG codes present. Counting over a reconstructed-DIS file gives, for
+example:
 
 ```output
    PDG  species   count

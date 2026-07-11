@@ -20,7 +20,7 @@ The lesson develops three ideas and applies them end to end:
   make a run repeatable and auditable.
 
 The treatment is tool-agnostic: the method is demonstrated with several free assistants, and the
-component you build (an MCP tool server) works with any of them.
+components you assemble (MCP tool servers, a skill) work with any of them.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 

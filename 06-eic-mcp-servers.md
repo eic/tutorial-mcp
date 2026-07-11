@@ -138,7 +138,7 @@ uproot/xrootd/rucio/zenodo work today and you ran three of them yourself; the LX
 
 ![XRootD logo](fig/logos/xrootd.png){.mcp-logo alt='XRootD logo'}
 
-[`eic/xrootd-mcp-server`](https://github.com/eic/xrootd-mcp-server) ([docs](https://eic.github.io/xrootd-mcp-server/)) browses the JLab/dCache XRootD store: list directories, read metadata, search, monitor production campaigns.
+[`eic/xrootd-mcp-server`](https://github.com/eic/xrootd-mcp-server) ([docs](https://eic.github.io/xrootd-mcp-server/)) browses the ePIC XRootD stores (BNL disk by default; the older JLab store via configuration): list directories, read metadata, search, monitor production campaigns.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 

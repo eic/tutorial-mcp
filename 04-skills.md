@@ -76,7 +76,7 @@ flowchart TD
     accTitle: {Skills and AGENTS.md}
     accDescr: {Skills and AGENTS.md}
     R["your project"] --> AG["AGENTS.md<br/>whole file always in context"]:::always
-    R --> SK["skills/lambda-fit/SKILL.md<br/>only its description is indexed"]:::ondemand
+    R --> SK[".opencode/skills/lambda-fit/SKILL.md<br/>only its description is indexed"]:::ondemand
     AG --> M(["model context"]):::core
     SK -. "body loaded only when a<br/>request matches its description" .-> M
     classDef always fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
@@ -190,16 +190,22 @@ reconstructed data via the proton-pion invariant mass.
   (resolve both with the rucio tools: list_dids, list_files, list_file_replicas).
 
 ## Steps
-1. Confirm the uproot MCP server is connected: get_file_structure on the input.
+1. Confirm the uproot MCP server is connected: get_tree_info on the input.
 2. Build the proton-pion invariant-mass histogram with execute_kernel (one file)
    or execute_kernel_dataset (many files), tree_name 'events' and the
    ReconstructedChargedParticles momentum/PDG branches. For a large sample, cap
-   the file count first.
+   the file count first; for more than ~10 files use submit_kernel_dataset and
+   poll, so no single tool call outlives the client's timeout. Write any
+   reduce/merge code as plain NumPy array operations (the sandbox rejects tuple
+   unpacking in loops).
 3. Fit the histogram with a second execute_kernel call (Gaussian + 2nd-order
    polynomial over [1.08, 1.16] GeV; NumPy/awkward only, no imports).
 4. Report mu, sigma, signal yield S, and chi2/ndf.
 
 ## Success criteria (check before reporting success)
+- At least ~50 entries in the fit window. With fewer, report insufficient
+  statistics and stop — a low-stats fit lets the polynomial absorb the peak and
+  can pass the checks below by accident.
 - |mu - 1.115683 GeV| < 0.005 GeV.
 - sigma in ~[0.001, 0.005] GeV (this is detector resolution, not natural width).
 - chi2/ndf of order 1.
@@ -214,11 +220,25 @@ file list), so the run can be reproduced.
 
 ## How clients load a skill
 
-An assistant with a native skill mechanism reads skills from a `skills/` directory and loads one when a request matches its `description`. Clients without one reach the same end by referencing the procedure from `AGENTS.md`. The form — a versioned, self-contained specification that drives the MCP tools — is portable even where the loading mechanism is not.
+opencode reads skills from `.opencode/skills/<name>/SKILL.md` in the project directory (or
+`~/.config/opencode/skills/` for all projects); Claude Code uses `.claude/skills/`. A soft link to
+the tutorial's copy keeps it current:
+
+```bash
+mkdir -p .opencode/skills
+ln -s ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
+```
+
+(`~/tutorial-mcp` is where [Setup](../learners/setup.md) cloned this lesson's repository.)
+
+Loading is the model's decision, triggered by the skill's `description` — a small model may answer
+without it unless you name the skill in your prompt, which is why every prompt in this lesson says
+"Using the lambda-fit skill". Clients without a skill mechanism reach the same end by referencing
+the procedure from `AGENTS.md`.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-Copy both example files: [`files/skills/AGENTS.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md).
+Get both example files in place: [`files/skills/AGENTS.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md) (copy it to your analysis directory) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md) (link it as above).
 
 ## When to use which
 
@@ -258,9 +278,10 @@ lambda-analysis/
 │   └── copilot-instructions.md      # points to AGENTS.md   (bridge for Copilot)
 ├── .cursorrules                     # points to AGENTS.md   (bridge for Cursor)
 ├── opencode.jsonc                   # MCP server connections — `eic-mcp config opencode` (Episode 3)
-└── skills/
-    └── lambda-fit/
-        └── SKILL.md                 # the procedure, loaded on demand
+└── .opencode/
+    └── skills/
+        └── lambda-fit/              # soft link to the tutorial's copy (see callout above;
+            └── SKILL.md             #  `.claude/skills/` for Claude Code)
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
@@ -271,10 +292,71 @@ Write each instruction once, in the shared open format — `AGENTS.md` for conte
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## Exercises
+::::::::::::::::::::::::::::::::::::::::::::: challenge
 
-* Write a minimal `SKILL.md` for "summarise the contents of any EDM4eic file" that calls `get_file_structure` and `get_tree_info`.
-* Extend the provenance section of `lambda-fit` so it also records the number of input files and the total number of candidate pairs.
+## Exercise: a summary skill (≈ 10 min)
+
+Write a minimal `SKILL.md` for "summarise the contents of any EDM4eic file", place it where your
+client loads skills, and try it on a file from Episode 3.
+
+::::::::::::::: solution
+
+```markdown
+---
+name: edm4eic-summary
+description: >
+  Summarise the contents of an EDM4eic .root file. Use when asked what a
+  reconstruction file contains, which trees or collections it holds, or
+  how many events it has.
+---
+
+# EDM4eic file summary
+
+## Steps
+1. get_tree_info on the `events` tree: entry count and collection names.
+   (Skip get_file_structure — on EDM4eic files it returns megabytes.)
+2. get_tree_info on `runs` and `podio_metadata` for provenance.
+3. Return a compact summary: each tree with its entry count, and the
+   top-level collections grouped by kind (truth, tracking, calorimetry,
+   PID, reconstructed).
+
+## Success criteria
+Every tree named with its entry count; if a tree is missing, say so
+rather than guessing.
+```
+
+Save it as `.opencode/skills/edm4eic-summary/SKILL.md` and name it in the prompt
+("Using the edm4eic-summary skill, …") — the description alone may not tempt a small model.
+
+:::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: challenge
+
+## Exercise: richer provenance (≈ 5 min)
+
+Extend the provenance section of `lambda-fit` so a run also records the number of input files and
+the total number of candidate pairs.
+
+::::::::::::::: solution
+
+Replace the skill's Provenance section with:
+
+```markdown
+## Provenance
+List the tool calls and their parameters, the dataset used (campaign and
+file list), the number of input files processed, and the total number of
+proton-pion candidate pairs entering the histogram, so the run can be
+reproduced.
+```
+
+The pair count comes for free: have the kernel return it next to the histogram
+(e.g. `{"counts": ..., "n_pairs": int(len(m))}`) and sum it over files.
+
+:::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::::::::
 
 The [next episode](05-end-to-end-agents.md) runs this skill end to end and scales it from one file to the full sample.
 
