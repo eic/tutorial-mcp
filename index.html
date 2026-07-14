@@ -412,10 +412,10 @@ automatically).</label></li>
 (See <a href="https://eic.github.io/tutorial-setting-up-environment/" class="external-link">environment
 setup guide</a>.)</p>
 </section><section><h2 class="section-heading" id="choose-an-ai-assistant">2. Choose an AI assistant<a class="anchor" aria-label="anchor" href="#choose-an-ai-assistant"></a></h2>
-<hr class="half-width"><figure><img src="fig/one-ring.svg" alt="gold ring engraved with the words EIC" width="160" class="figure mx-auto d-block"></figure><p><strong>One assistant to rule them all?</strong> Fortunately not: any
+<hr class="half-width"><figure><img src="fig/one-ring.svg" alt="gold ring engraved with the words EIC" width="160" class="figure mx-auto d-block"></figure><p><strong>One assistant to rule them all?</strong> any
 <strong>agentic</strong> assistant — one that can read/write your files
-and run commands, not just emit text — works, and MCP keeps you free to
-switch. This tutorial is based on <a href="https://opencode.ai" class="external-link">opencode</a>.</p>
+and run commands, not just emit text — works, and MCP works with any.
+This tutorial is based on <a href="https://opencode.ai" class="external-link">opencode</a>.</p>
 <table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>Tool</th>
 <th>Interface</th>
 <th>Free access</th>
@@ -457,8 +457,7 @@ CLI</a></td>
 <p>The free hosted models work out of the box without any login. The
 installer adds <code>opencode</code> to your shell profile, so open a
 <strong>new</strong> terminal if the command is not found yet. Run it on
-your own machine, not inside eic-shell — the container ships
-<code>claude</code> and <code>copilot</code> instead (next callout).</p>
+your own machine, not inside <code>eic-shell</code></p>
 <p>If you prefer an editor — try <a href="https://code.visualstudio.com/" class="external-link">VS Code</a> plus the <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot" class="external-link">GitHub
 Copilot</a> and <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat" class="external-link">Copilot
 Chat</a> extensions (sign in with GitHub — students/educators get Pro
@@ -471,10 +470,10 @@ free — and use <strong>Agent</strong> mode), or <a href="https://cursor.com/" 
 <div id="not-allowed-to-install-anything" class="callout-inner">
 <h3 class="callout-title">Not allowed to install anything?</h3>
 <div class="callout-content">
-<p>eic-shell already ships two assistants: <strong>Claude Code</strong>
+<p>eic-shell already has two assistants: <strong>Claude Code</strong>
 (<code>claude</code>) and the <strong>GitHub Copilot CLI</strong>
 (<code>copilot</code>). Run one <em>inside</em> the container, alongside
-the servers (step 4) — nothing to install, no ports to publish:</p>
+the servers (step 4):</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -530,8 +529,8 @@ eic-shell:</p>
 <div id="macos-two-extra-steps" class="callout-inner">
 <h3 class="callout-title">macOS: two extra steps</h3>
 <div class="callout-content">
-<p>On a Mac, eic-shell is Docker: it publishes no ports and does not
-share your home. Clone the launcher <strong>next to
+<p>On a Mac, <code>eic-shell</code> is Docker: it publishes no ports and
+does not share your home. Clone the launcher <strong>next to
 <code>./eic-shell</code></strong> instead, and publish the server ports
 once:</p>
 <div class="codewrapper sourceCode" id="cb5">
