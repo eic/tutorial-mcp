@@ -261,7 +261,7 @@
 <div class="accordion accordion-flush" id="accordionFlush7">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading7">
-        <a href="06-eic-mcp-servers.html">6. Catalogue: MCP servers and AI infrastructure in the EIC ecosystem</a>
+        <a href="06-eic-mcp-servers.html">6. Catalog: MCP servers and AI infrastructure in the EIC ecosystem</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -408,8 +408,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 </div>
 <section><h2 class="section-heading" id="two-ways-to-make-instructions-persistent">Two ways to make instructions persistent<a class="anchor" aria-label="anchor" href="#two-ways-to-make-instructions-persistent"></a></h2>
 <hr class="half-width"><p>Typing requests (Episode 3) does not scale: you re-explain the data
-model, conventions, and procedure every session, and nothing stops two
-runs from diverging. Two file-based mechanisms fix this.</p>
+model, conventions, and procedure every session, and nothing keeps two
+runs the same. Two file-based mechanisms fix this.</p>
 <ul><li>
 <strong><code>AGENTS.md</code></strong> — always-on
 <strong>context</strong>, read at the start of every session:
@@ -523,7 +523,7 @@ and silently ignore it: GitHub Copilot reads
 <code>.cursorrules</code>. A project with only an <code>AGENTS.md</code>
 runs such a tool with no context and no warning.</p>
 <p>Don’t copy your rules into a second file; two copies drift within a
-week. <strong>Keep the standard in the centre and let each tool read
+week. <strong>Keep the standard in the center and let each tool read
 from it</strong>: the tool-specific file becomes a one-line
 <em>bridge</em> pointing at <code>AGENTS.md</code>.</p>
 <p><code>.github/copilot-instructions.md</code> (GitHub Copilot) — and
@@ -704,7 +704,7 @@ auditable.</p>
 <code>AGENTS.md</code> for context, <code>SKILL.md</code> for
 procedures, <code>opencode.jsonc</code> for tool connections — then
 point any tool-specific file at it. Never keep duplicate rule files.
-<em>Standards in the centre, tools at the edges.</em></p>
+<em>Standards in the center, tools at the edges.</em></p>
 </div>
 </div>
 </div>
@@ -716,7 +716,7 @@ point any tool-specific file at it. Never keep duplicate rule files.
 <div id="exercise-a-summary-skill-10-min" class="callout-inner">
 <h3 class="callout-title">Exercise: a summary skill (≈ 10 min)</h3>
 <div class="callout-content">
-<p>Write a minimal <code>SKILL.md</code> for “summarise the contents of
+<p>Write a minimal <code>SKILL.md</code> for “summarize the contents of
 any EDM4eic file”, place it where your client loads skills, and try it
 on a file from Episode 3.</p>
 </div>
@@ -735,7 +735,7 @@ on a file from Episode 3.</p>
 <pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" tabindex="-1" aria-label="code-block-8-1"></a><span class="co">---</span></span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1" aria-label="code-block-8-2"></a><span class="an">name:</span><span class="co"> edm4eic-summary</span></span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1" aria-label="code-block-8-3"></a><span class="an">description:</span><span class="co"> &gt;</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1" aria-label="code-block-8-4"></a><span class="co">  Summarise the contents of an EDM4eic .root file. Use when asked what a</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1" aria-label="code-block-8-4"></a><span class="co">  Summarize the contents of an EDM4eic .root file. Use when asked what a</span></span>
 <span id="cb8-5"><a href="#cb8-5" tabindex="-1" aria-label="code-block-8-5"></a><span class="co">  reconstruction file contains, which trees or collections it holds, or</span></span>
 <span id="cb8-6"><a href="#cb8-6" tabindex="-1" aria-label="code-block-8-6"></a><span class="co">  how many events it has.</span></span>
 <span id="cb8-7"><a href="#cb8-7" tabindex="-1" aria-label="code-block-8-7"></a><span class="co">---</span></span>

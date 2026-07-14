@@ -262,7 +262,7 @@
 <div class="accordion accordion-flush" id="accordionFlush7">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading7">
-        <a href="06-eic-mcp-servers.html">6. Catalogue: MCP servers and AI infrastructure in the EIC ecosystem</a>
+        <a href="06-eic-mcp-servers.html">6. Catalog: MCP servers and AI infrastructure in the EIC ecosystem</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -410,17 +410,18 @@ what.</li>
 </div>
 <section><h2 class="section-heading" id="the-interoperability-problem">The interoperability problem<a class="anchor" aria-label="anchor" href="#the-interoperability-problem"></a></h2>
 <hr class="half-width"><p>Tools are the only way an assistant can act (<a href="01-why-genai-for-physics.html">Episode 1</a>). The <strong>Model
-Context Protocol (MCP)</strong> standardises the interface: implement a
+Context Protocol (MCP)</strong> standardizes the interface: implement a
 tool once as a <strong>server</strong>, and any MCP-compliant
 <strong>client</strong> (the assistant) can use it.</p>
 <p>MCP is a client–server protocol over <strong>JSON-RPC 2.0</strong>. A
 server offers three object types — <strong>tools</strong> (callable
 functions), <strong>resources</strong> (readable data), and
-<strong>prompts</strong> (templated instructions). Two transports exist:
-<strong>stdio</strong> (client launches the server as a subprocess,
-messages over standard input/output) and <strong>streamable
-HTTP</strong> for networked servers. The lesson’s servers run inside
-eic-shell and speak streamable HTTP on <code>127.0.0.1</code>.</p>
+<strong>prompts</strong> (templated instructions). There are two
+transports: <strong>stdio</strong> (the client launches the server as a
+subprocess and talks to it over standard input/output) and
+<strong>streamable HTTP</strong> for servers reached over the network.
+The lesson’s servers run inside eic-shell and speak streamable HTTP on
+<code>127.0.0.1</code>.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {EIC MCP data tools}
@@ -524,7 +525,7 @@ when something misbehaves. The assistant connects to those URLs.</p>
 <h3 class="callout-title">If rucio answers but xrootd/uproot time
 out</h3>
 <div class="callout-content">
-<p>The rucio catalogue and the data store are different services. If
+<p>The rucio catalog and the data store are different services. If
 dataset queries work but every file access hangs, the XRootD store may
 be temporarily down — check with
 <code>xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO</code>
@@ -632,12 +633,12 @@ flowchart LR
     accTitle: {EIC MCP data tools}
     accDescr: {EIC MCP data tools}
     R["rucio-mcp&lt;br/&gt;list_dids · list_files · list_file_replicas"]:::tool --&gt;|"DID + root:// replica URLs"| X["xrootd-mcp&lt;br/&gt;list_datasets · check_file_exists · get_dataset_event_statistics"]:::tool
-    X --&gt;|"verified root:// paths"| U["uproot-mcp&lt;br/&gt;analyse in place"]:::core
+    X --&gt;|"verified root:// paths"| U["uproot-mcp&lt;br/&gt;analyze in place"]:::core
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;</code></pre>
 <ul><li>
 <strong><a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>rucio-mcp</code></a></strong>
-queries the data-management catalogue: <code>list_dids</code> finds the
+queries the data-management catalog: <code>list_dids</code> finds the
 dataset identifier (DID) by name, <code>get_did_metadata</code> and
 <code>list_files</code> describe its contents,
 <code>list_file_replicas</code> returns the physical
@@ -662,7 +663,7 @@ place</strong>.</p>
 <h3 class="callout-title">rucio works automatically — no key</h3>
 <div class="callout-content">
 <p>Inside eic-shell, <code>rucio-mcp</code> signs in to the
-authenticated catalogue with the shared, read-only <code>eicread</code>
+authenticated catalog with the shared, read-only <code>eicread</code>
 account. No password or grid proxy. The xrootd path is public, so to
 only <em>browse</em> the store you can use <code>xrootd-mcp</code>
 alone.</p>
@@ -670,7 +671,7 @@ alone.</p>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="list-the-available-campaigns">List the available campaigns<a class="anchor" aria-label="anchor" href="#list-the-available-campaigns"></a></h2>
-<hr class="half-width"><p>ePIC data is organised by <strong>production campaign</strong> — a
+<hr class="half-width"><p>ePIC data is organized by <strong>production campaign</strong> — a
 version such as <code>26.06.0</code> — together with the beam/target and
 physics, all encoded in the rucio DID
 (e.g. <code>epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...</code>).
@@ -679,7 +680,7 @@ use a current one:</p>
 <pre class="ai-prompt"><code>Using the rucio tools, find which production campaigns are available (the version field in the DIDs, e.g. 26.06.0) and show the most recent few.</code></pre>
 <p>The assistant calls <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>list_dids</code></a>
 on scope <code>epic</code> and groups the DIDs by their campaign
-component. Watch how it does this: the catalogue holds thousands of DIDs
+component. Watch how it does this: the catalog holds thousands of DIDs
 and the pages are not sorted newest-first, so sampling one page can miss
 the current campaigns entirely. Narrowing with a version wildcard
 (<code>/RECO/26.*</code>) — or one call to the <code>xrootd</code>
@@ -703,7 +704,7 @@ credentials — see the callout), ask your assistant:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>The assistant calls <code>list_scopes</code>/<code>list_dids</code>
 (scope <code>epic</code>, narrowing by a name glob on the campaign and
@@ -721,10 +722,10 @@ what you want when campaign names change.</p>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="inspect-the-dataset">Inspect the dataset<a class="anchor" aria-label="anchor" href="#inspect-the-dataset"></a></h2>
-<hr class="half-width"><p>You specify the operation in natural language and the assistant
-issues the matching tool calls. Take one of the <code>root://</code>
-URLs from the previous exercise — written below as
-<code>root://epicxrd1.sdcc.bnl.gov:1095//…</code> — and analyse it
+<hr class="half-width"><p>You say what you want in plain language and the assistant makes the
+matching tool calls. Take one of the <code>root://</code> URLs from the
+previous exercise — written below as
+<code>root://epicxrd1.sdcc.bnl.gov:1095//…</code> — and analyze it
 <strong>in place</strong>.</p>
 <div id="exercise-enumerate-the-schema-10-min" class="callout challenge">
 <div class="callout-square">
@@ -744,7 +745,7 @@ URLs from the previous exercise — written below as
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The assistant calls <code>get_tree_info</code> on the
 <code>events</code> tree (not the full <code>get_file_structure</code>
@@ -789,7 +790,7 @@ min)</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>The assistant calls <code>histogram_branch</code>, setting the bins
 and range so each integer code gets its own bin (the default
@@ -877,7 +878,7 @@ The next episode captures this procedure as a reusable, versioned
 <div class="callout-content">
 <ul><li>MCP is a JSON-RPC client–server protocol; a server exposes tools,
 resources, and prompts to any compliant client.</li>
-<li>The uproot server returns compact, JSON-serialisable summaries
+<li>The uproot server returns compact, JSON-serializable summaries
 rather than raw arrays, which keeps results inspectable.</li>
 <li>
 <code>execute_kernel</code> runs client-supplied Python in a

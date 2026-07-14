@@ -260,7 +260,7 @@
 <div class="accordion accordion-flush" id="accordionFlush7">
   <div class="accordion-item">
     <div class="accordion-header" id="flush-heading7">
-        <a href="06-eic-mcp-servers.html">6. Catalogue: MCP servers and AI infrastructure in the EIC ecosystem</a>
+        <a href="06-eic-mcp-servers.html">6. Catalog: MCP servers and AI infrastructure in the EIC ecosystem</a>
     </div><!--/div.accordion-header-->
 
   </div><!--/div.accordion-item-->
@@ -506,7 +506,7 @@ flowchart TB
     accTitle: {AI agent harness}
     accDescr: {AI agent harness}
     MCP["MCP servers&lt;br/&gt;external tools &amp; data"]:::tool --&gt; H
-    SUB["subagents&lt;br/&gt;specialised, isolated context"]:::tool --&gt; H
+    SUB["subagents&lt;br/&gt;specialized, isolated context"]:::tool --&gt; H
     HOOKS["hooks&lt;br/&gt;lifecycle automation"]:::tool --&gt; H
     MON["monitors&lt;br/&gt;watch &amp; react"]:::tool --&gt; H
     H(["harness core&lt;br/&gt;model + context + tools + loop"]):::core
@@ -514,7 +514,7 @@ flowchart TB
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;</code></pre>
 <ul><li>
 <strong>MCP servers</strong> — the <em>tools</em> layer,
-standardised. A server (in our case eic-shell) exposes tools, data, and
+standardized. A server (in our case eic-shell) exposes tools, data, and
 prompts over the Model Context Protocol so one implementation works in
 any client. This is how we give the assistant physics capabilities (<a href="03-mcp-servers.html">Episode 3</a>).</li>
 <li>
@@ -533,7 +533,7 @@ capability; a skill is a recipe.</li>
 <td>external tools &amp; data, client-agnostic</td>
 <td>Episodes 3 &amp; 5 (the <a href="https://github.com/eic/uproot-mcp-server" class="external-link">uproot</a>/<a href="https://github.com/eic/xrootd-mcp-server" class="external-link">xrootd</a> servers)</td>
 </tr><tr><td>Subagents</td>
-<td>isolated, specialised helpers</td>
+<td>isolated, specialized helpers</td>
 <td>concept</td>
 </tr><tr><td>Skills</td>
 <td>reusable, versioned procedures</td>
@@ -583,12 +583,12 @@ exactly this grader into the lambda-fit skill’s <strong>success
 criteria</strong> — and a passing agent reports the numbers, while a
 failing one must report the failure, not a result.</p>
 <p>Grading costs time and tokens. It is the right trade wherever
-correctness matters more than speed — almost always. So favour tools
-that return compact, inspectable quantities — counts, edges, fit
-parameters — and keep a record of what was run: reproducibility and
-provenance are the criteria by which an automated result earns trust. At
-collaboration scale the grader can be mechanical, like the secret-token
-fabrication check in DISpatcher <a href="06-eic-mcp-servers.html">Episode 6</a>.</p>
+correctness matters more than speed — almost always. So favor tools that
+return compact, inspectable quantities — counts, edges, fit parameters —
+and keep a record of what was run: reproducibility and provenance are
+the criteria by which an automated result earns trust. At collaboration
+scale the grader can be mechanical, like the secret-token fabrication
+check in DISpatcher <a href="06-eic-mcp-servers.html">Episode 6</a>.</p>
 </section><section><h2 class="section-heading" id="level-3-the-operation-loop">Level 3 — the operation loop<a class="anchor" aria-label="anchor" href="#level-3-the-operation-loop"></a></h2>
 <hr class="half-width"><p>With verification in place, the agent no longer needs you to press
 enter. A third loop makes it a <em>component</em>: an event — a
@@ -616,7 +616,7 @@ choices — and feed that back into the <strong>harness itself</strong>:
 sharpen <code>AGENTS.md</code>, tighten a skill’s success criteria, add
 the missing tool. Levels 1–3 make the agent do the work; level 4 makes
 the agent <em>better at</em> the work, which is where the gains
-compound. You will practise a small version of it every time a prompt in
+compound. You will practice a small version of it every time a prompt in
 this lesson goes wrong and you fix the instructions instead of retyping
 the request.</p>
 <div id="where-a-human-belongs-in-each-loop" class="callout">
