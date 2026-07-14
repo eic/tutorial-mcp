@@ -23,7 +23,7 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
 ## Before the workshop
 
 * Make sure learners have **eic-shell** working and **opencode** installed with a free model
-  connected (Setup page). Everything else runs inside eic-shell.
+  connected (Setup page). Only the tool servers run inside eic-shell.
 * No JLab account or data download is needed: the `rucio` server signs in automatically with the
   shared read-only `eicread` account, and the assistant reads files over `root://` in place.
 * Have learners run `eic-mcp up` once ahead of time — the first run bootstraps the three servers
@@ -43,6 +43,9 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   `opencode` was launched.
 * **Statistics:** peak clarity scales with how many `root://` files the assistant processes — a
   few files show a modest excess; tens of files give a clean fit. Set expectations accordingly.
+* **macOS learners:** two symptoms of a missed Setup step — `/mcp` finds nothing on the Mac (no
+  `-p 127.0.0.1:9101-9104` in `./eic-shell`), or the servers re-bootstrap every session
+  (`eic-mcp status` must show a state dir under their eic-shell folder, not `/root`).
 * **Free-tier throttling:** at busy hours the free hosted models can take minutes per agent turn
   (the MCP tool context makes each request large). If the session drags, switch the class to
   another free model in the opencode picker, or keep one paid key as backup.

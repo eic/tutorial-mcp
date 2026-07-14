@@ -82,12 +82,10 @@ Everything below runs from the same three-step setup, whatever assistant you use
 
 ## Same pipeline, other clients
 
-Only step 2 changes: `mkdir -p .vscode && eic-mcp config copilot > .vscode/mcp.json`
-(VS Code/Copilot, Agent mode), `mkdir -p .cursor && eic-mcp config cursor > .cursor/mcp.json`,
-`eic-mcp config claude > .mcp.json` (Claude Code),
-`mkdir -p .gemini && eic-mcp config gemini > .gemini/settings.json` (Gemini CLI), or
-`eic-mcp config codex >> ~/.codex/config.toml` (Codex). The servers and prompts are identical;
-put the skill where your client reads skills (`.claude/skills/` for Claude Code).
+Only step 2 changes: `eic-mcp config <client>` writes the file each client expects — e.g.
+`eic-mcp config claude > .mcp.json` for Claude Code (preinstalled in eic-shell). The full list is
+in [Episode 3](03-mcp-servers.md). The servers and prompts are identical; put the skill where your
+client reads skills (`.claude/skills/` for Claude Code).
 
 :::::::::::::::
 

@@ -2,10 +2,11 @@
 title: Setup
 ---
 
-Everything runs inside **eic-shell**. Install an AI assistant (this tutorial will use `opencode`), get `eic-mcp`, and
-one command starts the tool servers. Nothing else — no grid certificate, no data download — the
-MCP servers reuse the eic-shell own `uproot`, `xrdfs`, and `rucio` (already logged in to the
-shared read-only `eicread` account).
+The tool **servers** run inside **eic-shell**; your **assistant** runs where you normally work.
+Install an AI assistant (this tutorial will use `opencode`), get `eic-mcp`, and one command starts
+the tool servers. Nothing else — no grid certificate, no data download — the MCP servers reuse
+eic-shell's own `uproot`, `xrdfs`, and `rucio` (already logged in to the shared read-only `eicread`
+account).
 
 ::::::::::::::::::::::::::::::::::::::::::::: checklist
 
@@ -51,11 +52,28 @@ curl -fsSL https://opencode.ai/install | bash
 
 The free hosted models work out of the box without any login.
 
-PIf you predfer an editor - try Install [VS Code](https://code.visualstudio.com/) plus the
+If you prefer an editor — try [VS Code](https://code.visualstudio.com/) plus the
 [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and
 [Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extensions
 (sign in with GitHub — students/educators get Pro free — and use **Agent** mode), or
 [Cursor](https://cursor.com/).
+
+::::::::::::::::::::::::::::::::::::::::::::: callout
+
+## Not allowed to install anything?
+
+eic-shell already ships two assistants: **Claude Code** (`claude`) and the **GitHub Copilot CLI**
+(`copilot`). Run one *inside* the container, alongside the servers (step 4) — nothing to install,
+no ports to publish:
+
+```bash
+eic-mcp config copilot > ~/.copilot/mcp-config.json    # claude : eic-mcp  config claude > .mcp.json
+copilot                               # or: claude
+```
+
+One browser login the first time; it prints a code to paste, so it works over SSH.
+
+:::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
@@ -82,14 +100,49 @@ export PATH="$HOME/eic-mcp/bin:$PATH"    # re-run in each new shell (eic-shell s
 It runs the three servers (uproot, xrootd, rucio) inside eic-shell:
 
 ```bash
+cd ~/eic && eic-mcp up    # first run from your eic-shell folder — it remembers the image
+```
+
+::::::::::::::::::::::::::::::::::::::::::::: callout
+
+## macOS: two extra steps
+
+On a Mac, eic-shell is Docker: it publishes no ports and does not share your home. Clone the
+launcher **next to `./eic-shell`** instead, and publish the server ports once:
+
+```bash
+cd ~/eic                                    # the folder with ./eic-shell (yours may differ)
+git clone https://github.com/eic/eic-mcp
+grep -q 9101 eic-shell || sed -i '' 's|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 |' eic-shell
+grep 'docker run' eic-shell                 # must now show -p 127.0.0.1:9101-9104:9101-9104
+./eic-shell
+```
+
+Inside eic-shell you land in that folder, so this works whatever your username is:
+
+```bash
+export PATH="$PWD/eic-mcp/bin:$PATH"
 eic-mcp up
 ```
+
+Leave this window open: the container — and the servers inside it — only live while `./eic-shell`
+runs. Your assistant stays **on the Mac**, in a second terminal; copy the ready-made config into the
+directory where you launch `opencode`:
+
+```bash
+cp ~/tutorial-mcp/files/mcp-config/opencode.jsonc .
+```
+
+:::::::::::::::::::::::::::::::::::::::::::::
 
 If your eic_xl image already ships the servers, they just start; otherwise the **first** run
 bootstraps them automatically (a one-time clone and build, a few minutes). Every later `eic-mcp up`
 starts in seconds. You start and stop the servers per session in
 [Episode 3](../episodes/03-mcp-servers.md) with `eic-mcp up` / `eic-mcp down`; point your assistant
 at them with `eic-mcp config opencode` (see Episode 3).
+
+`eic-mcp` and the servers are on their way into eic-shell itself — once the image ships them, the
+clone above goes away and the commands stay exactly the same.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 

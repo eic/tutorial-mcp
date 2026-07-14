@@ -12,7 +12,7 @@
 #   eic-mcp list              # show the server registry
 #   eic-mcp up                # start them (http://127.0.0.1:910x/mcp)
 #   eic-mcp status            # which are listening
-#   eic-mcp config CLIENT     # print client config (opencode|claude|copilot|cursor|gemini|codex)
+#   eic-mcp config CLIENT     # print client config (opencode|claude|copilot|vscode|cursor|gemini|codex)
 #   eic-mcp logs NAME         # tail a server log
 #   eic-mcp down | restart
 #   eic-mcp setup             # optional pre-build ('up' does this automatically)
@@ -26,7 +26,19 @@
 #
 set -euo pipefail
 
+# Needs bash 4+ (associative arrays); macOS ships 3.2, the container has bash 5.
+if [ "${BASH_VERSINFO:-0}" -lt 4 ]; then
+  echo "eic-mcp needs bash 4+ (macOS ships 3.2) — run it inside eic-shell: ./eic-shell, then eic-mcp up" >&2
+  exit 1
+fi
+
 # ---- config -----------------------------------------------------------------
+# State (servers, logs, pidfiles) lives in ~/.eic-mcp — but in the Docker eic_xl image (macOS
+# eic-shell) $HOME=/root is wiped on exit, so anchor it to EIC_SHELL_PREFIX (on the host).
+if [ -z "${EIC_MCP_STATE:-}" ] && [ "$HOME" = "/root" ] && [ -n "${EIC_SHELL_PREFIX:-}" ] \
+   && [ -z "${APPTAINER_CONTAINER:-}${SINGULARITY_CONTAINER:-}" ]; then
+  EIC_MCP_STATE="$(dirname "$EIC_SHELL_PREFIX")/.eic-mcp"
+fi
 EIC_MCP_STATE="${EIC_MCP_STATE:-$HOME/.eic-mcp}"
 EIC_MCP_DIR="${EIC_MCP_DIR:-$EIC_MCP_STATE/servers}"   # bootstrap checkouts
 RUN_DIR="$EIC_MCP_STATE/run"; LOG_DIR="$EIC_MCP_STATE/logs"
@@ -34,8 +46,7 @@ BIND_HOST="${EIC_MCP_HOST:-127.0.0.1}"
 EIC_MCP_SIF="${EIC_MCP_SIF:-}"
 RUCIO_CFG="${RUCIO_CFG:-/opt/rucio/etc/rucio.cfg}"
 CONF_DIR="${EIC_MCP_CONF_DIR:-$HOME/.config/eic-mcp/servers.d}"
-# shellcheck disable=SC2016  # $HOME must expand inside the container, at exec time
-NPM_CACHE='export npm_config_cache="$HOME/.cache/eic-mcp/npm"'
+NPM_CACHE="export npm_config_cache='$EIC_MCP_STATE/npm'"   # persists with the state
 
 # ---- server registry --------------------------------------------------------
 # register NAME PORT COMMAND REPO KIND [ENV_HOOK]
@@ -125,10 +136,11 @@ find_sif() {
 # /etc/eic-env.sh explicitly, with --norc --noprofile so user/system dotfiles
 # can't perturb it (matches the container's deliberate no-dotfiles behaviour).
 ENV_PRELUDE='. /etc/eic-env.sh 2>/dev/null; '
+sif_missing() { echo "ERROR: no eic_xl .sif found. macOS: eic-shell is Docker (no .sif) — run eic-mcp INSIDE ./eic-shell. Linux/WSL: run from your eic-shell install directory, or set EIC_MCP_SIF=/path/to/eic_xl-*.sif once (it is remembered)." >&2; }
 run_in_env() {
   if in_container; then bash --norc --noprofile -c "$ENV_PRELUDE$1"; else
     local sif; sif="$(find_sif)"
-    [ -z "$sif" ] && { echo "ERROR: no eic_xl .sif found — run from your eic-shell install directory, or set EIC_MCP_SIF=/path/to/eic_xl-*.sif once (it is remembered)." >&2; exit 1; }
+    [ -z "$sif" ] && { sif_missing; exit 1; }
     apptainer exec "$sif" bash --norc --noprofile -c "$ENV_PRELUDE$1"
   fi
 }
@@ -137,7 +149,7 @@ run_in_env_bg() {  # cmd pidfile logfile  — setsid → own process group for r
   if in_container; then
     setsid bash --norc --noprofile -c "$ENV_PRELUDE$cmd" >"$logfile" 2>&1 </dev/null & echo $! >"$pidfile"
   else
-    sif="$(find_sif)"; [ -z "$sif" ] && { echo "ERROR: no eic_xl .sif found — run from your eic-shell install directory, or set EIC_MCP_SIF=/path/to/eic_xl-*.sif once (it is remembered)." >&2; return 1; }
+    sif="$(find_sif)"; [ -z "$sif" ] && { sif_missing; return 1; }
     setsid apptainer exec "$sif" bash --norc --noprofile -c "$ENV_PRELUDE$cmd" >"$logfile" 2>&1 </dev/null & echo $! >"$pidfile"
   fi
 }
@@ -173,7 +185,7 @@ local_stdio() {  # the bootstrapped stdio command for server $1
     node) echo "node $dir/build/src/index.js" ;;
   esac
 }
-local_built() {  # host-visible check ($EIC_MCP_DIR lives under $HOME, bound into the container)
+local_built() {  # host-visible check ($EIC_MCP_DIR lives under $EIC_MCP_STATE, visible on both sides)
   local n=$1 dir; dir="$(srv_dir "$n")"
   case "${SRV_KIND[$n]}" in
     py)   [ -x "$dir/.venv-eic/bin/${SRV_CMD[$n]}" ] ;;
@@ -298,6 +310,7 @@ cmd_status() {
     port_open "${SRV_PORT[$n]}" && st=UP || st=down
     printf "%-8s %-30s %s\n" "$n" "http://$BIND_HOST:${SRV_PORT[$n]}/mcp" "$st"
   done
+  echo "state: $EIC_MCP_STATE"
 }
 cmd_logs() {
   local n="${1:-}"; [ -z "$n" ] && { echo "usage: eic-mcp logs <name>" >&2; exit 2; }
@@ -307,9 +320,9 @@ cmd_logs() {
 # `config CLIENT` prints an MCP client config pointing at the enabled servers'
 # streamable-HTTP URLs. Redirect it to the client's config file:
 #   opencode → opencode.jsonc (launch dir) or ~/.config/opencode/opencode.jsonc
-#   claude   → .mcp.json          copilot|vscode → .vscode/mcp.json
-#   cursor   → .cursor/mcp.json   gemini → .gemini/settings.json
-#   codex    → append (>>) to ~/.codex/config.toml
+#   claude   → .mcp.json              copilot → ~/.copilot/mcp-config.json  (CLI, *not* VS Code)
+#   vscode   → .vscode/mcp.json       cursor  → .cursor/mcp.json
+#   gemini   → .gemini/settings.json  codex   → append (>>) to ~/.codex/config.toml
 cmd_config() {
   local client="${1:-opencode}" n url first=1
   case "$client" in
@@ -334,7 +347,16 @@ cmd_config() {
       done
       echo; echo '  }'; echo '}'
       ;;
-    copilot|vscode)   # VS Code / Copilot .vscode/mcp.json
+    copilot)  # GitHub Copilot CLI ~/.copilot/mcp-config.json (preinstalled in eic-shell)
+      echo '{'; echo '  "mcpServers": {'
+      for n in $(resolved_servers); do
+        url="http://$BIND_HOST:${SRV_PORT[$n]}/mcp"
+        [ $first -eq 1 ] || echo ','; first=0
+        printf '    "%s": { "type": "http", "url": "%s", "tools": ["*"] }' "$n" "$url"
+      done
+      echo; echo '  }'; echo '}'
+      ;;
+    vscode)   # VS Code (Copilot Chat, Agent mode) .vscode/mcp.json
       echo '{'; echo '  "servers": {'
       for n in $(resolved_servers); do
         url="http://$BIND_HOST:${SRV_PORT[$n]}/mcp"
@@ -367,7 +389,7 @@ cmd_config() {
         echo "url = \"http://$BIND_HOST:${SRV_PORT[$n]}/mcp\""
       done
       ;;
-    *) echo "unknown client '$client' (use: opencode | claude | copilot | cursor | gemini | codex)" >&2; exit 2 ;;
+    *) echo "unknown client '$client' (use: opencode | claude | copilot | vscode | cursor | gemini | codex)" >&2; exit 2 ;;
   esac
 }
 
