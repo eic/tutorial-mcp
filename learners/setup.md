@@ -20,8 +20,7 @@ shared read-only `eicread` account).
 
 ## 1. eic-shell
 
-Make sure `./eic-shell` drops you into the container —
-everything below runs **inside** it. (See
+Make sure `./eic-shell` could drop you into the container. (See
 [environment setup guide](https://eic.github.io/tutorial-setting-up-environment/).)
 
 ## 2. Choose an AI assistant
@@ -44,7 +43,7 @@ switch. This tutorial is based on [opencode](https://opencode.ai).
 
 ## 3. Install one
 
-This lesson uses **[opencode](https://opencode.ai)** — terminal, native MCP, free models:
+This lesson uses **[opencode](https://opencode.ai)**:
 
 ```bash
 curl -fsSL https://opencode.ai/install | bash
@@ -52,7 +51,7 @@ curl -fsSL https://opencode.ai/install | bash
 
 The free hosted models work out of the box without any login.
 
-Prefer an editor? Install [VS Code](https://code.visualstudio.com/) plus the
+PIf you predfer an editor - try Install [VS Code](https://code.visualstudio.com/) plus the
 [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and
 [Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extensions
 (sign in with GitHub — students/educators get Pro free — and use **Agent** mode), or
