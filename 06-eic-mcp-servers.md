@@ -206,6 +206,16 @@ The bot runs a small, cheap model, so it hits the failure modes this lesson warn
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
+::::::::::::::::::::::::::::::::::::::::::::: callout
+
+## AI smart search on eic.github.io
+
+Another option: the [EIC software portal](https://eic.github.io/) has an AI smart
+search — the "Ask anything about EIC…" box in the header. Type a question and it returns embedded
+search results together with an AI overview built from the public EIC documents. 
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
 ## Beyond the bot: corun-ai
 
 The bot answers in seconds from a small model, and its answers scroll away in the chat history. [**`BNLNPPS/corun-ai`**](https://github.com/BNLNPPS/corun-ai) is the complement: runs that take **minutes** on high-level models, with the results preserved, browsable, and open to expert commentary. Its first application, **codoc-ai** ([epic-devcloud.org/doc](https://epic-devcloud.org/doc/)), generates software documents grounded in LXR + GitHub. Typical uses:
