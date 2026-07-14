@@ -186,37 +186,28 @@ Within a session, `/mcp` lists the connected servers and their tools.
 The HTTP endpoints work with any MCP client, and `eic-mcp config` writes the matching file:
 
 ```bash
-$ mkdir -p .vscode && eic-mcp config copilot > .vscode/mcp.json      # VS Code / Copilot
-$ mkdir -p .cursor && eic-mcp config cursor  > .cursor/mcp.json      # Cursor
-$ eic-mcp config claude  > .mcp.json                                 # Claude Code
-$ mkdir -p .gemini && eic-mcp config gemini  > .gemini/settings.json # Gemini CLI
-$ eic-mcp config codex  >> ~/.codex/config.toml                      # Codex (TOML, appended)
+$ mkdir -p ~/.copilot && eic-mcp config copilot > ~/.copilot/mcp-config.json   # Copilot CLI
+$ mkdir -p .vscode && eic-mcp config vscode  > .vscode/mcp.json       # VS Code / Copilot Chat
+$ mkdir -p .cursor && eic-mcp config cursor  > .cursor/mcp.json       # Cursor
+$ mkdir -p .gemini && eic-mcp config gemini  > .gemini/settings.json  # Gemini CLI
+$ eic-mcp config codex  >> ~/.codex/config.toml                       # Codex (TOML, appended)
+$ eic-mcp config claude  > .mcp.json                                  # Claude Code
 ```
 
 :::::::::::::::
 
 ::::::::::::::: callout
 
-## Running the client outside the container
+## Which side am I on?
 
-The MCP servers always run *inside* eic-shell, but your AI client doesn't have to.
+Only the **servers** need eic-shell — they use the container's `uproot`, `xrdfs`, and signed-in
+`rucio`. The **client** just talks to `http://127.0.0.1:910x/mcp`, so run it where you normally
+work, and put its config in the directory you launch it from.
 
-* **Linux and Windows/WSL:** eic-shell uses Apptainer/Singularity, which shares the host network.
-  The `http://127.0.0.1:910x/mcp` URLs work identically from inside the container and from the
-  host — install your client on the host, run `eic-mcp config <client>` (the launcher finds your
-  eic_xl image automatically), and connect.
-* **macOS:** your `./eic-shell` script runs Docker under the hood, and it publishes no ports, so
-  the endpoints are *not* reachable from the host by default. Simplest fix: run the client inside
-  eic-shell (opencode is a terminal program and installs fine in the container). Otherwise, either
-  open the `eic-shell` script the installer generated and add
-  `-p 127.0.0.1:9101-9104:9101-9104` to its `docker run` line, or start the container with the
-  full command yourself (this is what `./eic-shell` runs, plus the port flag):
-
-  ```bash
-  docker run --platform linux/amd64 -p 127.0.0.1:9101-9104:9101-9104 \
-    -v /Users:/Users -v /Volumes:/Volumes -v /tmp:/tmp -w=$PWD -it --rm \
-    -e EIC_SHELL_PREFIX=$PWD/local eicweb/eic_xl:nightly eic-shell
-  ```
+* **Linux and Windows/WSL:** the same URLs work inside and outside the container.
+* **macOS:** you published the ports in [Setup](../learners/setup.md); on the Mac itself, copy
+  `files/mcp-config/opencode.jsonc` rather than running `eic-mcp config` (it needs the container).
+* **Can't install a client?** eic-shell ships `claude` and `copilot` — run one *inside* it.
 
 :::::::::::::::
 
