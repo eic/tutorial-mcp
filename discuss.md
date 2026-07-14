@@ -11,7 +11,7 @@ your own:
   the collaboration could host shared servers and MCP *proxies*, a vetted library of *skills*,
   and agent harnesses that anyone can reuse. What belongs centrally, and what stays local?
 * **More tools, same pattern.** This lesson already ran three servers — uproot for analysis,
-  rucio and xrootd for data discovery — and Episode 6 catalogues documentation search. What
+  rucio and xrootd for data discovery — and Episode 6 catalogs documentation search. What
   other ePIC workflows — calibration lookups, run planning, detector conditions — deserve a
   server next?
 * **Trust and reproducibility at scale.** The trust checklist (check the result, make it

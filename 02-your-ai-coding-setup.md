@@ -52,8 +52,8 @@ mode is
 Λ⁰ → p + π⁻      (branching fraction ≈ 63.9%)
 ```
 
-The macroscopic lifetime makes the decay a **V0**: two oppositely charged tracks from a vertex
-displaced from the primary interaction point.
+The centimeter-scale flight distance makes the decay a **V0**: two oppositely charged tracks from
+a vertex displaced from the primary interaction point.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%

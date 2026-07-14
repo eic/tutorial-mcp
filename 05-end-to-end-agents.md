@@ -212,11 +212,11 @@ few times more files for the same peak, but have thousands to spare. Find the DI
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-You now have the complete workflow: a free assistant, portable tool servers, a versioned skill, and a reproducible Λ⁰ measurement you can verify at every step. The [final episode](06-eic-mcp-servers.md) catalogues the other MCP servers the EIC provides.
+You now have the complete workflow: a free assistant, portable tool servers, a versioned skill, and a reproducible Λ⁰ measurement you can verify at every step. The [final episode](06-eic-mcp-servers.md) catalogs the other MCP servers the EIC provides.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
-- The full analysis composes Episodes 1, 3, and 4: the agentic loop, the uproot MCP tools, and the lambda-fit skill.
+- The full analysis combines Episodes 1, 3, and 4: the agentic loop, the uproot MCP tools, and the lambda-fit skill.
 - The same kernel scales from `execute_kernel` (one root:// file) through `execute_kernel_dataset` (a small batch) to the async `submit_kernel_dataset` (the full sample), merging into one histogram.
 - The yield comes from a Gaussian-plus-polynomial fit; report $\mu$, $\sigma$, $S$, and $\chi^2/\text{ndf}$, not a bare count.
 - Pinning inputs and recording tool calls make the measurement reproducible and auditable.

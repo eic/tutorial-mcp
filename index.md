@@ -5,7 +5,7 @@ site: sandpaper::sandpaper_site
 In most analyses the bottleneck is not the physics but the software around it: finding data,
 decoding a data model, getting branch names and units right, iterating on fitting and plotting
 code. This lesson shows how to hand that overhead to an AI assistant **without giving up
-rigour**: every step produces a number you can check, and the whole procedure is reproducible.
+rigor**: every step produces a number you can check, and the whole procedure is reproducible.
 
 The worked example is a real measurement from the ePIC experiment: reconstructing the weak decay
 **Λ⁰ → p π⁻** and extracting its yield from the proton–pion invariant-mass spectrum.
@@ -13,7 +13,7 @@ The worked example is a real measurement from the ePIC experiment: reconstructin
 The lesson develops three ideas and applies them end to end:
 
 * an **agentic assistant** — a language model placed in a loop where it can read files, run code,
-  and condition on the results, rather than only returning text;
+  and react to the results, rather than only returning text;
 * the **Model Context Protocol (MCP)** — an open standard for exposing analysis tools to any
   assistant, so the workflow is portable; and
 * **persistent instructions** (`AGENTS.md` and `SKILL.md`) — versioned context and procedures that

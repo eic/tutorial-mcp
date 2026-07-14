@@ -66,7 +66,7 @@ The charge conjugate **Λ̄ → p̄ π⁺** is reconstructed identically with th
 
 ## The V0 signature
 
-Travelling ≈ 8 cm before decaying, the Λ⁰ produces a **V0**: two oppositely charged tracks from a
+Traveling ≈ 8 cm before decaying, the Λ⁰ produces a **V0**: two oppositely charged tracks from a
 vertex displaced from the primary interaction point. The neutral Λ⁰ leaves no track.
 
 ```mermaid
@@ -113,7 +113,7 @@ peak width — a few MeV — measures **detector momentum and angular resolution
 
 ## Signal extraction
 
-Fit a Gaussian signal on a second-order polynomial background over a window centred on the peak:
+Fit a Gaussian signal on a second-order polynomial background over a window centered on the peak:
 
 ```
    f(m) = A · exp( −½ ((m − μ)/σ)^2 )  +  ( c0 + c1 (m − m_Λ) + c2 (m − m_Λ)^2 )

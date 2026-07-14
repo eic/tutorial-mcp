@@ -18,7 +18,7 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   `files/skills/`.
 * **Episode 5** is the end-to-end run (single file → full sample via `execute_kernel_dataset`,
   signal extraction, audit checklist), with a per-client setup section.
-* **Episode 6** is a catalogue of the EIC MCP servers and the corun-ai ecosystem.
+* **Episode 6** is a catalog of the EIC MCP servers and the corun-ai ecosystem.
 
 ## Before the workshop
 

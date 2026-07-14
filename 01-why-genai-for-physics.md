@@ -150,7 +150,7 @@ flowchart TB
     accTitle: {AI agent harness}
     accDescr: {AI agent harness}
     MCP["MCP servers<br/>external tools & data"]:::tool --> H
-    SUB["subagents<br/>specialised, isolated context"]:::tool --> H
+    SUB["subagents<br/>specialized, isolated context"]:::tool --> H
     HOOKS["hooks<br/>lifecycle automation"]:::tool --> H
     MON["monitors<br/>watch & react"]:::tool --> H
     H(["harness core<br/>model + context + tools + loop"]):::core
@@ -158,7 +158,7 @@ flowchart TB
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
 ```
 
-* **MCP servers** — the *tools* layer, standardised. A server (in our case eic-shell) exposes tools, data, and prompts over
+* **MCP servers** — the *tools* layer, standardized. A server (in our case eic-shell) exposes tools, data, and prompts over
   the Model Context Protocol so one implementation works in any client. This is how we give the
   assistant physics capabilities ([Episode 3](03-mcp-servers.md)).
 * **Subagents (agents)** — a separate assistant instance with its own context window, tools, and
@@ -169,7 +169,7 @@ flowchart TB
 | Component | What it adds to the core loop | In this tutorial |
 | --- | --- | --- |
 | MCP servers | external tools & data, client-agnostic | Episodes 3 & 5 (the [uproot](https://github.com/eic/uproot-mcp-server)/[xrootd](https://github.com/eic/xrootd-mcp-server) servers) |
-| Subagents | isolated, specialised helpers | concept |
+| Subagents | isolated, specialized helpers | concept |
 | Skills | reusable, versioned procedures | Episode 4 (`SKILL.md`) |
 
 Two smaller helpers matter for the loops later in this episode:
@@ -213,7 +213,7 @@ this grader into the lambda-fit skill's **success criteria** — and a passing a
 numbers, while a failing one must report the failure, not a result.
 
 Grading costs time and tokens. It is the right trade wherever correctness matters more than speed —
-almost always. So favour tools that return compact, inspectable quantities — counts,
+almost always. So favor tools that return compact, inspectable quantities — counts,
 edges, fit parameters — and keep a record of what was run: reproducibility and provenance are the
 criteria by which an automated result earns trust. At collaboration scale the grader can be
 mechanical, like the secret-token fabrication check in DISpatcher [Episode 6](06-eic-mcp-servers.md).
@@ -248,7 +248,7 @@ There is one more loop, around everything: periodically look at what the agent *
 transcripts, failed fits, wrong tool choices — and feed that back into the **harness itself**:
 sharpen `AGENTS.md`, tighten a skill's success criteria, add the missing tool. Levels 1–3 make the
 agent do the work; level 4 makes the agent *better at* the work, which is where the gains compound.
-You will practise a small version of it every time a prompt in this lesson goes wrong and you fix
+You will practice a small version of it every time a prompt in this lesson goes wrong and you fix
 the instructions instead of retyping the request.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout

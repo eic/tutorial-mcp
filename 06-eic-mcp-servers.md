@@ -1,5 +1,5 @@
 ---
-title: "Catalogue: MCP servers and AI infrastructure in the EIC ecosystem"
+title: "Catalog: MCP servers and AI infrastructure in the EIC ecosystem"
 teaching: 15
 exercises: 0
 ---
@@ -67,8 +67,8 @@ MCP is a standard ([Episode 3](03-mcp-servers.md)), so the collaboration exposes
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
-    accTitle: {EIC MCP server catalogue}
-    accDescr: {EIC MCP server catalogue}
+    accTitle: {EIC MCP server catalog}
+    accDescr: {EIC MCP server catalog}
     A(["your AI assistant"]):::core
     A --> DATA
     A --> REC
@@ -115,7 +115,7 @@ flowchart TB
 
 ## Current status
 
-uproot/xrootd/rucio/zenodo work today and you ran three of them yourself; the LXR MCP server exists but is deployed inside the BNL-hosted services rather than as a package you run locally; indico is maintained by an individual, not the `eic` org; the production tools are reachable through the bot. See the [eic GitHub organisation](https://github.com/eic) and the [ePIC dev-cloud](https://epic-devcloud.org/doc/) for the current set.
+uproot/xrootd/rucio/zenodo work today and you ran three of them yourself; the LXR MCP server exists but is deployed inside the BNL-hosted services rather than as a package you run locally; indico is maintained by an individual, not the `eic` org; the production tools are reachable through the bot. See the [eic GitHub organization](https://github.com/eic) and the [ePIC dev-cloud](https://epic-devcloud.org/doc/) for the current set.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -148,7 +148,7 @@ uproot/xrootd/rucio/zenodo work today and you ran three of them yourself; the LX
 
 ![Rucio logo](fig/logos/rucio.png){.mcp-logo alt='Rucio logo'}
 
-[`eic/rucio-eic-mcp-server`](https://github.com/eic/rucio-eic-mcp-server) exposes [Rucio](https://rucio.cern.ch/) through ~13 tools (dataset discovery, file listing, replicas, rules). Deliberately **read-only** — an assistant gets no write access to the catalogue.
+[`eic/rucio-eic-mcp-server`](https://github.com/eic/rucio-eic-mcp-server) exposes [Rucio](https://rucio.cern.ch/) through ~13 tools (dataset discovery, file listing, replicas, rules). Deliberately **read-only** — an assistant gets no write access to the catalog.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -192,7 +192,7 @@ Post this in the `dispatcher` channel (or DM the bot) — not in your own assist
 PCS tool and would have to invent the answer:
 
 ```{.ai-prompt}
-Summarise the physics tags in the PCS — which processes are covered, and which tags are still draft?
+Summarize the physics tags in the PCS — which processes are covered, and which tags are still draft?
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
@@ -236,6 +236,6 @@ The direction is what this lesson taught in miniature: centrally hosted MCP serv
 - The DISpatcher bot is the zero-setup path: ~100 MCP tools behind a Mattermost account, no client configuration at all.
 - corun-ai/codoc-ai is the long-latency complement: high-level models, preserved and expert-curated outputs, grounded in nightly-indexed code knowledge.
 - Patterns to reuse: tiered tool exposure (context economy at scale) and the secret-token fabrication check (verification over confidence, enforced).
-- This catalogue dates quickly — check the eic GitHub organisation and the ePIC dev-cloud for the current list.
+- This catalog dates quickly — check the eic GitHub organization and the ePIC dev-cloud for the current list.
 
 :::::::::::::::::::::::::::::::::::::::::::::
