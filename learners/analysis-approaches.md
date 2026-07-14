@@ -63,7 +63,7 @@ $ eic-shell -- root -l -b -q 'extras/ttreereader/lambda_ttreereader.C("root://ep
 
 ## 4. Native PODIO Frame API
 
-PODIO deserialises each event into a `Frame`; you iterate over typed objects (`p.getPDG()`,
+PODIO deserializes each event into a `Frame`; you iterate over typed objects (`p.getPDG()`,
 `p.getMomentum()`). Environment: Key4hep / `eic-shell` with the `podio` and `edm4eic`
 dictionaries — the **heaviest** to set up. Script:
 [`extras/podio_frame/lambda_podio.py`](https://github.com/eic/tutorial-mcp/blob/main/extras/podio_frame/lambda_podio.py)

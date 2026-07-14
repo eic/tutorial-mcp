@@ -66,13 +66,14 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 Tools are the only way an assistant can act
 ([Episode 1](01-why-genai-for-physics.md)). The
-**Model Context Protocol (MCP)** standardises the interface: implement a tool once as a **server**,
+**Model Context Protocol (MCP)** standardizes the interface: implement a tool once as a **server**,
 and any MCP-compliant **client** (the assistant) can use it.
 
 MCP is a client–server protocol over **JSON-RPC 2.0**. A server offers three object
 types — **tools** (callable functions), **resources** (readable data), and
-**prompts** (templated instructions). Two transports exist: **stdio** (client launches the server as
-a subprocess, messages over standard input/output) and **streamable HTTP** for networked servers.
+**prompts** (templated instructions). There are two transports: **stdio** (the client launches the
+server as a subprocess and talks to it over standard input/output) and **streamable HTTP** for
+servers reached over the network.
 The lesson's servers run inside eic-shell and speak streamable HTTP on `127.0.0.1`.
 
 ```mermaid
@@ -140,7 +141,7 @@ connects to those URLs.
 
 ## If rucio answers but xrootd/uproot time out
 
-The rucio catalogue and the data store are different services. If dataset queries work but every
+The rucio catalog and the data store are different services. If dataset queries work but every
 file access hangs, the XRootD store may be temporarily down — check with
 `xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO` (inside eic-shell) and retry later.
 Your setup is fine; the store isn't answering.
@@ -228,12 +229,12 @@ flowchart LR
     accTitle: {EIC MCP data tools}
     accDescr: {EIC MCP data tools}
     R["rucio-mcp<br/>list_dids · list_files · list_file_replicas"]:::tool -->|"DID + root:// replica URLs"| X["xrootd-mcp<br/>list_datasets · check_file_exists · get_dataset_event_statistics"]:::tool
-    X -->|"verified root:// paths"| U["uproot-mcp<br/>analyse in place"]:::core
+    X -->|"verified root:// paths"| U["uproot-mcp<br/>analyze in place"]:::core
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
 ```
 
-* **[`rucio-mcp`](https://github.com/eic/rucio-eic-mcp-server)** queries the data-management catalogue:
+* **[`rucio-mcp`](https://github.com/eic/rucio-eic-mcp-server)** queries the data-management catalog:
   `list_dids` finds the dataset identifier (DID) by name, `get_did_metadata` and `list_files`
   describe its contents, `list_file_replicas` returns the physical `root://` locations.
 * **[`xrootd-mcp`](https://github.com/eic/xrootd-mcp-server)** works directly on the store: `list_campaigns` / `list_datasets` browse it,
@@ -247,7 +248,7 @@ there, and `uproot-mcp` reads a `root://` URL **in place**.
 
 ## rucio works automatically — no key
 
-Inside eic-shell, `rucio-mcp` signs in to the authenticated catalogue with the shared, read-only
+Inside eic-shell, `rucio-mcp` signs in to the authenticated catalog with the shared, read-only
 `eicread` account. No password or grid proxy. The xrootd path is public, so to only *browse* the
 store you can use `xrootd-mcp` alone.
 
@@ -255,7 +256,7 @@ store you can use `xrootd-mcp` alone.
 
 ## List the available campaigns
 
-ePIC data is organised by **production campaign** — a version such as `26.06.0` — together with the
+ePIC data is organized by **production campaign** — a version such as `26.06.0` — together with the
 beam/target and physics, all encoded in the rucio DID
 (e.g. `epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...`). Before
 locating a specific dataset, check which campaigns exist so you use a current one:
@@ -265,7 +266,7 @@ Using the rucio tools, find which production campaigns are available (the versio
 ```
 
 The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic` and
-groups the DIDs by their campaign component. Watch how it does this: the catalogue holds thousands
+groups the DIDs by their campaign component. Watch how it does this: the catalog holds thousands
 of DIDs and the pages are not sorted newest-first, so sampling one page can miss the current
 campaigns entirely. Narrowing with a version wildcard (`/RECO/26.*`) — or one call to the `xrootd`
 server's `list_campaigns` — gives the honest answer.
@@ -296,9 +297,9 @@ assistant checks a few files (≈ 1,220 events each) and extrapolates. The DID i
 
 ## Inspect the dataset
 
-You specify the operation in natural language and the assistant issues the matching tool calls. Take
+You say what you want in plain language and the assistant makes the matching tool calls. Take
 one of the `root://` URLs from the previous exercise — written below as `root://epicxrd1.sdcc.bnl.gov:1095//…`
-— and analyse it **in place**.
+— and analyze it **in place**.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
@@ -413,7 +414,7 @@ procedure as a reusable, versioned **skill**.
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
 - MCP is a JSON-RPC client–server protocol; a server exposes tools, resources, and prompts to any compliant client.
-- The uproot server returns compact, JSON-serialisable summaries rather than raw arrays, which keeps results inspectable.
+- The uproot server returns compact, JSON-serializable summaries rather than raw arrays, which keeps results inspectable.
 - `execute_kernel` runs client-supplied Python in a restricted sandbox: no imports or I/O, only NumPy/awkward, with a timeout.
 - The servers run inside eic-shell (`eic-mcp up`) and speak streamable HTTP; opencode and other clients connect to the same `127.0.0.1` URLs (`eic-mcp config <client>`).
 - PODIO/uproot is one access path; RDataFrame, TTreeReader, and bare uproot give the same result (see the extras).

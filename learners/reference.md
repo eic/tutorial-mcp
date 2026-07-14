@@ -45,7 +45,7 @@ JSON-RPC
 :   A lightweight remote-procedure-call protocol using JSON messages. MCP is built on JSON-RPC 2.0.
 
 LLM (large language model)
-:   The generative model performing reasoning and code synthesis at the centre of a harness.
+:   The generative model performing reasoning and code synthesis at the center of a harness.
 
 MCP (Model Context Protocol)
 :   An open client–server standard for exposing tools, resources, and prompts to language-model

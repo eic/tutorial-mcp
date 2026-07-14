@@ -65,7 +65,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ## Two ways to make instructions persistent
 
-Typing requests (Episode 3) does not scale: you re-explain the data model, conventions, and procedure every session, and nothing stops two runs from diverging. Two file-based mechanisms fix this.
+Typing requests (Episode 3) does not scale: you re-explain the data model, conventions, and procedure every session, and nothing keeps two runs the same. Two file-based mechanisms fix this.
 
 * **`AGENTS.md`** — always-on **context**, read at the start of every session: environment, data model, conventions, and what "done" means.
 * **`SKILL.md`** — an on-demand **procedure** in a named skill directory, loaded only when a request matches its description. It encodes one repeatable workflow.
@@ -156,7 +156,7 @@ This encodes the schema, the tool policy (use the server, not hand-written I/O),
 
 Not every tool reads `AGENTS.md`. Most modern ones do — opencode, Codex, Gemini CLI, Zed — but some look for their own filename and silently ignore it: GitHub Copilot reads `copilot-instructions.md`, Cursor reads `.cursorrules`. A project with only an `AGENTS.md` runs such a tool with no context and no warning.
 
-Don't copy your rules into a second file; two copies drift within a week. **Keep the standard in the centre and let each tool read from it**: the tool-specific file becomes a one-line *bridge* pointing at `AGENTS.md`.
+Don't copy your rules into a second file; two copies drift within a week. **Keep the standard in the center and let each tool read from it**: the tool-specific file becomes a one-line *bridge* pointing at `AGENTS.md`.
 
 `.github/copilot-instructions.md` (GitHub Copilot) — and `.cursorrules` (Cursor) — are one line:
 
@@ -298,7 +298,7 @@ lambda-analysis/
 
 ## The golden rule
 
-Write each instruction once, in the shared open format — `AGENTS.md` for context, `SKILL.md` for procedures, `opencode.jsonc` for tool connections — then point any tool-specific file at it. Never keep duplicate rule files. *Standards in the centre, tools at the edges.*
+Write each instruction once, in the shared open format — `AGENTS.md` for context, `SKILL.md` for procedures, `opencode.jsonc` for tool connections — then point any tool-specific file at it. Never keep duplicate rule files. *Standards in the center, tools at the edges.*
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -306,7 +306,7 @@ Write each instruction once, in the shared open format — `AGENTS.md` for conte
 
 ## Exercise: a summary skill (≈ 10 min)
 
-Write a minimal `SKILL.md` for "summarise the contents of any EDM4eic file", place it where your
+Write a minimal `SKILL.md` for "summarize the contents of any EDM4eic file", place it where your
 client loads skills, and try it on a file from Episode 3.
 
 ::::::::::::::: solution
@@ -315,7 +315,7 @@ client loads skills, and try it on a file from Episode 3.
 ---
 name: edm4eic-summary
 description: >
-  Summarise the contents of an EDM4eic .root file. Use when asked what a
+  Summarize the contents of an EDM4eic .root file. Use when asked what a
   reconstruction file contains, which trees or collections it holds, or
   how many events it has.
 ---
