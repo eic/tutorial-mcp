@@ -50,7 +50,9 @@ This lesson uses **[opencode](https://opencode.ai)**:
 curl -fsSL https://opencode.ai/install | bash
 ```
 
-The free hosted models work out of the box without any login.
+The free hosted models work out of the box without any login. The installer adds `opencode` to your
+shell profile, so open a **new** terminal if the command is not found yet. Run it on your own
+machine, not inside eic-shell — the container ships `claude` and `copilot` instead (next callout).
 
 If you prefer an editor — try [VS Code](https://code.visualstudio.com/) plus the
 [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and
@@ -94,7 +96,7 @@ as-is:
 ```bash
 git clone https://github.com/eic/eic-mcp ~/eic-mcp
 git clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp
-export PATH="$HOME/eic-mcp/bin:$PATH"    # re-run in each new shell (eic-shell skips your profile)
+export PATH="$HOME/eic-mcp/bin:$PATH"    # add this line to ~/.bashrc so every shell has it
 ```
 
 It runs the three servers (uproot, xrootd, rucio) inside eic-shell:
@@ -113,15 +115,15 @@ launcher **next to `./eic-shell`** instead, and publish the server ports once:
 ```bash
 cd ~/eic                                    # the folder with ./eic-shell (yours may differ)
 git clone https://github.com/eic/eic-mcp
-grep -q 9101 eic-shell || sed -i '' 's|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 |' eic-shell
-grep 'docker run' eic-shell                 # must now show -p 127.0.0.1:9101-9104:9101-9104
+grep -q 9101 eic-shell || sed -i '' "s|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 -v $PWD/eic-mcp/bin/eic-mcp:/usr/local/bin/eic-mcp:ro |" eic-shell
+grep 'docker run' eic-shell                 # must now show the -p and -v flags
 ./eic-shell
 ```
 
-Inside eic-shell you land in that folder, so this works whatever your username is:
+That one edit publishes the ports **and** puts `eic-mcp` on the container's `PATH` for good, so
+inside eic-shell there is nothing to export — just:
 
 ```bash
-export PATH="$PWD/eic-mcp/bin:$PATH"
 eic-mcp up
 ```
 
