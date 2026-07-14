@@ -1370,7 +1370,7 @@ physics, all encoded in the rucio DID
 (e.g. <code>epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...</code>).
 Before locating a specific dataset, check which campaigns exist so you
 use a current one:</p>
-<pre class="ai-prompt"><code>Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.</code></pre>
+<pre class="ai-prompt"><code>Using the rucio tools, find which production campaigns are available (the version field in the DIDs, e.g. 26.06.0) and show the most recent few.</code></pre>
 <p>The assistant calls <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>list_dids</code></a>
 on scope <code>epic</code> and groups the DIDs by their campaign
 component. Watch how it does this: the catalogue holds thousands of DIDs
@@ -2283,18 +2283,23 @@ to find a DIS dataset and <code>list_file_replicas</code> for the URLs,
 <code>xrootd</code> to confirm the file is there, then reads it in
 place:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, measure the Lambda0 peak in this file:
-root://epicxrd1.sdcc.bnl.gov:1095//... (one of the dataset's root:// files).
+root://epicxrd1.sdcc.bnl.gov:1095//... (one root:// file of the campaign 26.04.1
+BeAGLE eCu ep 10x115 dataset — Episode 3's exercise).
 Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
 fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot — or report insufficient
 statistics if the fit window is too sparse.</code></pre>
 <p>The assistant calls <code>execute_kernel</code> (tree
 <code>events</code>, proton/pion branches) to build the histogram, then
-a follow-up prompt fits it with a Gaussian-plus-polynomial model. One
-file yields only ~8 candidates in the fit window, so the honest answer
-is <em>insufficient statistics</em> — the skill says stop rather than
-fit, and a model that quotes <span class="math inline">\(\mu\)</span>
-anyway has ignored it. The peak at <span class="math inline">\(\mu
-\approx 1.1157\)</span> GeV comes from the larger sample below.</p>
+fits it with a Gaussian-plus-polynomial model. If your model stops after
+the histogram (small models do), paste the fit as its own request:</p>
+<pre class="ai-prompt"><code>Fit the histogram you just built with execute_kernel: a Gaussian plus a 2nd-order polynomial
+over [1.08, 1.16] GeV. Report mu, sigma, the signal yield S, and chi2/ndf, checked against
+the lambda-fit skill's success criteria.</code></pre>
+<p>One file yields only ~8 candidates in the fit window, so the honest
+answer is <em>insufficient statistics</em> — the skill says stop rather
+than fit, and a model that quotes <span class="math inline">\(\mu\)</span> anyway has ignored it. The peak at
+<span class="math inline">\(\mu \approx 1.1157\)</span> GeV comes from
+the larger sample below.</p>
 <div id="smaller-models-take-shortcuts-verify-the-result-not-the-route" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -2322,18 +2327,24 @@ which tool produced it.</p>
 whole file list and returns one merged histogram, so peak memory does
 not grow with dataset size. Enumerate the files with
 <code>get_dataset_file_list</code>, then run it across them:</p>
-<pre class="ai-prompt"><code>Using the lambda-fit skill, run the same proton-pion mass kernel across the first 8 of the dataset's files
-with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the result and
-report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.</code></pre>
+<pre class="ai-prompt"><code>Using the lambda-fit skill, run the same proton-pion mass kernel across the first 8 files of the
+campaign 26.04.1 BeAGLE eCu ep 10x115 dataset with execute_kernel_dataset (tree 'events'),
+merge the histograms, then fit the result and report mu, sigma, the yield, and chi2/ndf
+for both Lambda and anti-Lambda, with the plot.</code></pre>
 <p>The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the
-assistant returns the merged histogram and runs a follow-up fit prompt.
-One practical limit: a synchronous <code>execute_kernel_dataset</code>
-call over ~8 files already takes about a minute — right where many
-clients cut a tool call off. For anything bigger, go async:
-<code>submit_kernel_dataset</code>, then poll
-<code>get_job_status</code>/<code>get_job_result</code>. Over ~100 files
-this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over
-the combinatorial background.</p>
+assistant returns the merged histogram and then fits it (paste the fit
+prompt above if it stops). One practical limit: a synchronous
+<code>execute_kernel_dataset</code> call over ~8 files already takes
+about a minute — right where many clients cut a tool call off. For
+anything bigger, go async — the job runs server-side for a few minutes
+while the assistant polls:</p>
+<pre class="ai-prompt"><code>Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
+campaign 26.04.1 BeAGLE eCu ep 10x115 dataset: submit it with submit_kernel_dataset
+(tree 'events'), poll get_job_status until it finishes, fetch the merged histogram with
+get_job_result, then fit and report mu, sigma, the yield, and chi2/ndf for both Lambda
+and anti-Lambda, with the plot.</code></pre>
+<p>Over ~100 files this gives the reference spectrum below: a clear Λ⁰
+(and Λ̄) peak over the combinatorial background.</p>
 <figure><img src="fig/lambda_fit.svg" alt="Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV" class="figure mx-auto d-block"><div class="figcaption">Fitted Λ⁰ and Λ̄ invariant-mass spectra
 (reference fit)</div>
 </figure><div class="codewrapper">
@@ -2405,8 +2416,7 @@ result was reported.</li>
 <li>Process 8 files with <code>execute_kernel_dataset</code> and compare
 the fitted parameters to the ~100-file result; comment on the change in
 statistical uncertainty. (More than that, and the synchronous call
-outlives your client’s tool timeout — go async with
-<code>submit_kernel_dataset</code>.)</li>
+outlives your client’s tool timeout — use the async prompt above.)</li>
 <li>Complete the audit checklist for your run, attaching the recorded
 tool calls as provenance.</li>
 </ul>

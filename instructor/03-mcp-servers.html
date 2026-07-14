@@ -678,7 +678,7 @@ physics, all encoded in the rucio DID
 (e.g. <code>epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...</code>).
 Before locating a specific dataset, check which campaigns exist so you
 use a current one:</p>
-<pre class="ai-prompt"><code>Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.</code></pre>
+<pre class="ai-prompt"><code>Using the rucio tools, find which production campaigns are available (the version field in the DIDs, e.g. 26.06.0) and show the most recent few.</code></pre>
 <p>The assistant calls <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>list_dids</code></a>
 on scope <code>epic</code> and groups the DIDs by their campaign
 component. Watch how it does this: the catalogue holds thousands of DIDs
