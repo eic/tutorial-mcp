@@ -28,9 +28,8 @@ Make sure `./eic-shell` could drop you into the container. (See
 
 ![](fig/one-ring.svg){alt='gold ring engraved with the words EIC' width='160px'}
 
-**One assistant to rule them all?** Fortunately not: any **agentic** assistant — one that can
-read/write your files and run commands, not just emit text — works, and MCP keeps you free to
-switch. This tutorial is based on [opencode](https://opencode.ai).
+**One assistant to rule them all?** any **agentic** assistant — one that can
+read/write your files and run commands, not just emit text — works, and MCP works with any. This tutorial is based on [opencode](https://opencode.ai).
 
 | Tool | Interface | Free access |
 | --- | --- | --- |
@@ -52,7 +51,7 @@ curl -fsSL https://opencode.ai/install | bash
 
 The free hosted models work out of the box without any login. The installer adds `opencode` to your
 shell profile, so open a **new** terminal if the command is not found yet. Run it on your own
-machine, not inside eic-shell — the container ships `claude` and `copilot` instead (next callout).
+machine, not inside `eic-shell`
 
 If you prefer an editor — try [VS Code](https://code.visualstudio.com/) plus the
 [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and
@@ -64,9 +63,8 @@ If you prefer an editor — try [VS Code](https://code.visualstudio.com/) plus t
 
 ## Not allowed to install anything?
 
-eic-shell already ships two assistants: **Claude Code** (`claude`) and the **GitHub Copilot CLI**
-(`copilot`). Run one *inside* the container, alongside the servers (step 4) — nothing to install,
-no ports to publish:
+eic-shell already has two assistants: **Claude Code** (`claude`) and the **GitHub Copilot CLI**
+(`copilot`). Run one *inside* the container, alongside the servers (step 4):
 
 ```bash
 eic-mcp config copilot > ~/.copilot/mcp-config.json    # claude : eic-mcp  config claude > .mcp.json
@@ -109,7 +107,7 @@ cd ~/eic && eic-mcp up    # first run from your eic-shell folder — it remember
 
 ## macOS: two extra steps
 
-On a Mac, eic-shell is Docker: it publishes no ports and does not share your home. Clone the
+On a Mac, `eic-shell` is Docker: it publishes no ports and does not share your home. Clone the
 launcher **next to `./eic-shell`** instead, and publish the server ports once:
 
 ```bash
