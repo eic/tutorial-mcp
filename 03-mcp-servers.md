@@ -261,7 +261,7 @@ beam/target and physics, all encoded in the rucio DID
 locating a specific dataset, check which campaigns exist so you use a current one:
 
 ```{.ai-prompt}
-Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.
+Using the rucio tools, find which production campaigns are available (the version field in the DIDs, e.g. 26.06.0) and show the most recent few.
 ```
 
 The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic` and

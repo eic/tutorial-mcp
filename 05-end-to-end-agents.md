@@ -112,13 +112,22 @@ With the three servers running and the lambda-fit skill available, one request r
 
 ```{.ai-prompt}
 Using the lambda-fit skill, measure the Lambda0 peak in this file:
-root://epicxrd1.sdcc.bnl.gov:1095//... (one of the dataset's root:// files).
+root://epicxrd1.sdcc.bnl.gov:1095//... (one root:// file of the campaign 26.04.1
+BeAGLE eCu ep 10x115 dataset — Episode 3's exercise).
 Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
 fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot — or report insufficient
 statistics if the fit window is too sparse.
 ```
 
-The assistant calls `execute_kernel` (tree `events`, proton/pion branches) to build the histogram, then a follow-up prompt fits it with a Gaussian-plus-polynomial model. One file yields only ~8 candidates in the fit window, so the honest answer is *insufficient statistics* — the skill says stop rather than fit, and a model that quotes $\mu$ anyway has ignored it. The peak at $\mu \approx 1.1157$ GeV comes from the larger sample below.
+The assistant calls `execute_kernel` (tree `events`, proton/pion branches) to build the histogram, then fits it with a Gaussian-plus-polynomial model. If your model stops after the histogram (small models do), paste the fit as its own request:
+
+```{.ai-prompt}
+Fit the histogram you just built with execute_kernel: a Gaussian plus a 2nd-order polynomial
+over [1.08, 1.16] GeV. Report mu, sigma, the signal yield S, and chi2/ndf, checked against
+the lambda-fit skill's success criteria.
+```
+
+One file yields only ~8 candidates in the fit window, so the honest answer is *insufficient statistics* — the skill says stop rather than fit, and a model that quotes $\mu$ anyway has ignored it. The peak at $\mu \approx 1.1157$ GeV comes from the larger sample below.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
@@ -133,12 +142,23 @@ A capable model uses `execute_kernel` as instructed. A cheaper model may reach f
 The same kernel works unchanged on many files; only the tool differs. `execute_kernel` runs one file; `execute_kernel_dataset` runs the identical kernel over a whole file list and returns one merged histogram, so peak memory does not grow with dataset size. Enumerate the files with `get_dataset_file_list`, then run it across them:
 
 ```{.ai-prompt}
-Using the lambda-fit skill, run the same proton-pion mass kernel across the first 8 of the dataset's files
-with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the result and
-report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.
+Using the lambda-fit skill, run the same proton-pion mass kernel across the first 8 files of the
+campaign 26.04.1 BeAGLE eCu ep 10x115 dataset with execute_kernel_dataset (tree 'events'),
+merge the histograms, then fit the result and report mu, sigma, the yield, and chi2/ndf
+for both Lambda and anti-Lambda, with the plot.
 ```
 
-The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and runs a follow-up fit prompt. One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute — right where many clients cut a tool call off. For anything bigger, go async: `submit_kernel_dataset`, then poll `get_job_status`/`get_job_result`. Over ~100 files this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
+The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and then fits it (paste the fit prompt above if it stops). One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute — right where many clients cut a tool call off. For anything bigger, go async — the job runs server-side for a few minutes while the assistant polls:
+
+```{.ai-prompt}
+Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
+campaign 26.04.1 BeAGLE eCu ep 10x115 dataset: submit it with submit_kernel_dataset
+(tree 'events'), poll get_job_status until it finishes, fetch the merged histogram with
+get_job_result, then fit and report mu, sigma, the yield, and chi2/ndf for both Lambda
+and anti-Lambda, with the plot.
+```
+
+Over ~100 files this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
 
 ![Fitted Λ⁰ and Λ̄ invariant-mass spectra (reference fit)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
 
@@ -178,7 +198,7 @@ Before treating an automated result as final, confirm it meets the skill's crite
 ## Exercises (specification)
 
 * Run the single-file chain through your assistant and report $\mu$, $\sigma$, $S$, and $\chi^2/\text{ndf}$.
-* Process 8 files with `execute_kernel_dataset` and compare the fitted parameters to the ~100-file result; comment on the change in statistical uncertainty. (More than that, and the synchronous call outlives your client's tool timeout — go async with `submit_kernel_dataset`.)
+* Process 8 files with `execute_kernel_dataset` and compare the fitted parameters to the ~100-file result; comment on the change in statistical uncertainty. (More than that, and the synchronous call outlives your client's tool timeout — use the async prompt above.)
 * Complete the audit checklist for your run, attaching the recorded tool calls as provenance.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
