@@ -530,7 +530,11 @@ CLI</a></td>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://opencode.ai/install <span class="kw">|</span> <span class="fu">bash</span></span></code></pre>
 </div>
-<p>The free hosted models work out of the box without any login.</p>
+<p>The free hosted models work out of the box without any login. The
+installer adds <code>opencode</code> to your shell profile, so open a
+<strong>new</strong> terminal if the command is not found yet. Run it on
+your own machine, not inside eic-shell — the container ships
+<code>claude</code> and <code>copilot</code> instead (next callout).</p>
 <p>If you prefer an editor — try <a href="https://code.visualstudio.com/" class="external-link">VS Code</a> plus the <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot" class="external-link">GitHub
 Copilot</a> and <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat" class="external-link">Copilot
 Chat</a> extensions (sign in with GitHub — students/educators get Pro
@@ -585,7 +589,7 @@ pasted as-is:</p>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp ~/eic-mcp</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="fu">git</span> clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$HOME</span><span class="st">/eic-mcp/bin:</span><span class="va">$PATH</span><span class="st">"</span>    <span class="co"># re-run in each new shell (eic-shell skips your profile)</span></span></code></pre>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$HOME</span><span class="st">/eic-mcp/bin:</span><span class="va">$PATH</span><span class="st">"</span>    <span class="co"># add this line to ~/.bashrc so every shell has it</span></span></code></pre>
 </div>
 <p>It runs the three servers (uproot, xrootd, rucio) inside
 eic-shell:</p>
@@ -611,17 +615,17 @@ once:</p>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="bu">cd</span> ~/eic                                    <span class="co"># the folder with ./eic-shell (yours may differ)</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="fu">grep</span> <span class="at">-q</span> 9101 eic-shell <span class="kw">||</span> <span class="fu">sed</span> <span class="at">-i</span> <span class="st">''</span> <span class="st">'s|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 |'</span> eic-shell</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="fu">grep</span> <span class="st">'docker run'</span> eic-shell                 <span class="co"># must now show -p 127.0.0.1:9101-9104:9101-9104</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="fu">grep</span> <span class="at">-q</span> 9101 eic-shell <span class="kw">||</span> <span class="fu">sed</span> <span class="at">-i</span> <span class="st">''</span> <span class="st">"s|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 -v </span><span class="va">$PWD</span><span class="st">/eic-mcp/bin/eic-mcp:/usr/local/bin/eic-mcp:ro |"</span> eic-shell</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="fu">grep</span> <span class="st">'docker run'</span> eic-shell                 <span class="co"># must now show the -p and -v flags</span></span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">./eic-shell</span></span></code></pre>
 </div>
-<p>Inside eic-shell you land in that folder, so this works whatever your
-username is:</p>
+<p>That one edit publishes the ports <strong>and</strong> puts
+<code>eic-mcp</code> on the container’s <code>PATH</code> for good, so
+inside eic-shell there is nothing to export — just:</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/eic-mcp/bin:</span><span class="va">$PATH</span><span class="st">"</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a><span class="ex">eic-mcp</span> up</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="ex">eic-mcp</span> up</span></code></pre>
 </div>
 <p>Leave this window open: the container — and the servers inside it —
 only live while <code>./eic-shell</code> runs. Your assistant stays
