@@ -67,8 +67,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 ## The bottleneck is rarely the physics
 
 In a typical analysis the physics is modest: select a final state, build an observable, fit a
-signal. Most effort goes into the software around it — locating datasets, decoding a data model,
-getting branch names and units right, iterating on plotting and fitting code. LLMs compress this
+signal, etc. Most effort goes into the software around it — locating datasets, decoding a data model,
+getting branch names and units right, iterating on plotting and analysis code. LLMs compress this
 overhead well, but only if they produce *checkable* results. Later episodes apply this to the decay
 $\Lambda^0 \to p\,\pi^-$.
 
@@ -94,12 +94,10 @@ learning for reconstruction or particle identification. The object of study is t
 :::::::::::::::::::::::::::::::::::::::::::::
 
 That loop is the first of **four**, each wrapped around the one before it. This episode walks up
-the stack; the rest of the lesson has you build the inner two yourself and shows the outer two
-running at collaboration scale.
-
+the stack.
 ## Level 1 — the agent loop
 
-The basic cycle could not be simpler: the model calls a tool, looks at what came back, and decides
+The basic cycle - model calls a tool, looks at what came back, and decides
 whether it is done.
 
 ```mermaid
@@ -108,7 +106,7 @@ flowchart TD
     accTitle: {Level 1 the agent loop}
     accDescr: {Level 1 the agent loop}
     Q["task"]:::user --> M["model"]:::core
-    M -->|"tool call"| T["tools<br/>read files · run code · query a server"]:::tool
+    M -->|"tool call"| T["tools<br/>read files · run code · query "]:::tool
     T -->|"result appended to context"| D{"task<br/>complete?"}:::core
     D -->|"no"| M
     D -->|"yes"| R["result + provenance"]:::out
@@ -132,7 +130,7 @@ A model plus the machinery that runs this cycle is a **harness**, and it has exa
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
-## Why the loop is essential, not cosmetic
+## Why the loop is essential
 
 Feeding tool results back lets the assistant correct course against ground truth: read the actual
 branch names rather than guessing, run a fit and read back its $\chi^2/\mathrm{ndf}$, refit if the peak is
@@ -159,7 +157,7 @@ flowchart TB
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
 ```
 
-* **MCP servers** — the *tools* layer, standardised. A server exposes tools, data, and prompts over
+* **MCP servers** — the *tools* layer, standardised. A server (in our case eic-shell) exposes tools, data, and prompts over
   the Model Context Protocol so one implementation works in any client. This is how we give the
   assistant physics capabilities ([Episode 3](03-mcp-servers.md)).
 * **Subagents (agents)** — a separate assistant instance with its own context window, tools, and
@@ -170,7 +168,7 @@ flowchart TB
 | Component | What it adds to the core loop | In this tutorial |
 | --- | --- | --- |
 | MCP servers | external tools & data, client-agnostic | Episodes 3 & 5 (the [uproot](https://github.com/eic/uproot-mcp-server)/[xrootd](https://github.com/eic/xrootd-mcp-server) servers) |
-| Subagents | isolated, specialised helpers | concept introduced here; not used hands-on |
+| Subagents | isolated, specialised helpers | concept |
 | Skills | reusable, versioned procedures | Episode 4 (`SKILL.md`) |
 
 Two smaller helpers matter for the loops later in this episode:
@@ -205,7 +203,7 @@ flowchart TD
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
 ```
 
-The discipline behind it: treat every model output as a **hypothesis**, accepted only after
+Treat every model output as a **hypothesis**, accepted only after
 checking it against something external — the data, a fit statistic, a known physical value, or an
 independent implementation. For the $\Lambda^0$ measurement the criteria are physical and
 checkable: $|\mu - 1.115683\,\mathrm{GeV}| < 5\,\mathrm{MeV}$, $\sigma$ consistent with detector
@@ -214,10 +212,10 @@ this grader into the lambda-fit skill's **success criteria** — and a passing a
 numbers, while a failing one must report the failure, not a result.
 
 Grading costs time and tokens. It is the right trade wherever correctness matters more than speed —
-in physics, almost always. So favour tools that return compact, inspectable quantities — counts,
+almost always. So favour tools that return compact, inspectable quantities — counts,
 edges, fit parameters — and keep a record of what was run: reproducibility and provenance are the
 criteria by which an automated result earns trust. At collaboration scale the grader can be
-mechanical, like the secret-token fabrication check in [Episode 6](06-eic-mcp-servers.md).
+mechanical, like the secret-token fabrication check in DISpatcher [Episode 6](06-eic-mcp-servers.md).
 
 ## Level 3 — the operation loop
 
@@ -257,46 +255,10 @@ the instructions instead of retyping the request.
 ## Where a human belongs in each loop
 
 Autonomy does not mean absence of judgement — each level has a natural checkpoint: approving a
-sensitive tool call (①), signing off a graded result (②), reviewing what runs unattended (③),
-and deciding which harness changes to keep (④). Put yourself at the checkpoints, not in the
-middle of the loop.
+sensitive tool call (1), signing off a graded result (2), reviewing what runs unattended (3),
+and deciding which harness changes to keep (4). Put yourself at the checkpoints
 
 :::::::::::::::::::::::::::::::::::::::::::::
-
-::::::::::::::::::::::::::::::::::::::::::::: challenge
-
-## Discussion: what does the loop buy you?
-
-For the $\Lambda^0 \to p\,\pi^-$ analysis, identify two failure modes of a one-shot completion that an
-agentic loop removes.
-
-::::::::::::::: solution
-
-1. **Hallucinated schema.** A one-shot model may emit a plausible but wrong branch name (for
-   example `ReconstructedParticles.px` instead of `ReconstructedChargedParticles.momentum.x`). An
-   agent can query the file and use the real names.
-2. **Unvalidated fit.** A one-shot model cannot know whether its fit converged or where the peak
-   landed. An agent can execute the fit, read $\mu$, $\sigma$, and $\chi^2/\mathrm{ndf}$, and iterate.
-
-Both are the same principle: conditioning on observations beats conditioning on the prior. The
-first is fixed at level 1 (observe, don't guess), the second at level 2 (grade, don't trust).
-
-:::::::::::::::
-
-:::::::::::::::::::::::::::::::::::::::::::::
-
-## Where this sits
-
-Generative AI is already part of the research software ecosystem — code development and review,
-navigating large codebases, searching technical documentation. The ePIC collaboration, which
-produced the data used here, applies these tools in several such roles. This lesson is a
-self-contained, low-cost entry point: with a free assistant and a few small tool servers you will
-carry out a complete measurement on real ePIC data.
-
-## Portability through an open protocol
-
-The assistant market changes on a timescale of months, so we depend on a standard rather than a
-product.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
@@ -304,7 +266,7 @@ product.
 
 The **Model Context Protocol (MCP)** is an open standard for exposing tools to language-model
 clients. A tool implemented once against MCP works in any compliant assistant — like a hardware bus
-that decouples peripherals from hosts. In [Episode 3](03-mcp-servers.md) you connect the EIC tool
+that decouples peripherals from hosts. In [Episode 3](03-mcp-servers.md) you connect the eic-shell
 servers and see that any MCP-compliant client connects the same way, making the workflow
 reproducible across environments.
 
