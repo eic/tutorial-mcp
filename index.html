@@ -378,13 +378,14 @@ any links that you are not going to use.
  -->
 
 
-      <section id="setup"><p>Everything runs inside <strong>eic-shell</strong>. Install an AI
-assistant (this tutorial will use <code>opencode</code>), get
-<code>eic-mcp</code>, and one command starts the tool servers. Nothing
-else — no grid certificate, no data download — the MCP servers reuse the
-eic-shell own <code>uproot</code>, <code>xrdfs</code>, and
-<code>rucio</code> (already logged in to the shared read-only
-<code>eicread</code> account).</p>
+      <section id="setup"><p>The tool <strong>servers</strong> run inside
+<strong>eic-shell</strong>; your <strong>assistant</strong> runs where
+you normally work. Install an AI assistant (this tutorial will use
+<code>opencode</code>), get <code>eic-mcp</code>, and one command starts
+the tool servers. Nothing else — no grid certificate, no data download —
+the MCP servers reuse eic-shell’s own <code>uproot</code>,
+<code>xrdfs</code>, and <code>rucio</code> (already logged in to the
+shared read-only <code>eicread</code> account).</p>
 <div id="quick-checklist" class="callout checklist">
 <div class="callout-square">
 <i class="callout-icon" data-feather="check-square"></i>
@@ -454,10 +455,33 @@ CLI</a></td>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://opencode.ai/install <span class="kw">|</span> <span class="fu">bash</span></span></code></pre>
 </div>
 <p>The free hosted models work out of the box without any login.</p>
-<p>PIf you predfer an editor - try Install <a href="https://code.visualstudio.com/" class="external-link">VS Code</a> plus the <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot" class="external-link">GitHub
+<p>If you prefer an editor — try <a href="https://code.visualstudio.com/" class="external-link">VS Code</a> plus the <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot" class="external-link">GitHub
 Copilot</a> and <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat" class="external-link">Copilot
 Chat</a> extensions (sign in with GitHub — students/educators get Pro
 free — and use <strong>Agent</strong> mode), or <a href="https://cursor.com/" class="external-link">Cursor</a>.</p>
+<div id="not-allowed-to-install-anything" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="not-allowed-to-install-anything" class="callout-inner">
+<h3 class="callout-title">Not allowed to install anything?</h3>
+<div class="callout-content">
+<p>eic-shell already ships two assistants: <strong>Claude Code</strong>
+(<code>claude</code>) and the <strong>GitHub Copilot CLI</strong>
+(<code>copilot</code>). Run one <em>inside</em> the container, alongside
+the servers (step 4) — nothing to install, no ports to publish:</p>
+<div class="codewrapper sourceCode" id="cb2">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">eic-mcp</span> config copilot <span class="op">&gt;</span> ~/.copilot/mcp-config.json    <span class="co"># claude : eic-mcp  config claude &gt; .mcp.json</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="ex">copilot</span>                               <span class="co"># or: claude</span></span></code></pre>
+</div>
+<p>One browser login the first time; it prints a code to paste, so it
+works over SSH.</p>
+</div>
+</div>
+</div>
 <div id="check-it-works" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -480,19 +504,60 @@ that prints the PDG Λ⁰ baryon mass in GeV, then run it.”</em> It should
 lesson’s repository, whose example files Episodes 4–5 use — into your
 home directory (or workdir), so every command in the lesson can be
 pasted as-is:</p>
-<div class="codewrapper sourceCode" id="cb2">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp ~/eic-mcp</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="fu">git</span> clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1" aria-label="code-block-2-3"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$HOME</span><span class="st">/eic-mcp/bin:</span><span class="va">$PATH</span><span class="st">"</span>    <span class="co"># re-run in each new shell (eic-shell skips your profile)</span></span></code></pre>
-</div>
-<p>It runs the three servers (uproot, xrootd, rucio) inside
-eic-shell:</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">eic-mcp</span> up</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp ~/eic-mcp</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="fu">git</span> clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$HOME</span><span class="st">/eic-mcp/bin:</span><span class="va">$PATH</span><span class="st">"</span>    <span class="co"># re-run in each new shell (eic-shell skips your profile)</span></span></code></pre>
+</div>
+<p>It runs the three servers (uproot, xrootd, rucio) inside
+eic-shell:</p>
+<div class="codewrapper sourceCode" id="cb4">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="bu">cd</span> ~/eic <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> up    <span class="co"># first run from your eic-shell folder — it remembers the image</span></span></code></pre>
+</div>
+<div id="macos-two-extra-steps" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="macos-two-extra-steps" class="callout-inner">
+<h3 class="callout-title">macOS: two extra steps</h3>
+<div class="callout-content">
+<p>On a Mac, eic-shell is Docker: it publishes no ports and does not
+share your home. Clone the launcher <strong>next to
+<code>./eic-shell</code></strong> instead, and publish the server ports
+once:</p>
+<div class="codewrapper sourceCode" id="cb5">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="bu">cd</span> ~/eic                                    <span class="co"># the folder with ./eic-shell (yours may differ)</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="fu">grep</span> <span class="at">-q</span> 9101 eic-shell <span class="kw">||</span> <span class="fu">sed</span> <span class="at">-i</span> <span class="st">''</span> <span class="st">'s|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 |'</span> eic-shell</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="fu">grep</span> <span class="st">'docker run'</span> eic-shell                 <span class="co"># must now show -p 127.0.0.1:9101-9104:9101-9104</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">./eic-shell</span></span></code></pre>
+</div>
+<p>Inside eic-shell you land in that folder, so this works whatever your
+username is:</p>
+<div class="codewrapper sourceCode" id="cb6">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/eic-mcp/bin:</span><span class="va">$PATH</span><span class="st">"</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a><span class="ex">eic-mcp</span> up</span></code></pre>
+</div>
+<p>Leave this window open: the container — and the servers inside it —
+only live while <code>./eic-shell</code> runs. Your assistant stays
+<strong>on the Mac</strong>, in a second terminal; copy the ready-made
+config into the directory where you launch <code>opencode</code>:</p>
+<div class="codewrapper sourceCode" id="cb7">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1" aria-label="code-block-7-1"></a><span class="fu">cp</span> ~/tutorial-mcp/files/mcp-config/opencode.jsonc .</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <p>If your eic_xl image already ships the servers, they just start;
 otherwise the <strong>first</strong> run bootstraps them automatically
@@ -502,6 +567,9 @@ servers per session in <a href="03-mcp-servers.html">Episode 3</a> with
 <code>eic-mcp up</code> / <code>eic-mcp down</code>; point your
 assistant at them with <code>eic-mcp config opencode</code> (see Episode
 3).</p>
+<p><code>eic-mcp</code> and the servers are on their way into eic-shell
+itself — once the image ships them, the clone above goes away and the
+commands stay exactly the same.</p>
 <div id="no-credentials-no-data-download" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>

@@ -325,7 +325,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>An end-to-end, reproducible Λ⁰ analysis</h1>
-        <p>Last updated on 2026-07-11 |
+        <p>Last updated on 2026-07-14 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/05-end-to-end-agents.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -433,16 +433,12 @@ paste the pipeline prompt below.</p></li>
 <div id="same-pipeline-other-clients" class="callout-inner">
 <h3 class="callout-title">Same pipeline, other clients</h3>
 <div class="callout-content">
-<p>Only step 2 changes:
-<code>mkdir -p .vscode &amp;&amp; eic-mcp config copilot &gt; .vscode/mcp.json</code>
-(VS Code/Copilot, Agent mode),
-<code>mkdir -p .cursor &amp;&amp; eic-mcp config cursor &gt; .cursor/mcp.json</code>,
-<code>eic-mcp config claude &gt; .mcp.json</code> (Claude Code),
-<code>mkdir -p .gemini &amp;&amp; eic-mcp config gemini &gt; .gemini/settings.json</code>
-(Gemini CLI), or
-<code>eic-mcp config codex &gt;&gt; ~/.codex/config.toml</code> (Codex).
-The servers and prompts are identical; put the skill where your client
-reads skills (<code>.claude/skills/</code> for Claude Code).</p>
+<p>Only step 2 changes: <code>eic-mcp config &lt;client&gt;</code>
+writes the file each client expects — e.g.
+<code>eic-mcp config claude &gt; .mcp.json</code> for Claude Code
+(preinstalled in eic-shell). The full list is in <a href="03-mcp-servers.html">Episode 3</a>. The servers and prompts are
+identical; put the skill where your client reads skills
+(<code>.claude/skills/</code> for Claude Code).</p>
 </div>
 </div>
 </div>
@@ -682,7 +678,7 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/05-end-to-end-agents.html",
   "identifier": "https://eic.github.io/tutorial-mcp/05-end-to-end-agents.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-11",
+  "dateModified": "2026-07-14",
   "datePublished": "2026-07-14"
 }
 

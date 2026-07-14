@@ -402,7 +402,7 @@ the corun-ai ecosystem.</li>
 <ul>
 <li>Make sure learners have <strong>eic-shell</strong> working and
 <strong>opencode</strong> installed with a free model connected (Setup
-page). Everything else runs inside eic-shell.</li>
+page). Only the tool servers run inside eic-shell.</li>
 <li>No JLab account or data download is needed: the <code>rucio</code>
 server signs in automatically with the shared read-only
 <code>eicread</code> account, and the assistant reads files over
@@ -437,6 +437,13 @@ nothing, check <code>eic-mcp status</code> and that
 <code>root://</code> files the assistant processes — a few files show a
 modest excess; tens of files give a clean fit. Set expectations
 accordingly.</li>
+<li>
+<strong>macOS learners:</strong> two symptoms of a missed Setup step
+— <code>/mcp</code> finds nothing on the Mac (no
+<code>-p 127.0.0.1:9101-9104</code> in <code>./eic-shell</code>), or the
+servers re-bootstrap every session (<code>eic-mcp status</code> must
+show a state dir under their eic-shell folder, not
+<code>/root</code>).</li>
 <li>
 <strong>Free-tier throttling:</strong> at busy hours the free hosted
 models can take minutes per agent turn (the MCP tool context makes each

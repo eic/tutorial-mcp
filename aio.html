@@ -984,7 +984,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-03-mcp-servers"><p>Content from <a href="03-mcp-servers.html">Tool servers and the Model Context Protocol (MCP)</a></p>
 <hr>
-<p>Last updated on 2026-07-11 |
+<p>Last updated on 2026-07-14 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/03-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -1264,51 +1264,41 @@ their tools.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .vscode <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config copilot <span class="op">&gt;</span> .vscode/mcp.json      <span class="co"># VS Code / Copilot</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .cursor <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config cursor  <span class="op">&gt;</span> .cursor/mcp.json      <span class="co"># Cursor</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="ex">$</span> eic-mcp config claude  <span class="op">&gt;</span> .mcp.json                                 <span class="co"># Claude Code</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .gemini <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config gemini  <span class="op">&gt;</span> .gemini/settings.json <span class="co"># Gemini CLI</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">$</span> eic-mcp config codex  <span class="op">&gt;&gt;</span> ~/.codex/config.toml                      <span class="co"># Codex (TOML, appended)</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/.copilot <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config copilot <span class="op">&gt;</span> ~/.copilot/mcp-config.json   <span class="co"># Copilot CLI</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .vscode <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config vscode  <span class="op">&gt;</span> .vscode/mcp.json       <span class="co"># VS Code / Copilot Chat</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .cursor <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config cursor  <span class="op">&gt;</span> .cursor/mcp.json       <span class="co"># Cursor</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .gemini <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config gemini  <span class="op">&gt;</span> .gemini/settings.json  <span class="co"># Gemini CLI</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">$</span> eic-mcp config codex  <span class="op">&gt;&gt;</span> ~/.codex/config.toml                       <span class="co"># Codex (TOML, appended)</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1" aria-label="code-block-5-6"></a><span class="ex">$</span> eic-mcp config claude  <span class="op">&gt;</span> .mcp.json                                  <span class="co"># Claude Code</span></span></code></pre>
 </div>
 </div>
 </div>
 </div>
-<div id="running-the-client-outside-the-container" class="callout">
+<div id="which-side-am-i-on" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="running-the-client-outside-the-container" class="callout-inner">
-<h3 class="callout-title">Running the client outside the container</h3>
+<div id="which-side-am-i-on" class="callout-inner">
+<h3 class="callout-title">Which side am I on?</h3>
 <div class="callout-content">
-<p>The MCP servers always run <em>inside</em> eic-shell, but your AI
-client doesn’t have to.</p>
+<p>Only the <strong>servers</strong> need eic-shell — they use the
+container’s <code>uproot</code>, <code>xrdfs</code>, and signed-in
+<code>rucio</code>. The <strong>client</strong> just talks to
+<code>http://127.0.0.1:910x/mcp</code>, so run it where you normally
+work, and put its config in the directory you launch it from.</p>
 <ul>
-<li><p><strong>Linux and Windows/WSL:</strong> eic-shell uses
-Apptainer/Singularity, which shares the host network. The
-<code>http://127.0.0.1:910x/mcp</code> URLs work identically from inside
-the container and from the host — install your client on the host, run
-<code>eic-mcp config &lt;client&gt;</code> (the launcher finds your
-eic_xl image automatically), and connect.</p></li>
 <li>
-<p><strong>macOS:</strong> your <code>./eic-shell</code> script runs
-Docker under the hood, and it publishes no ports, so the endpoints are
-<em>not</em> reachable from the host by default. Simplest fix: run the
-client inside eic-shell (opencode is a terminal program and installs
-fine in the container). Otherwise, either open the
-<code>eic-shell</code> script the installer generated and add
-<code>-p 127.0.0.1:9101-9104:9101-9104</code> to its
-<code>docker run</code> line, or start the container with the full
-command yourself (this is what <code>./eic-shell</code> runs, plus the
-port flag):</p>
-<div class="codewrapper sourceCode" id="cb6">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="ex">docker</span> run <span class="at">--platform</span> linux/amd64 <span class="at">-p</span> 127.0.0.1:9101-9104:9101-9104 <span class="dt">\</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a>  <span class="at">-v</span> /Users:/Users <span class="at">-v</span> /Volumes:/Volumes <span class="at">-v</span> /tmp:/tmp <span class="at">-w</span><span class="op">=</span><span class="va">$PWD</span> <span class="at">-it</span> <span class="at">--rm</span> <span class="dt">\</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1" aria-label="code-block-6-3"></a>  <span class="at">-e</span> EIC_SHELL_PREFIX=<span class="va">$PWD</span>/local eicweb/eic_xl:nightly eic-shell</span></code></pre>
-</div>
-</li>
+<strong>Linux and Windows/WSL:</strong> the same URLs work inside
+and outside the container.</li>
+<li>
+<strong>macOS:</strong> you published the ports in <a href="index.html#setup">Setup</a>; on the Mac itself, copy
+<code>files/mcp-config/opencode.jsonc</code> rather than running
+<code>eic-mcp config</code> (it needs the container).</li>
+<li>
+<strong>Can’t install a client?</strong> eic-shell ships
+<code>claude</code> and <code>copilot</code> — run one <em>inside</em>
+it.</li>
 </ul>
 </div>
 </div>
@@ -2028,7 +2018,7 @@ on a file from Episode 3.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2081,7 +2071,7 @@ pairs.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>Replace the skill’s Provenance section with:</p>
 <div class="codewrapper sourceCode" id="cb9">
@@ -2129,7 +2119,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-05-end-to-end-agents"><p>Content from <a href="05-end-to-end-agents.html">An end-to-end, reproducible Λ⁰ analysis</a></p>
 <hr>
-<p>Last updated on 2026-07-11 |
+<p>Last updated on 2026-07-14 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/05-end-to-end-agents.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -2240,16 +2230,12 @@ paste the pipeline prompt below.</p></li>
 <div id="same-pipeline-other-clients" class="callout-inner">
 <h3 class="callout-title">Same pipeline, other clients</h3>
 <div class="callout-content">
-<p>Only step 2 changes:
-<code>mkdir -p .vscode &amp;&amp; eic-mcp config copilot &gt; .vscode/mcp.json</code>
-(VS Code/Copilot, Agent mode),
-<code>mkdir -p .cursor &amp;&amp; eic-mcp config cursor &gt; .cursor/mcp.json</code>,
-<code>eic-mcp config claude &gt; .mcp.json</code> (Claude Code),
-<code>mkdir -p .gemini &amp;&amp; eic-mcp config gemini &gt; .gemini/settings.json</code>
-(Gemini CLI), or
-<code>eic-mcp config codex &gt;&gt; ~/.codex/config.toml</code> (Codex).
-The servers and prompts are identical; put the skill where your client
-reads skills (<code>.claude/skills/</code> for Claude Code).</p>
+<p>Only step 2 changes: <code>eic-mcp config &lt;client&gt;</code>
+writes the file each client expects — e.g.
+<code>eic-mcp config claude &gt; .mcp.json</code> for Claude Code
+(preinstalled in eic-shell). The full list is in <a href="03-mcp-servers.html">Episode 3</a>. The servers and prompts are
+identical; put the skill where your client reads skills
+(<code>.claude/skills/</code> for Claude Code).</p>
 </div>
 </div>
 </div>
