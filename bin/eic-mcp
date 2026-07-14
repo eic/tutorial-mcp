@@ -125,9 +125,14 @@ find_sif() {
       prefixes+=("$(sed -n '/^PREFIX=/{s/^PREFIX=//;s/^"//;s/"$//;p;q}' "$launcher")")
   done
   prefixes+=("$PWD" "$HOME/eic")
+  local cand
   for d in "${prefixes[@]}"; do
     [ -n "$d" ] || continue
-    s="$(ls -1t "$d"/local/lib/eic_xl-*.sif "$d"/lib/eic_xl-*.sif 2>/dev/null | head -1)"
+    s=""
+    for cand in "$d"/local/lib/eic_xl-*.sif "$d"/lib/eic_xl-*.sif; do   # newest match wins
+      [ -e "$cand" ] || continue
+      { [ -z "$s" ] || [ "$cand" -nt "$s" ]; } && s="$cand"
+    done
     [ -n "$s" ] && { mkdir -p "$EIC_MCP_STATE"; printf '%s\n' "$s" >"$cache"; echo "$s"; return; }
   done
   echo ""
