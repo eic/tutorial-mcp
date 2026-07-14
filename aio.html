@@ -367,7 +367,7 @@
         
 <section id="aio-01-why-genai-for-physics"><p>Content from <a href="01-why-genai-for-physics.html">Generative AI as an agentic research tool</a></p>
 <hr>
-<p>Last updated on 2026-07-11 |
+<p>Last updated on 2026-07-14 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/01-why-genai-for-physics.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -454,11 +454,11 @@ capability.</li>
 </h2>
 <hr class="half-width">
 <p>In a typical analysis the physics is modest: select a final state,
-build an observable, fit a signal. Most effort goes into the software
-around it — locating datasets, decoding a data model, getting branch
-names and units right, iterating on plotting and fitting code. LLMs
-compress this overhead well, but only if they produce <em>checkable</em>
-results. Later episodes apply this to the decay <span class="math inline">\(\Lambda^0 \to p\,\pi^-\)</span>.</p>
+build an observable, fit a signal, etc. Most effort goes into the
+software around it — locating datasets, decoding a data model, getting
+branch names and units right, iterating on plotting and analysis code.
+LLMs compress this overhead well, but only if they produce
+<em>checkable</em> results. Later episodes apply this to the decay <span class="math inline">\(\Lambda^0 \to p\,\pi^-\)</span>.</p>
 </section><section><h2 class="section-heading" id="two-modes-of-use">Two modes of use<a class="anchor" aria-label="anchor" href="#two-modes-of-use"></a>
 </h2>
 <hr class="half-width">
@@ -488,20 +488,16 @@ workflow.</p>
 </div>
 </div>
 <p>That loop is the first of <strong>four</strong>, each wrapped around
-the one before it. This episode walks up the stack; the rest of the
-lesson has you build the inner two yourself and shows the outer two
-running at collaboration scale.</p>
-</section><section><h2 class="section-heading" id="level-1-the-agent-loop">Level 1 — the agent loop<a class="anchor" aria-label="anchor" href="#level-1-the-agent-loop"></a>
-</h2>
-<hr class="half-width">
-<p>The basic cycle could not be simpler: the model calls a tool, looks
-at what came back, and decides whether it is done.</p>
+the one before it. This episode walks up the stack. ## Level 1 — the
+agent loop</p>
+<p>The basic cycle - model calls a tool, looks at what came back, and
+decides whether it is done.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
     accTitle: {Level 1 the agent loop}
     accDescr: {Level 1 the agent loop}
     Q["task"]:::user --&gt; M["model"]:::core
-    M --&gt;|"tool call"| T["tools&lt;br/&gt;read files · run code · query a server"]:::tool
+    M --&gt;|"tool call"| T["tools&lt;br/&gt;read files · run code · query "]:::tool
     T --&gt;|"result appended to context"| D{"task&lt;br/&gt;complete?"}:::core
     D --&gt;|"no"| M
     D --&gt;|"yes"| R["result + provenance"]:::out
@@ -530,13 +526,13 @@ through which the model affects the outside world.</li>
 <em>propose → execute → observe</em> until done. This distinguishes an
 agent from a chatbot.</li>
 </ul>
-<div id="why-the-loop-is-essential-not-cosmetic" class="callout">
+<div id="why-the-loop-is-essential" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="why-the-loop-is-essential-not-cosmetic" class="callout-inner">
-<h3 class="callout-title">Why the loop is essential, not cosmetic</h3>
+<div id="why-the-loop-is-essential" class="callout-inner">
+<h3 class="callout-title">Why the loop is essential</h3>
 <div class="callout-content">
 <p>Feeding tool results back lets the assistant correct course against
 ground truth: read the actual branch names rather than guessing, run a
@@ -566,9 +562,9 @@ flowchart TB
 <ul>
 <li>
 <strong>MCP servers</strong> — the <em>tools</em> layer,
-standardised. A server exposes tools, data, and prompts over the Model
-Context Protocol so one implementation works in any client. This is how
-we give the assistant physics capabilities (<a href="03-mcp-servers.html">Episode 3</a>).</li>
+standardised. A server (in our case eic-shell) exposes tools, data, and
+prompts over the Model Context Protocol so one implementation works in
+any client. This is how we give the assistant physics capabilities (<a href="03-mcp-servers.html">Episode 3</a>).</li>
 <li>
 <strong>Subagents (agents)</strong> — a separate assistant instance
 with its own context window, tools, and instructions, spawned for a
@@ -599,7 +595,7 @@ capability; a skill is a recipe.</li>
 <tr>
 <td>Subagents</td>
 <td>isolated, specialised helpers</td>
-<td>concept introduced here; not used hands-on</td>
+<td>concept</td>
 </tr>
 <tr>
 <td>Skills</td>
@@ -645,11 +641,11 @@ flowchart TD
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;</code></pre>
-<p>The discipline behind it: treat every model output as a
-<strong>hypothesis</strong>, accepted only after checking it against
-something external — the data, a fit statistic, a known physical value,
-or an independent implementation. For the <span class="math inline">\(\Lambda^0\)</span> measurement the criteria are
-physical and checkable: <span class="math inline">\(|\mu -
+<p>Treat every model output as a <strong>hypothesis</strong>, accepted
+only after checking it against something external — the data, a fit
+statistic, a known physical value, or an independent implementation. For
+the <span class="math inline">\(\Lambda^0\)</span> measurement the
+criteria are physical and checkable: <span class="math inline">\(|\mu -
 1.115683\,\mathrm{GeV}| &lt; 5\,\mathrm{MeV}\)</span>, <span class="math inline">\(\sigma\)</span> consistent with detector
 resolution, <span class="math inline">\(\chi^2/\mathrm{ndf}\)</span> of
 order 1. In <a href="04-skills.html">Episode 4</a> you will write
@@ -657,12 +653,12 @@ exactly this grader into the lambda-fit skill’s <strong>success
 criteria</strong> — and a passing agent reports the numbers, while a
 failing one must report the failure, not a result.</p>
 <p>Grading costs time and tokens. It is the right trade wherever
-correctness matters more than speed — in physics, almost always. So
-favour tools that return compact, inspectable quantities — counts,
-edges, fit parameters — and keep a record of what was run:
-reproducibility and provenance are the criteria by which an automated
-result earns trust. At collaboration scale the grader can be mechanical,
-like the secret-token fabrication check in <a href="06-eic-mcp-servers.html">Episode 6</a>.</p>
+correctness matters more than speed — almost always. So favour tools
+that return compact, inspectable quantities — counts, edges, fit
+parameters — and keep a record of what was run: reproducibility and
+provenance are the criteria by which an automated result earns trust. At
+collaboration scale the grader can be mechanical, like the secret-token
+fabrication check in DISpatcher <a href="06-eic-mcp-servers.html">Episode 6</a>.</p>
 </section><section><h2 class="section-heading" id="level-3-the-operation-loop">Level 3 — the operation loop<a class="anchor" aria-label="anchor" href="#level-3-the-operation-loop"></a>
 </h2>
 <hr class="half-width">
@@ -706,68 +702,12 @@ the request.</p>
 <h3 class="callout-title">Where a human belongs in each loop</h3>
 <div class="callout-content">
 <p>Autonomy does not mean absence of judgement — each level has a
-natural checkpoint: approving a sensitive tool call (①), signing off a
-graded result (②), reviewing what runs unattended (③), and deciding
-which harness changes to keep (④). Put yourself at the checkpoints, not
-in the middle of the loop.</p>
+natural checkpoint: approving a sensitive tool call (1), signing off a
+graded result (2), reviewing what runs unattended (3), and deciding
+which harness changes to keep (4). Put yourself at the checkpoints</p>
 </div>
 </div>
 </div>
-<div id="discussion-what-does-the-loop-buy-you" class="callout challenge">
-<div class="callout-square">
-<i class="callout-icon" data-feather="zap"></i>
-</div>
-<span class="callout-header">Challenge</span>
-<div id="discussion-what-does-the-loop-buy-you" class="callout-inner">
-<h3 class="callout-title">Discussion: what does the loop buy you?</h3>
-<div class="callout-content">
-<p>For the <span class="math inline">\(\Lambda^0 \to p\,\pi^-\)</span>
-analysis, identify two failure modes of a one-shot completion that an
-agentic loop removes.</p>
-</div>
-</div>
-</div>
-<div id="accordionSolution1" class="accordion challenge-accordion accordion-flush">
-<div class="accordion-item">
-<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
-  <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
-</button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
-<div class="accordion-body">
-<ol style="list-style-type: decimal">
-<li>
-<strong>Hallucinated schema.</strong> A one-shot model may emit a
-plausible but wrong branch name (for example
-<code>ReconstructedParticles.px</code> instead of
-<code>ReconstructedChargedParticles.momentum.x</code>). An agent can
-query the file and use the real names.</li>
-<li>
-<strong>Unvalidated fit.</strong> A one-shot model cannot know
-whether its fit converged or where the peak landed. An agent can execute
-the fit, read <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(\chi^2/\mathrm{ndf}\)</span>, and iterate.</li>
-</ol>
-<p>Both are the same principle: conditioning on observations beats
-conditioning on the prior. The first is fixed at level 1 (observe, don’t
-guess), the second at level 2 (grade, don’t trust).</p>
-</div>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="where-this-sits">Where this sits<a class="anchor" aria-label="anchor" href="#where-this-sits"></a>
-</h2>
-<hr class="half-width">
-<p>Generative AI is already part of the research software ecosystem —
-code development and review, navigating large codebases, searching
-technical documentation. The ePIC collaboration, which produced the data
-used here, applies these tools in several such roles. This lesson is a
-self-contained, low-cost entry point: with a free assistant and a few
-small tool servers you will carry out a complete measurement on real
-ePIC data.</p>
-</section><section><h2 class="section-heading" id="portability-through-an-open-protocol">Portability through an open protocol<a class="anchor" aria-label="anchor" href="#portability-through-an-open-protocol"></a>
-</h2>
-<hr class="half-width">
-<p>The assistant market changes on a timescale of months, so we depend
-on a standard rather than a product.</p>
 <div id="one-interface-many-assistants" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -779,7 +719,7 @@ on a standard rather than a product.</p>
 <p>The <strong>Model Context Protocol (MCP)</strong> is an open standard
 for exposing tools to language-model clients. A tool implemented once
 against MCP works in any compliant assistant — like a hardware bus that
-decouples peripherals from hosts. In <a href="03-mcp-servers.html">Episode 3</a> you connect the EIC tool
+decouples peripherals from hosts. In <a href="03-mcp-servers.html">Episode 3</a> you connect the eic-shell
 servers and see that any MCP-compliant client connects the same way,
 making the workflow reproducible across environments.</p>
 </div>
@@ -2088,7 +2028,7 @@ on a file from Episode 3.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2141,7 +2081,7 @@ pairs.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>Replace the skill’s Provenance section with:</p>
 <div class="codewrapper sourceCode" id="cb9">
