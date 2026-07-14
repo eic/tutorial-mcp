@@ -409,19 +409,18 @@ what.</li>
 </div>
 </div>
 <section><h2 class="section-heading" id="the-interoperability-problem">The interoperability problem<a class="anchor" aria-label="anchor" href="#the-interoperability-problem"></a></h2>
-<hr class="half-width"><p>Tools are the only channel through which an assistant acts (<a href="01-why-genai-for-physics.html">Episode 1</a>). The <strong>Model
+<hr class="half-width"><p>Tools are the only way an assistant can act (<a href="01-why-genai-for-physics.html">Episode 1</a>). The <strong>Model
 Context Protocol (MCP)</strong> standardises the interface: implement a
 tool once as a <strong>server</strong>, and any MCP-compliant
 <strong>client</strong> (the assistant) can use it.</p>
-<p>MCP is a client–server protocol over <strong>JSON-RPC 2.0</strong>.
-After capability negotiation, the server advertises three object types —
-<strong>tools</strong> (callable functions), <strong>resources</strong>
-(readable data), and <strong>prompts</strong> (templated instructions).
-Two transports exist: <strong>stdio</strong> (client launches the server
-as a subprocess, messages over standard input/output) and
-<strong>streamable HTTP</strong> for networked servers. The lesson’s
-servers run inside eic-shell and speak streamable HTTP on
-<code>127.0.0.1</code>.</p>
+<p>MCP is a client–server protocol over <strong>JSON-RPC 2.0</strong>. A
+server offers three object types — <strong>tools</strong> (callable
+functions), <strong>resources</strong> (readable data), and
+<strong>prompts</strong> (templated instructions). Two transports exist:
+<strong>stdio</strong> (client launches the server as a subprocess,
+messages over standard input/output) and <strong>streamable
+HTTP</strong> for networked servers. The lesson’s servers run inside
+eic-shell and speak streamable HTTP on <code>127.0.0.1</code>.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {EIC MCP data tools}
@@ -503,9 +502,8 @@ with a 30-second wall-clock limit.</p>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="start-the-servers">Start the servers<a class="anchor" aria-label="anchor" href="#start-the-servers"></a></h2>
-<hr class="half-width"><p>Start the servers for this session from inside eic-shell (the first
-<code>eic-mcp up</code> ever run bootstraps them automatically if your
-image doesn’t ship them yet — see <a href="index.html#setup">Setup</a>):</p>
+<hr class="half-width"><p>Start the servers from inside eic-shell (the first run bootstraps
+them automatically — see <a href="index.html#setup">Setup</a>):</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -540,6 +538,13 @@ with
 (a plain <code>up</code> skips servers that are already running, so the
 new setting would never take effect). Either way, <code>rucio</code>
 replicas always tell you where a file really is.</p>
+<p>If instead <em>every</em> uproot call starts timing out after one big
+one, the server is <strong>busy, not broken</strong>: it handles one
+request at a time, and a call your client gave up on is still running.
+Wait a minute, or clear it with
+<code>EIC_MCP_SERVERS=uproot eic-mcp restart</code>. Do not let the
+assistant “work around” it by installing packages or reading the file
+itself — <code>AGENTS.md</code> (Episode 4) forbids exactly that.</p>
 </div>
 </div>
 </div>
@@ -618,10 +623,10 @@ it.</li>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="finding-the-data-with-mcp">Finding the data with MCP<a class="anchor" aria-label="anchor" href="#finding-the-data-with-mcp"></a></h2>
-<hr class="half-width"><p>You fetch no dataset by hand. The other two MCP servers let the
-assistant locate and verify the real files, replacing the manual
-<code>rucio</code> + <code>xrdfs</code> recipe; <code>uproot-mcp</code>
-reads the file straight from the store, with no download step.</p>
+<hr class="half-width"><p>You never download a dataset. The other two MCP servers let the
+assistant find and verify the real files — replacing the manual
+<code>rucio</code> + <code>xrdfs</code> recipe — and
+<code>uproot-mcp</code> then reads them straight from the store.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {EIC MCP data tools}
@@ -669,16 +674,16 @@ alone.</p>
 version such as <code>26.06.0</code> — together with the beam/target and
 physics, all encoded in the rucio DID
 (e.g. <code>epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...</code>).
-Before locating a specific dataset, see which campaigns exist so you
-target a current one:</p>
+Before locating a specific dataset, check which campaigns exist so you
+use a current one:</p>
 <pre class="ai-prompt"><code>Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.</code></pre>
 <p>The assistant calls <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>list_dids</code></a>
 on scope <code>epic</code> and groups the DIDs by their campaign
-component. Watch its method here: the catalogue holds thousands of DIDs
-and pages are not sorted newest-first, so a lazy one-page sample can
-miss the current campaigns entirely. Narrowing with a version wildcard
+component. Watch how it does this: the catalogue holds thousands of DIDs
+and the pages are not sorted newest-first, so sampling one page can miss
+the current campaigns entirely. Narrowing with a version wildcard
 (<code>/RECO/26.*</code>) — or one call to the <code>xrootd</code>
-server’s <code>list_campaigns</code> — gets the honest answer.</p>
+server’s <code>list_campaigns</code> — gives the honest answer.</p>
 <div id="exercise-locate-a-dataset-10-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
@@ -689,7 +694,7 @@ server’s <code>list_campaigns</code> — gets the honest answer.</p>
 <div class="callout-content">
 <p>With <code>rucio</code> and <code>xrootd</code> connected (no
 credentials — see the callout), ask your assistant:</p>
-<pre class="ai-prompt"><code>Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.</code></pre>
+<pre class="ai-prompt"><code>Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu ep 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.</code></pre>
 </div>
 </div>
 </div>
@@ -698,7 +703,7 @@ credentials — see the callout), ask your assistant:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>The assistant calls <code>list_scopes</code>/<code>list_dids</code>
 (scope <code>epic</code>, narrowing by a name glob on the campaign and
@@ -706,12 +711,11 @@ beam/target) to find the DID, <code>list_files</code> to enumerate it
 (374 files), and <code>list_file_replicas</code> for the
 <code>root://</code> URLs. It then switches to <code>xrootd-mcp</code>
 (<code>list_directory_filtered</code>, <code>check_file_exists</code>)
-to verify the files. For the event total, note what a sensible assistant
-does: rucio does not carry event counts, and scanning all 374 files
-would take an hour — it checks a few files (≈ 1,220 events each) and
-extrapolates. The DID is <em>discovered</em> with
-<code>list_dids</code>, not hard-coded — what you want when campaign
-names change.</p>
+to verify the files. For the event total: rucio does not store event
+counts, and scanning all 374 files would take an hour — so a sensible
+assistant checks a few files (≈ 1,220 events each) and extrapolates. The
+DID is <em>discovered</em> with <code>list_dids</code>, not hard-coded —
+what you want when campaign names change.</p>
 </div>
 </div>
 </div>
@@ -731,7 +735,7 @@ URLs from the previous exercise — written below as
 <h3 class="callout-title">Exercise: enumerate the schema (≈ 10 min)</h3>
 <div class="callout-content">
 <p>Issue the request:</p>
-<pre class="ai-prompt"><code>Using the uproot tools, report the structure of root://epicxrd1.sdcc.bnl.gov:1095//&lt;your-discovered-file&gt;.root and list the members of the ReconstructedChargedParticles collection.</code></pre>
+<pre class="ai-prompt"><code>Using the uproot tools, report the structure of the events tree in root://epicxrd1.sdcc.bnl.gov:1095//&lt;your-discovered-file&gt;.root and list the members of the ReconstructedChargedParticles collection.</code></pre>
 </div>
 </div>
 </div>
@@ -740,7 +744,7 @@ URLs from the previous exercise — written below as
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>The assistant calls <code>get_tree_info</code> on the
 <code>events</code> tree (not the full <code>get_file_structure</code>
@@ -785,7 +789,7 @@ min)</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>The assistant calls <code>histogram_branch</code>, setting the bins
 and range so each integer code gets its own bin (the default
@@ -827,7 +831,7 @@ count it.</p>
 <div class="callout-content">
 <p>Inspect the returned numbers — bin edges, counts, statistics: do the
 PDG peaks fall at physical codes, and are the proton and pion yields
-plausible? <a href="04-skills.html">Episode 4</a> formalises this as
+plausible? <a href="04-skills.html">Episode 4</a> turns this into
 explicit success criteria.</p>
 </div>
 </div>

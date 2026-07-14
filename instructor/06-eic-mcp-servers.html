@@ -325,7 +325,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Catalogue: MCP servers and AI infrastructure in the EIC ecosystem</h1>
-        <p>Last updated on 2026-07-11 |
+        <p>Last updated on 2026-07-14 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/06-eic-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -410,8 +410,9 @@ harness.</li>
 <hr class="half-width"><p>MCP is a standard (<a href="03-mcp-servers.html">Episode 3</a>), so
 the collaboration exposes each piece of its infrastructure as a small
 server. The three you used in this lesson are one corner of a
-fast-growing stack, built mostly in BNL’s NPPS group (this episode
-distils Torre Wenaus’s June 2026 talk to the ePIC user-learning WG).</p>
+fast-growing stack, built mostly in BNL’s NPPS group (this episode is
+based on Torre Wenaus’s June 2026 talk to the ePIC user-learning
+WG).</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
     accTitle: {EIC MCP server catalogue}
@@ -602,7 +603,10 @@ why did my jobs fail?), the physics samples in production (PCS), the
 data tools you used in this lesson (rucio, xrootd, uproot), software
 knowledge (LXR + GitHub), and documents (Zenodo, plus a documentation
 RAG).</p>
-<pre class="ai-prompt"><code>(in the dispatcher channel)  Summarise the physics tags in the PCS — which processes are covered, and which tags are still draft?</code></pre>
+<p>Post this in the <code>dispatcher</code> channel (or DM the bot) —
+not in your own assistant, which has no PCS tool and would have to
+invent the answer:</p>
+<pre class="ai-prompt"><code>Summarise the physics tags in the PCS — which processes are covered, and which tags are still draft?</code></pre>
 <div id="two-reusable-harness-patterns" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -611,9 +615,9 @@ RAG).</p>
 <div id="two-reusable-harness-patterns" class="callout-inner">
 <h3 class="callout-title">Two reusable harness patterns</h3>
 <div class="callout-content">
-<p>The bot runs a small, low-cost model, which exposes at scale the
-failure modes this lesson warned about. Two of its countermeasures apply
-to any harness:</p>
+<p>The bot runs a small, cheap model, so it hits the failure modes this
+lesson warned about — at scale. Two of its countermeasures apply to any
+harness:</p>
 <ul><li>
 <strong>Tiered tool exposure.</strong> Tool use degrades past
 roughly 30–50 tools, and the bot has ~100. So its system prompt carries
@@ -633,11 +637,11 @@ mechanically.</li>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="beyond-the-bot-corun-ai">Beyond the bot: corun-ai<a class="anchor" aria-label="anchor" href="#beyond-the-bot-corun-ai"></a></h2>
-<hr class="half-width"><p>The bot answers in seconds from a small model, and its answers recede
-into chat history. <a href="https://github.com/BNLNPPS/corun-ai" class="external-link"><strong><code>BNLNPPS/corun-ai</code></strong></a>
-is the deliberate complement: runs that take <strong>minutes</strong> on
-high-level models, with the results preserved, browsable, and open to
-expert commentary. Its first application, <strong>codoc-ai</strong> (<a href="https://epic-devcloud.org/doc/" class="external-link">epic-devcloud.org/doc</a>),
+<hr class="half-width"><p>The bot answers in seconds from a small model, and its answers scroll
+away in the chat history. <a href="https://github.com/BNLNPPS/corun-ai" class="external-link"><strong><code>BNLNPPS/corun-ai</code></strong></a>
+is the complement: runs that take <strong>minutes</strong> on high-level
+models, with the results preserved, browsable, and open to expert
+commentary. Its first application, <strong>codoc-ai</strong> (<a href="https://epic-devcloud.org/doc/" class="external-link">epic-devcloud.org/doc</a>),
 generates software documents grounded in LXR + GitHub. Typical uses:</p>
 <ul><li>
 <em>“I’ve been away from ePIC software development for 6 months —
@@ -650,12 +654,11 @@ wraps it as an MCP server, so your own assistant can browse and submit
 too.) The services are at an early stage, currently hosted on the open
 internet; a move to lab hosting is planned.</p>
 </section><section><h2 class="section-heading" id="where-this-is-going">Where this is going<a class="anchor" aria-label="anchor" href="#where-this-is-going"></a></h2>
-<hr class="half-width"><p>The direction of travel is what this lesson taught in miniature:
-centrally hosted MCP services over HTTP (the transport you used in
-Episode 3) that plug equally into the bot, corun-ai, and <em>your
-own</em> assistant — from a single free assistant and one tool server up
-to a collaboration-wide ecosystem, plus a real <span class="math inline">\(\Lambda^0\)</span> measurement you carried out
-yourself.</p>
+<hr class="half-width"><p>The direction is what this lesson taught in miniature: centrally
+hosted MCP services over HTTP (the transport from Episode 3) that plug
+equally into the bot, corun-ai, and <em>your own</em> assistant — from
+one free assistant and one tool server up to a collaboration-wide
+ecosystem.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -743,7 +746,7 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/06-eic-mcp-servers.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/06-eic-mcp-servers.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-11",
+  "dateModified": "2026-07-14",
   "datePublished": "2026-07-14"
 }
 

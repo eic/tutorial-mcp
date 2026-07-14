@@ -325,7 +325,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Persisting instructions: AGENTS.md and SKILL.md</h1>
-        <p>Last updated on 2026-07-11 |
+        <p>Last updated on 2026-07-14 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/04-skills.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -459,26 +459,37 @@ unchanged.</p>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1" aria-label="code-block-2-13"></a><span class="ss">- </span>Use the <span class="in">`rucio`</span> MCP server (list_dids, list_files, list_file_replicas) to locate</span>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1" aria-label="code-block-2-14"></a>  a dataset and resolve its root:// URLs.</span>
 <span id="cb2-15"><a href="#cb2-15" tabindex="-1" aria-label="code-block-2-15"></a><span class="ss">- </span>Use the <span class="in">`xrootd`</span> MCP server (check_file_exists, get_file_info) to verify a file.</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1" aria-label="code-block-2-16"></a><span class="ss">- </span>Use the <span class="in">`uproot`</span> MCP server (get_file_structure, get_tree_info, histogram_branch,</span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1" aria-label="code-block-2-17"></a>  execute_kernel, execute_kernel_dataset) for all ROOT file access.</span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1" aria-label="code-block-2-18"></a><span class="ss">- </span>Do NOT write bespoke file I/O; the servers already handle it.</span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1" aria-label="code-block-2-19"></a></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1" aria-label="code-block-2-20"></a><span class="fu">## Data model</span></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1" aria-label="code-block-2-21"></a><span class="ss">- </span>Tree: events.  Collection: ReconstructedChargedParticles.</span>
-<span id="cb2-22"><a href="#cb2-22" tabindex="-1" aria-label="code-block-2-22"></a><span class="ss">- </span>Members: .PDG, .momentum.x, .momentum.y, .momentum.z   (momenta in GeV).</span>
-<span id="cb2-23"><a href="#cb2-23" tabindex="-1" aria-label="code-block-2-23"></a><span class="ss">- </span>PDG codes: proton 2212, pi- -211, antiproton -2212, pi+ 211.</span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1" aria-label="code-block-2-24"></a></span>
-<span id="cb2-25"><a href="#cb2-25" tabindex="-1" aria-label="code-block-2-25"></a><span class="fu">## Physics constants (PDG)</span></span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1" aria-label="code-block-2-26"></a><span class="ss">- </span>m(proton) = 0.9382720813 GeV, m(pi) = 0.13957061 GeV, m(Lambda) = 1.115683 GeV.</span>
-<span id="cb2-27"><a href="#cb2-27" tabindex="-1" aria-label="code-block-2-27"></a></span>
-<span id="cb2-28"><a href="#cb2-28" tabindex="-1" aria-label="code-block-2-28"></a><span class="fu">## Conventions</span></span>
-<span id="cb2-29"><a href="#cb2-29" tabindex="-1" aria-label="code-block-2-29"></a><span class="ss">- </span>Invariant mass over <span class="co">[</span><span class="ot">1.05, 1.25</span><span class="co">]</span> GeV, 200 bins.</span>
-<span id="cb2-30"><a href="#cb2-30" tabindex="-1" aria-label="code-block-2-30"></a><span class="ss">- </span>Fit a Gaussian + 2nd-order polynomial over <span class="co">[</span><span class="ot">1.08, 1.16</span><span class="co">]</span> GeV.</span>
-<span id="cb2-31"><a href="#cb2-31" tabindex="-1" aria-label="code-block-2-31"></a><span class="ss">- </span>Write results as JSON; save plots under output/.</span>
-<span id="cb2-32"><a href="#cb2-32" tabindex="-1" aria-label="code-block-2-32"></a></span>
-<span id="cb2-33"><a href="#cb2-33" tabindex="-1" aria-label="code-block-2-33"></a><span class="fu">## Definition of done</span></span>
-<span id="cb2-34"><a href="#cb2-34" tabindex="-1" aria-label="code-block-2-34"></a><span class="ss">- </span>Fitted peak within a few MeV of 1.115683 GeV and chi2/ndf of order 1.</span>
-<span id="cb2-35"><a href="#cb2-35" tabindex="-1" aria-label="code-block-2-35"></a><span class="ss">- </span>Always run the fit and check these before reporting a result.</span></code></pre>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1" aria-label="code-block-2-16"></a><span class="ss">- </span>Use the <span class="in">`uproot`</span> MCP server (get_tree_info, histogram_branch, execute_kernel,</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1" aria-label="code-block-2-17"></a>  execute_kernel_dataset) for all ROOT file access. Prefer get_tree_info over</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1" aria-label="code-block-2-18"></a>  get_file_structure: on an EDM4eic file the latter returns megabytes.</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1" aria-label="code-block-2-19"></a><span class="ss">- </span>Do NOT write bespoke file I/O; the servers already handle it.</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1" aria-label="code-block-2-20"></a></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1" aria-label="code-block-2-21"></a><span class="fu">## When a tool fails</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1" aria-label="code-block-2-22"></a></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1" aria-label="code-block-2-23"></a><span class="ss">- </span>Never install software (no <span class="in">`pip install`</span>, above all not <span class="in">`--break-system-packages`</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1" aria-label="code-block-2-24"></a>  and never re-implement the analysis with local uproot/ROOT.</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1" aria-label="code-block-2-25"></a><span class="ss">- </span>A timed-out call means the server is BUSY, not broken: it is single-threaded and</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1" aria-label="code-block-2-26"></a>  still working on the previous request. Wait, retry once, and if it still fails,</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1" aria-label="code-block-2-27"></a>  stop and report which tool failed with which arguments.</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1" aria-label="code-block-2-28"></a><span class="ss">- </span>Never reuse a cached earlier tool result as if it were fresh. A number that did</span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1" aria-label="code-block-2-29"></a>  not come from the MCP servers is not reproducible, so it is not an answer.</span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1" aria-label="code-block-2-30"></a></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1" aria-label="code-block-2-31"></a><span class="fu">## Data model</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1" aria-label="code-block-2-32"></a><span class="ss">- </span>Tree: events.  Collection: ReconstructedChargedParticles.</span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1" aria-label="code-block-2-33"></a><span class="ss">- </span>Members: .PDG, .momentum.x, .momentum.y, .momentum.z   (momenta in GeV).</span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1" aria-label="code-block-2-34"></a><span class="ss">- </span>PDG codes: proton 2212, pi- -211, antiproton -2212, pi+ 211.</span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1" aria-label="code-block-2-35"></a></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1" aria-label="code-block-2-36"></a><span class="fu">## Physics constants (PDG)</span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1" aria-label="code-block-2-37"></a><span class="ss">- </span>m(proton) = 0.9382720813 GeV, m(pi) = 0.13957061 GeV, m(Lambda) = 1.115683 GeV.</span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1" aria-label="code-block-2-38"></a></span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1" aria-label="code-block-2-39"></a><span class="fu">## Conventions</span></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1" aria-label="code-block-2-40"></a><span class="ss">- </span>Invariant mass over <span class="co">[</span><span class="ot">1.05, 1.25</span><span class="co">]</span> GeV, 200 bins.</span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1" aria-label="code-block-2-41"></a><span class="ss">- </span>Fit a Gaussian + 2nd-order polynomial over <span class="co">[</span><span class="ot">1.08, 1.16</span><span class="co">]</span> GeV.</span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1" aria-label="code-block-2-42"></a><span class="ss">- </span>Write results as JSON; save plots under output/.</span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1" aria-label="code-block-2-43"></a></span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1" aria-label="code-block-2-44"></a><span class="fu">## Definition of done</span></span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1" aria-label="code-block-2-45"></a><span class="ss">- </span>Fitted peak within a few MeV of 1.115683 GeV and chi2/ndf of order 1.</span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1" aria-label="code-block-2-46"></a><span class="ss">- </span>Always run the fit and check these before reporting a result.</span></code></pre>
 </div>
 <p>This encodes the schema, the tool policy (use the server, not
 hand-written I/O), the conventions, and an explicit definition of
@@ -538,10 +549,11 @@ ready-made bridge: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/
 the uproot kernel, fit the Gaussian + polynomial in the same sandbox),
 so it needs no bundled scripts.</p>
 <p>The YAML frontmatter carries a <code>name</code> and a
-<code>description</code>. The <code>description</code> is load-bearing:
-the client matches the request against it to decide whether to load the
-skill. <strong>Only the name and description stay in context</strong> —
-the body is read in <em>only when</em> the description matches.</p>
+<code>description</code>. The <code>description</code> is the part that
+matters: the client matches your request against it to decide whether to
+load the skill. <strong>Only the name and description stay in
+context</strong> — the body is read in <em>only when</em> the
+description matches.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -611,12 +623,11 @@ tutorial’s copy keeps it current:</p>
 </div>
 <p>(<code>~/tutorial-mcp</code> is where <a href="index.html#setup">Setup</a>
 cloned this lesson’s repository.)</p>
-<p>Loading is the model’s decision, triggered by the skill’s
-<code>description</code> — a small model may answer without it unless
-you name the skill in your prompt, which is why every prompt in this
-lesson says “Using the lambda-fit skill”. Clients without a skill
-mechanism reach the same end by referencing the procedure from
-<code>AGENTS.md</code>.</p>
+<p>Loading is the model’s decision, based on the skill’s
+<code>description</code>. A small model may answer without loading it,
+so every prompt in this lesson names the skill: “Using the lambda-fit
+skill”. Clients without a skill mechanism can reference the procedure
+from <code>AGENTS.md</code> instead.</p>
 </div>
 </div>
 </div>
@@ -716,7 +727,7 @@ on a file from Episode 3.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -744,8 +755,8 @@ on a file from Episode 3.</p>
 <span id="cb8-21"><a href="#cb8-21" tabindex="-1" aria-label="code-block-8-21"></a>rather than guessing.</span></code></pre>
 </div>
 <p>Save it as <code>.opencode/skills/edm4eic-summary/SKILL.md</code> and
-name it in the prompt (“Using the edm4eic-summary skill, …”) — the
-description alone may not tempt a small model.</p>
+name it in the prompt (“Using the edm4eic-summary skill, …”) — a small
+model may not load it from the description alone.</p>
 </div>
 </div>
 </div>
@@ -769,7 +780,7 @@ pairs.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>Replace the skill’s Provenance section with:</p>
 <div class="codewrapper sourceCode" id="cb9">
@@ -873,7 +884,7 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/04-skills.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/04-skills.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-11",
+  "dateModified": "2026-07-14",
   "datePublished": "2026-07-14"
 }
 

@@ -469,13 +469,16 @@ place:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, measure the Lambda0 peak in this file:
 root://epicxrd1.sdcc.bnl.gov:1095//... (one of the dataset's root:// files).
 Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
-fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot.</code></pre>
+fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot — or report insufficient
+statistics if the fit window is too sparse.</code></pre>
 <p>The assistant calls <code>execute_kernel</code> (tree
 <code>events</code>, proton/pion branches) to build the histogram, then
-a follow-up prompt fits it with a Gaussian-plus-polynomial model. On a
-single file the peak sits at <span class="math inline">\(\mu \approx
-1.1157\)</span> GeV; its significance is limited by the small event
-count, addressed next.</p>
+a follow-up prompt fits it with a Gaussian-plus-polynomial model. One
+file yields only ~8 candidates in the fit window, so the honest answer
+is <em>insufficient statistics</em> — the skill says stop rather than
+fit, and a model that quotes <span class="math inline">\(\mu\)</span>
+anyway has ignored it. The peak at <span class="math inline">\(\mu
+\approx 1.1157\)</span> GeV comes from the larger sample below.</p>
 <div id="smaller-models-take-shortcuts-verify-the-result-not-the-route" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -495,21 +498,21 @@ which tool produced it.</p>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="scaling-to-the-full-sample">Scaling to the full sample<a class="anchor" aria-label="anchor" href="#scaling-to-the-full-sample"></a></h2>
-<hr class="half-width"><p>The same kernel applies unchanged to many files; only the tool
-differs. <code>execute_kernel</code> runs one file;
-<code>execute_kernel_dataset</code> dispatches the identical kernel
-across a whole file list and returns one merged histogram, so peak
-memory is independent of dataset size. Enumerate the files with
-<code>get_dataset_file_list</code>, then fan the kernel out:</p>
-<pre class="ai-prompt"><code>Using the lambda-fit skill, run the same proton-pion mass kernel across the dataset's files
+<hr class="half-width"><p>The same kernel works unchanged on many files; only the tool differs.
+<code>execute_kernel</code> runs one file;
+<code>execute_kernel_dataset</code> runs the identical kernel over a
+whole file list and returns one merged histogram, so peak memory does
+not grow with dataset size. Enumerate the files with
+<code>get_dataset_file_list</code>, then run it across them:</p>
+<pre class="ai-prompt"><code>Using the lambda-fit skill, run the same proton-pion mass kernel across the first 8 of the dataset's files
 with execute_kernel_dataset (tree 'events'), merge the histograms, then fit the result and
 report mu, sigma, the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.</code></pre>
 <p>The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the
 assistant returns the merged histogram and runs a follow-up fit prompt.
 One practical limit: a synchronous <code>execute_kernel_dataset</code>
-call over ~8 files already takes about a minute, which is exactly where
-many clients cut a tool call off. For anything bigger, the async route
-is the right one — <code>submit_kernel_dataset</code>, then poll
+call over ~8 files already takes about a minute — right where many
+clients cut a tool call off. For anything bigger, go async:
+<code>submit_kernel_dataset</code>, then poll
 <code>get_job_status</code>/<code>get_job_result</code>. Over ~100 files
 this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over
 the combinatorial background.</p>
@@ -536,7 +539,7 @@ f(m) = A \exp\!\left[ -\tfrac{1}{2} (m - \mu)^2 / \sigma^2 \right] +
 <p>The polynomial absorbs the combinatorial background (Episode 2); the
 integrated signal is <span class="math inline">\(S =
 A\sqrt{2\pi}\,\sigma / (\text{bin width})\)</span>. Report <span class="math inline">\(S\)</span> with its uncertainty alongside <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(\chi^2/\text{ndf}\)</span> — a bare bin count
-conflates signal with background.</p>
+mixes signal with background.</p>
 </section><section><h2 class="section-heading" id="reproducibility-and-audit">Reproducibility and audit<a class="anchor" aria-label="anchor" href="#reproducibility-and-audit"></a></h2>
 <hr class="half-width"><p>Before treating an automated result as final, confirm it meets the
 skill’s criteria:</p>
@@ -572,9 +575,11 @@ result was reported.</li>
 </div>
 </section><section><h2 class="section-heading" id="exercises-specification">Exercises (specification)<a class="anchor" aria-label="anchor" href="#exercises-specification"></a></h2>
 <hr class="half-width"><ul><li>Run the single-file chain through your assistant and report <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(S\)</span>, and <span class="math inline">\(\chi^2/\text{ndf}\)</span>.</li>
-<li>Process 10 files with <code>execute_kernel_dataset</code> and
-compare the fitted parameters to the ~100-file result; comment on the
-change in statistical uncertainty.</li>
+<li>Process 8 files with <code>execute_kernel_dataset</code> and compare
+the fitted parameters to the ~100-file result; comment on the change in
+statistical uncertainty. (More than that, and the synchronous call
+outlives your client’s tool timeout — go async with
+<code>submit_kernel_dataset</code>.)</li>
 <li>Complete the audit checklist for your run, attaching the recorded
 tool calls as provenance.</li>
 </ul><div id="try-a-different-beam" class="callout">
@@ -594,8 +599,8 @@ files for the same peak, but have thousands to spare. Find the DIDs with
 </div>
 </div>
 <p>You now have the complete workflow: a free assistant, portable tool
-servers, a versioned skill, and a reproducible Λ⁰ measurement whose
-every step you can verify. The <a href="06-eic-mcp-servers.html">final
+servers, a versioned skill, and a reproducible Λ⁰ measurement you can
+verify at every step. The <a href="06-eic-mcp-servers.html">final
 episode</a> catalogues the other MCP servers the EIC provides.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">

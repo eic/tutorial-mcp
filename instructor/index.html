@@ -302,12 +302,12 @@
     </nav><main id="main-content" class="main-content"><h1 class="schedule-heading">Summary and Schedule</h1>
       
 
-<p>In most analyses the limiting factor is not the physics but the
-software around it: locating data, decoding a data model, getting branch
-names and units right, and iterating on fitting and plotting code. This
-lesson shows how to delegate that overhead to an AI assistant
-<strong>without giving up rigour</strong> — every step produces a
-quantity you can check, and the whole procedure is reproducible.</p>
+<p>In most analyses the bottleneck is not the physics but the software
+around it: finding data, decoding a data model, getting branch names and
+units right, iterating on fitting and plotting code. This lesson shows
+how to hand that overhead to an AI assistant <strong>without giving up
+rigour</strong>: every step produces a number you can check, and the
+whole procedure is reproducible.</p>
 <p>The worked example is a real measurement from the ePIC experiment:
 reconstructing the weak decay <strong>Λ⁰ → p π⁻</strong> and extracting
 its yield from the proton–pion invariant-mass spectrum.</p>
@@ -322,9 +322,8 @@ portable; and</li>
 <strong>persistent instructions</strong> (<code>AGENTS.md</code> and
 <code>SKILL.md</code>) — versioned context and procedures that make a
 run repeatable and auditable.</li>
-</ul><p>The treatment is tool-agnostic: the method is demonstrated with
-several free assistants, and the components you assemble (MCP tool
-servers, a skill) work with any of them.</p>
+</ul><p>The lesson uses <a href="https://opencode.ai" class="external-link">opencode</a>, but the
+parts you build (MCP tool servers, a skill) work with any assistant.</p>
 <div id="what-you-will-produce" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -484,11 +483,11 @@ automatically).</label></li>
 </div>
 </div>
 <section><h2 class="section-heading" id="eic-shell">1. eic-shell<a class="anchor" aria-label="anchor" href="#eic-shell"></a></h2>
-<hr class="half-width"><p>Make sure <code>./eic-shell</code> could drop you into the container.
-(See <a href="https://eic.github.io/tutorial-setting-up-environment/" class="external-link">environment
+<hr class="half-width"><p>Make sure <code>./eic-shell</code> drops you into the container. (See
+<a href="https://eic.github.io/tutorial-setting-up-environment/" class="external-link">environment
 setup guide</a>.)</p>
 </section><section><h2 class="section-heading" id="choose-an-ai-assistant">2. Choose an AI assistant<a class="anchor" aria-label="anchor" href="#choose-an-ai-assistant"></a></h2>
-<hr class="half-width"><figure><img src="../fig/one-ring.svg" alt="gold ring engraved with the words EIC" width="160" class="figure mx-auto d-block"></figure><p><strong>One assistant to rule them all?</strong> any
+<hr class="half-width"><figure><img src="../fig/one-ring.svg" alt="gold ring engraved with the words EIC" width="160" class="figure mx-auto d-block"></figure><p><strong>One assistant to rule them all?</strong> Any
 <strong>agentic</strong> assistant — one that can read/write your files
 and run commands, not just emit text — works, and MCP works with any.
 This tutorial is based on <a href="https://opencode.ai" class="external-link">opencode</a>.</p>
@@ -533,7 +532,7 @@ CLI</a></td>
 <p>The free hosted models work out of the box without any login. The
 installer adds <code>opencode</code> to your shell profile, so open a
 <strong>new</strong> terminal if the command is not found yet. Run it on
-your own machine, not inside <code>eic-shell</code></p>
+your own machine, not inside <code>eic-shell</code>.</p>
 <p>If you prefer an editor — try <a href="https://code.visualstudio.com/" class="external-link">VS Code</a> plus the <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot" class="external-link">GitHub
 Copilot</a> and <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat" class="external-link">Copilot
 Chat</a> extensions (sign in with GitHub — students/educators get Pro

@@ -211,6 +211,7 @@
       <div class="accordion-body">
         <ul><li><a href="#the-bottleneck-is-rarely-the-physics">The bottleneck is rarely the physics</a></li>
 <li><a href="#two-modes-of-use">Two modes of use</a></li>
+<li><a href="#level-1-the-agent-loop">Level 1 — the agent loop</a></li>
 <li><a href="#level-2-the-verification-loop">Level 2 — the verification loop</a></li>
 <li><a href="#level-3-the-operation-loop">Level 3 — the operation loop</a></li>
 <li><a href="#level-4-the-improvement-loop-in-a-word">Level 4 — the improvement loop, in a word</a></li>
@@ -441,9 +442,9 @@ workflow.</p>
 </div>
 </div>
 <p>That loop is the first of <strong>four</strong>, each wrapped around
-the one before it. This episode walks up the stack. ## Level 1 — the
-agent loop</p>
-<p>The basic cycle - model calls a tool, looks at what came back, and
+the one before it. This episode walks up the stack.</p>
+</section><section><h2 class="section-heading" id="level-1-the-agent-loop">Level 1 — the agent loop<a class="anchor" aria-label="anchor" href="#level-1-the-agent-loop"></a></h2>
+<hr class="half-width"><p>The basic cycle: the model calls a tool, looks at what came back, and
 decides whether it is done.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
@@ -627,7 +628,7 @@ the request.</p>
 <p>Autonomy does not mean absence of judgement — each level has a
 natural checkpoint: approving a sensitive tool call (1), signing off a
 graded result (2), reviewing what runs unattended (3), and deciding
-which harness changes to keep (4). Put yourself at the checkpoints</p>
+which harness changes to keep (4). Put yourself at the checkpoints.</p>
 </div>
 </div>
 </div>
