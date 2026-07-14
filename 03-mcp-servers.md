@@ -64,13 +64,13 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ## The interoperability problem
 
-Tools are the only channel through which an assistant acts
+Tools are the only way an assistant can act
 ([Episode 1](01-why-genai-for-physics.md)). The
 **Model Context Protocol (MCP)** standardises the interface: implement a tool once as a **server**,
 and any MCP-compliant **client** (the assistant) can use it.
 
-MCP is a client–server protocol over **JSON-RPC 2.0**. After capability negotiation, the server
-advertises three object types — **tools** (callable functions), **resources** (readable data), and
+MCP is a client–server protocol over **JSON-RPC 2.0**. A server offers three object
+types — **tools** (callable functions), **resources** (readable data), and
 **prompts** (templated instructions). Two transports exist: **stdio** (client launches the server as
 a subprocess, messages over standard input/output) and **streamable HTTP** for networked servers.
 The lesson's servers run inside eic-shell and speak streamable HTTP on `127.0.0.1`.
@@ -124,8 +124,7 @@ the code runs in a subprocess with a 30-second wall-clock limit.
 
 ## Start the servers
 
-Start the servers for this session from inside eic-shell (the first `eic-mcp up` ever run
-bootstraps them automatically if your image doesn't ship them yet — see
+Start the servers from inside eic-shell (the first run bootstraps them automatically — see
 [Setup](../learners/setup.md)):
 
 ```bash
@@ -151,6 +150,12 @@ xrootd server at by default. Older campaigns (up to 25.10.x) live on the JLab st
 browse those with `XROOTD_SERVER=root://dtn-eic.jlab.org XROOTD_BASE_DIR=/volatile/eic/EPIC
 eic-mcp restart` (a plain `up` skips servers that are already running, so the new setting would
 never take effect). Either way, `rucio` replicas always tell you where a file really is.
+
+If instead *every* uproot call starts timing out after one big one, the server is **busy, not
+broken**: it handles one request at a time, and a call your client gave up on is still running.
+Wait a minute, or clear it with `EIC_MCP_SERVERS=uproot eic-mcp restart`. Do not let the assistant
+"work around" it by installing packages or reading the file itself — `AGENTS.md` (Episode 4)
+forbids exactly that.
 
 :::::::::::::::
 
@@ -213,9 +218,9 @@ work, and put its config in the directory you launch it from.
 
 ## Finding the data with MCP
 
-You fetch no dataset by hand. The other two MCP servers let the assistant locate and verify the real
-files, replacing the manual `rucio` + `xrdfs` recipe; `uproot-mcp` reads the file straight from the
-store, with no download step.
+You never download a dataset. The other two MCP servers let the assistant find and verify the real
+files — replacing the manual `rucio` + `xrdfs` recipe — and `uproot-mcp` then reads them straight
+from the store.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
@@ -253,17 +258,17 @@ store you can use `xrootd-mcp` alone.
 ePIC data is organised by **production campaign** — a version such as `26.06.0` — together with the
 beam/target and physics, all encoded in the rucio DID
 (e.g. `epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...`). Before
-locating a specific dataset, see which campaigns exist so you target a current one:
+locating a specific dataset, check which campaigns exist so you use a current one:
 
 ```{.ai-prompt}
 Using the rucio tools, list the DIDs in the epic scope and summarise which production campaigns are available (the version field, e.g. 26.06.0). Show the most recent few and roughly how many datasets each holds.
 ```
 
 The assistant calls [`list_dids`](https://github.com/eic/rucio-eic-mcp-server) on scope `epic` and
-groups the DIDs by their campaign component. Watch its method here: the catalogue holds thousands
-of DIDs and pages are not sorted newest-first, so a lazy one-page sample can miss the current
+groups the DIDs by their campaign component. Watch how it does this: the catalogue holds thousands
+of DIDs and the pages are not sorted newest-first, so sampling one page can miss the current
 campaigns entirely. Narrowing with a version wildcard (`/RECO/26.*`) — or one call to the `xrootd`
-server's `list_campaigns` — gets the honest answer.
+server's `list_campaigns` — gives the honest answer.
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
@@ -272,7 +277,7 @@ server's `list_campaigns` — gets the honest answer.
 With `rucio` and `xrootd` connected (no credentials — see the callout), ask your assistant:
 
 ```{.ai-prompt}
-Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.
+Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu ep 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.
 ```
 
 ::::::::::::::: solution
@@ -280,10 +285,10 @@ Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eC
 The assistant calls `list_scopes`/`list_dids` (scope `epic`, narrowing by a name glob on the
 campaign and beam/target) to find the DID, `list_files` to enumerate it (374 files), and
 `list_file_replicas` for the `root://` URLs. It then switches to `xrootd-mcp`
-(`list_directory_filtered`, `check_file_exists`) to verify the files. For the event total, note
-what a sensible assistant does: rucio does not carry event counts, and scanning all 374 files
-would take an hour — it checks a few files (≈ 1,220 events each) and extrapolates. The DID is
-*discovered* with `list_dids`, not hard-coded — what you want when campaign names change.
+(`list_directory_filtered`, `check_file_exists`) to verify the files. For the event total: rucio
+does not store event counts, and scanning all 374 files would take an hour — so a sensible
+assistant checks a few files (≈ 1,220 events each) and extrapolates. The DID is *discovered* with
+`list_dids`, not hard-coded — what you want when campaign names change.
 
 :::::::::::::::
 
@@ -302,7 +307,7 @@ one of the `root://` URLs from the previous exercise — written below as `root:
 Issue the request:
 
 ```{.ai-prompt}
-Using the uproot tools, report the structure of root://epicxrd1.sdcc.bnl.gov:1095//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
+Using the uproot tools, report the structure of the events tree in root://epicxrd1.sdcc.bnl.gov:1095//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
 ```
 
 ::::::::::::::: solution
@@ -374,7 +379,7 @@ background and is why we *fit* the peak rather than count it.
 ## Verify the returned quantities
 
 Inspect the returned numbers — bin edges, counts, statistics: do the PDG peaks fall at physical
-codes, and are the proton and pion yields plausible? [Episode 4](04-skills.md) formalises this as
+codes, and are the proton and pion yields plausible? [Episode 4](04-skills.md) turns this into
 explicit success criteria.
 
 :::::::::::::::::::::::::::::::::::::::::::::

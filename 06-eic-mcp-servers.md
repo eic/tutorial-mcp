@@ -62,7 +62,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ## One protocol, many tools
 
-MCP is a standard ([Episode 3](03-mcp-servers.md)), so the collaboration exposes each piece of its infrastructure as a small server. The three you used in this lesson are one corner of a fast-growing stack, built mostly in BNL's NPPS group (this episode distils Torre Wenaus's June 2026 talk to the ePIC user-learning WG).
+MCP is a standard ([Episode 3](03-mcp-servers.md)), so the collaboration exposes each piece of its infrastructure as a small server. The three you used in this lesson are one corner of a fast-growing stack, built mostly in BNL's NPPS group (this episode is based on Torre Wenaus's June 2026 talk to the ePIC user-learning WG).
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
@@ -188,15 +188,18 @@ The EIC runs an [LXR source cross-reference browser](https://eic-code-browser.sd
 
 In Episode 3 you configured your own client. The collaboration also provides a hosted alternative: **DISpatcher**, a Mattermost bot in an open channel — [chat.epic-eic.org → `dispatcher`](https://chat.epic-eic.org/main/channels/dispatcher) — that anyone in ePIC can use, in the channel or by DM. All the complexity you just learned about lives in its back end; you need nothing but your Mattermost account. It is wired to **roughly 100 MCP tools**: production diagnostics (PanDA — why did my jobs fail?), the physics samples in production (PCS), the data tools you used in this lesson (rucio, xrootd, uproot), software knowledge (LXR + GitHub), and documents (Zenodo, plus a documentation RAG).
 
+Post this in the `dispatcher` channel (or DM the bot) — not in your own assistant, which has no
+PCS tool and would have to invent the answer:
+
 ```{.ai-prompt}
-(in the dispatcher channel)  Summarise the physics tags in the PCS — which processes are covered, and which tags are still draft?
+Summarise the physics tags in the PCS — which processes are covered, and which tags are still draft?
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Two reusable harness patterns
 
-The bot runs a small, low-cost model, which exposes at scale the failure modes this lesson warned about. Two of its countermeasures apply to any harness:
+The bot runs a small, cheap model, so it hits the failure modes this lesson warned about — at scale. Two of its countermeasures apply to any harness:
 
 * **Tiered tool exposure.** Tool use degrades past roughly 30–50 tools, and the bot has ~100. So its system prompt carries only a compact list of everything; a harness loads full descriptions for just the tools each request needs; the bot can still reach the rest on demand. The same context-economy principle as skills' progressive loading in [Episode 4](04-skills.md).
 * **The fabrication check.** The bot's biggest problem is making answers up instead of calling a tool — cheerfully reporting "this is fine" when nothing was actually checked. The harness hands the model a secret token **only when a tool is actually called** and requires it in the response; no token, and the user is warned the answer was probably fabricated. Verification over confidence ([Episode 1](01-why-genai-for-physics.md)), enforced mechanically.
@@ -205,7 +208,7 @@ The bot runs a small, low-cost model, which exposes at scale the failure modes t
 
 ## Beyond the bot: corun-ai
 
-The bot answers in seconds from a small model, and its answers recede into chat history. [**`BNLNPPS/corun-ai`**](https://github.com/BNLNPPS/corun-ai) is the deliberate complement: runs that take **minutes** on high-level models, with the results preserved, browsable, and open to expert commentary. Its first application, **codoc-ai** ([epic-devcloud.org/doc](https://epic-devcloud.org/doc/)), generates software documents grounded in LXR + GitHub. Typical uses:
+The bot answers in seconds from a small model, and its answers scroll away in the chat history. [**`BNLNPPS/corun-ai`**](https://github.com/BNLNPPS/corun-ai) is the complement: runs that take **minutes** on high-level models, with the results preserved, browsable, and open to expert commentary. Its first application, **codoc-ai** ([epic-devcloud.org/doc](https://epic-devcloud.org/doc/)), generates software documents grounded in LXR + GitHub. Typical uses:
 
 * *"I've been away from ePIC software development for 6 months — give me an overview of simu, reco and framework developments"* — run across several models and compared;
 * documentation pages re-runnable against current code;
@@ -215,7 +218,7 @@ Anyone can submit runs and comment — ask Torre for an account. ([`eic/corun-mc
 
 ## Where this is going
 
-The direction of travel is what this lesson taught in miniature: centrally hosted MCP services over HTTP (the transport you used in Episode 3) that plug equally into the bot, corun-ai, and *your own* assistant — from a single free assistant and one tool server up to a collaboration-wide ecosystem, plus a real $\Lambda^0$ measurement you carried out yourself.
+The direction is what this lesson taught in miniature: centrally hosted MCP services over HTTP (the transport from Episode 3) that plug equally into the bot, corun-ai, and *your own* assistant — from one free assistant and one tool server up to a collaboration-wide ecosystem.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 

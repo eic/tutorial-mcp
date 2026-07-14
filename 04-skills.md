@@ -108,9 +108,20 @@ peak near 1.115683 GeV.
 - Use the `rucio` MCP server (list_dids, list_files, list_file_replicas) to locate
   a dataset and resolve its root:// URLs.
 - Use the `xrootd` MCP server (check_file_exists, get_file_info) to verify a file.
-- Use the `uproot` MCP server (get_file_structure, get_tree_info, histogram_branch,
-  execute_kernel, execute_kernel_dataset) for all ROOT file access.
+- Use the `uproot` MCP server (get_tree_info, histogram_branch, execute_kernel,
+  execute_kernel_dataset) for all ROOT file access. Prefer get_tree_info over
+  get_file_structure: on an EDM4eic file the latter returns megabytes.
 - Do NOT write bespoke file I/O; the servers already handle it.
+
+## When a tool fails
+
+- Never install software (no `pip install`, above all not `--break-system-packages`)
+  and never re-implement the analysis with local uproot/ROOT.
+- A timed-out call means the server is BUSY, not broken: it is single-threaded and
+  still working on the previous request. Wait, retry once, and if it still fails,
+  stop and report which tool failed with which arguments.
+- Never reuse a cached earlier tool result as if it were fresh. A number that did
+  not come from the MCP servers is not reproducible, so it is not an answer.
 
 ## Data model
 - Tree: events.  Collection: ReconstructedChargedParticles.
@@ -167,7 +178,7 @@ skills/
 
 The procedure runs by driving the MCP tools (build the histogram with the uproot kernel, fit the Gaussian + polynomial in the same sandbox), so it needs no bundled scripts.
 
-The YAML frontmatter carries a `name` and a `description`. The `description` is load-bearing: the client matches the request against it to decide whether to load the skill. **Only the name and description stay in context** — the body is read in *only when* the description matches.
+The YAML frontmatter carries a `name` and a `description`. The `description` is the part that matters: the client matches your request against it to decide whether to load the skill. **Only the name and description stay in context** — the body is read in *only when* the description matches.
 
 ```markdown
 ---
@@ -231,10 +242,9 @@ ln -s ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
 
 (`~/tutorial-mcp` is where [Setup](../learners/setup.md) cloned this lesson's repository.)
 
-Loading is the model's decision, triggered by the skill's `description` — a small model may answer
-without it unless you name the skill in your prompt, which is why every prompt in this lesson says
-"Using the lambda-fit skill". Clients without a skill mechanism reach the same end by referencing
-the procedure from `AGENTS.md`.
+Loading is the model's decision, based on the skill's `description`. A small model may answer
+without loading it, so every prompt in this lesson names the skill: "Using the lambda-fit skill".
+Clients without a skill mechanism can reference the procedure from `AGENTS.md` instead.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -326,7 +336,7 @@ rather than guessing.
 ```
 
 Save it as `.opencode/skills/edm4eic-summary/SKILL.md` and name it in the prompt
-("Using the edm4eic-summary skill, …") — the description alone may not tempt a small model.
+("Using the edm4eic-summary skill, …") — a small model may not load it from the description alone.
 
 :::::::::::::::
 

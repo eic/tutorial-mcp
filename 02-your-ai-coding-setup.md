@@ -96,8 +96,8 @@ resolution**, not the particle.
 
 ### Background
 
-Most proton–pion pairs share no common Λ⁰. These random ("combinatorial") pairs do not peak; they
-form a smooth distribution under the signal. The analysis extracts a yield by fitting a Gaussian
+Most proton–pion pairs do not come from a Λ⁰ at all. These random ("combinatorial") pairs do not
+peak; they form a smooth distribution under the signal. The analysis extracts a yield by fitting a Gaussian
 peak on a low-order polynomial background ([Episode 5](05-end-to-end-agents.md)). The
 charge-conjugate mode Λ̄ → p̄ π⁺ is reconstructed identically with the antiparticles.
 

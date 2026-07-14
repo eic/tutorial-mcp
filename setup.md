@@ -21,15 +21,16 @@ account).
 
 ## 1. eic-shell
 
-Make sure `./eic-shell` could drop you into the container. (See
+Make sure `./eic-shell` drops you into the container. (See
 [environment setup guide](https://eic.github.io/tutorial-setting-up-environment/).)
 
 ## 2. Choose an AI assistant
 
 ![](fig/one-ring.svg){alt='gold ring engraved with the words EIC' width='160px'}
 
-**One assistant to rule them all?** any **agentic** assistant — one that can
-read/write your files and run commands, not just emit text — works, and MCP works with any. This tutorial is based on [opencode](https://opencode.ai).
+**One assistant to rule them all?** Any **agentic** assistant — one that can
+read/write your files and run commands, not just emit text — works, and MCP works with any.
+This tutorial is based on [opencode](https://opencode.ai).
 
 | Tool | Interface | Free access |
 | --- | --- | --- |
@@ -51,7 +52,7 @@ curl -fsSL https://opencode.ai/install | bash
 
 The free hosted models work out of the box without any login. The installer adds `opencode` to your
 shell profile, so open a **new** terminal if the command is not found yet. Run it on your own
-machine, not inside `eic-shell`
+machine, not inside `eic-shell`.
 
 If you prefer an editor — try [VS Code](https://code.visualstudio.com/) plus the
 [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and
