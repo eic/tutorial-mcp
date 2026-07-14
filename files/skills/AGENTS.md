@@ -13,9 +13,20 @@ peak near 1.115683 GeV.
 - Use the `rucio` MCP server (list_dids, list_files, list_file_replicas) to locate
   a dataset and resolve its root:// URLs.
 - Use the `xrootd` MCP server (check_file_exists, get_file_info) to verify a file.
-- Use the `uproot` MCP server (get_file_structure, get_tree_info, histogram_branch,
-  execute_kernel, execute_kernel_dataset) for all ROOT file access.
+- Use the `uproot` MCP server (get_tree_info, histogram_branch, execute_kernel,
+  execute_kernel_dataset) for all ROOT file access. Prefer get_tree_info over
+  get_file_structure: on an EDM4eic file the latter returns megabytes.
 - Do NOT write bespoke file I/O; the servers already handle it.
+
+## When a tool fails
+
+- Never install software (no `pip install`, above all not `--break-system-packages`)
+  and never re-implement the analysis with local uproot/ROOT.
+- A timed-out call means the server is BUSY, not broken: it is single-threaded and
+  still working on the previous request. Wait, retry once, and if it still fails,
+  stop and report which tool failed with which arguments.
+- Never reuse a cached earlier tool result as if it were fresh. A number that did
+  not come from the MCP servers is not reproducible, so it is not an answer.
 
 ## Data model
 - Tree: events.  Collection: ReconstructedChargedParticles.

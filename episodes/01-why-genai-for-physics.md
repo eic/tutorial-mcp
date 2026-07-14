@@ -95,9 +95,10 @@ learning for reconstruction or particle identification. The object of study is t
 
 That loop is the first of **four**, each wrapped around the one before it. This episode walks up
 the stack.
+
 ## Level 1 — the agent loop
 
-The basic cycle - model calls a tool, looks at what came back, and decides
+The basic cycle: the model calls a tool, looks at what came back, and decides
 whether it is done.
 
 ```mermaid
@@ -256,7 +257,7 @@ the instructions instead of retyping the request.
 
 Autonomy does not mean absence of judgement — each level has a natural checkpoint: approving a
 sensitive tool call (1), signing off a graded result (2), reviewing what runs unattended (3),
-and deciding which harness changes to keep (4). Put yourself at the checkpoints
+and deciding which harness changes to keep (4). Put yourself at the checkpoints.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
