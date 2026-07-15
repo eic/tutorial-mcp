@@ -206,7 +206,8 @@ reconstructed data via the proton-pion invariant mass.
    or execute_kernel_dataset (many files), tree_name 'events' and the
    ReconstructedChargedParticles momentum/PDG branches. For a large sample, cap
    the file count first; for more than ~10 files use submit_kernel_dataset and
-   poll, so no single tool call outlives the client's timeout. Write any
+   poll, in batches of ~20 files per job (one big job can hit an upstream idle
+   timeout), so no single tool call outlives the client's timeout. Write any
    reduce/merge code as plain NumPy array operations (the sandbox rejects tuple
    unpacking in loops).
 3. Fit the histogram with a second execute_kernel call (Gaussian + 2nd-order
