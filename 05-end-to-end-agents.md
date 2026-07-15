@@ -148,14 +148,14 @@ merge the histograms, then fit the result and report mu, sigma, the yield, and c
 for both Lambda and anti-Lambda, with the plot.
 ```
 
-The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and then fits it (paste the fit prompt above if it stops). One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute — right where many clients cut a tool call off. For anything bigger, go async — the job runs server-side for a few minutes while the assistant polls:
+The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and then fits it (paste the fit prompt above if it stops). One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute — right where many clients cut a tool call off. For anything bigger, go async and submit in **batches of ~20 files** — a single 100-file job tends to die with an "upstream idle timeout", while smaller jobs finish reliably. The assistant polls while they run:
 
 ```{.ai-prompt}
 Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
-campaign 26.04.1 BeAGLE eCu ep 10x115 dataset: submit it with submit_kernel_dataset
-(tree 'events'), poll get_job_status until it finishes, fetch the merged histogram with
-get_job_result, then fit and report mu, sigma, the yield, and chi2/ndf for both Lambda
-and anti-Lambda, with the plot.
+campaign 26.04.1 BeAGLE eCu ep 10x115 dataset. Submit it with submit_kernel_dataset
+(tree 'events') in batches of about 20 files, poll get_job_status until every job finishes,
+fetch the histograms with get_job_result and merge them, then fit and report mu, sigma,
+the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.
 ```
 
 Over ~100 files this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
