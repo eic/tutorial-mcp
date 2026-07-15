@@ -325,7 +325,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>An end-to-end, reproducible Λ⁰ analysis</h1>
-        <p>Last updated on 2026-07-14 |
+        <p>Last updated on 2026-07-15 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/05-end-to-end-agents.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -518,13 +518,15 @@ assistant returns the merged histogram and then fits it (paste the fit
 prompt above if it stops). One practical limit: a synchronous
 <code>execute_kernel_dataset</code> call over ~8 files already takes
 about a minute — right where many clients cut a tool call off. For
-anything bigger, go async — the job runs server-side for a few minutes
-while the assistant polls:</p>
+anything bigger, go async and submit in <strong>batches of ~20
+files</strong> — a single 100-file job tends to die with an “upstream
+idle timeout”, while smaller jobs finish reliably. The assistant polls
+while they run:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
-campaign 26.04.1 BeAGLE eCu ep 10x115 dataset: submit it with submit_kernel_dataset
-(tree 'events'), poll get_job_status until it finishes, fetch the merged histogram with
-get_job_result, then fit and report mu, sigma, the yield, and chi2/ndf for both Lambda
-and anti-Lambda, with the plot.</code></pre>
+campaign 26.04.1 BeAGLE eCu ep 10x115 dataset. Submit it with submit_kernel_dataset
+(tree 'events') in batches of about 20 files, poll get_job_status until every job finishes,
+fetch the histograms with get_job_result and merge them, then fit and report mu, sigma,
+the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.</code></pre>
 <p>Over ~100 files this gives the reference spectrum below: a clear Λ⁰
 (and Λ̄) peak over the combinatorial background.</p>
 <figure><img src="../fig/lambda_fit.svg" alt="Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV" class="figure mx-auto d-block"><div class="figcaption">Fitted Λ⁰ and Λ̄ invariant-mass spectra
@@ -695,8 +697,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/05-end-to-end-agents.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/05-end-to-end-agents.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-14",
-  "datePublished": "2026-07-14"
+  "dateModified": "2026-07-15",
+  "datePublished": "2026-07-15"
 }
 
   </script><script>

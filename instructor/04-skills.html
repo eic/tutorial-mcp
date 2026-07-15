@@ -325,7 +325,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Persisting instructions: AGENTS.md and SKILL.md</h1>
-        <p>Last updated on 2026-07-14 |
+        <p>Last updated on 2026-07-15 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/04-skills.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -582,25 +582,26 @@ description matches.</p>
 <span id="cb5-23"><a href="#cb5-23" tabindex="-1" aria-label="code-block-5-23"></a>   or execute_kernel_dataset (many files), tree_name 'events' and the</span>
 <span id="cb5-24"><a href="#cb5-24" tabindex="-1" aria-label="code-block-5-24"></a>   ReconstructedChargedParticles momentum/PDG branches. For a large sample, cap</span>
 <span id="cb5-25"><a href="#cb5-25" tabindex="-1" aria-label="code-block-5-25"></a>   the file count first; for more than ~10 files use submit_kernel_dataset and</span>
-<span id="cb5-26"><a href="#cb5-26" tabindex="-1" aria-label="code-block-5-26"></a>   poll, so no single tool call outlives the client's timeout. Write any</span>
-<span id="cb5-27"><a href="#cb5-27" tabindex="-1" aria-label="code-block-5-27"></a>   reduce/merge code as plain NumPy array operations (the sandbox rejects tuple</span>
-<span id="cb5-28"><a href="#cb5-28" tabindex="-1" aria-label="code-block-5-28"></a>   unpacking in loops).</span>
-<span id="cb5-29"><a href="#cb5-29" tabindex="-1" aria-label="code-block-5-29"></a><span class="ss">3. </span>Fit the histogram with a second execute_kernel call (Gaussian + 2nd-order</span>
-<span id="cb5-30"><a href="#cb5-30" tabindex="-1" aria-label="code-block-5-30"></a>   polynomial over <span class="co">[</span><span class="ot">1.08, 1.16</span><span class="co">]</span> GeV; NumPy/awkward only, no imports).</span>
-<span id="cb5-31"><a href="#cb5-31" tabindex="-1" aria-label="code-block-5-31"></a><span class="ss">4. </span>Report mu, sigma, signal yield S, and chi2/ndf.</span>
-<span id="cb5-32"><a href="#cb5-32" tabindex="-1" aria-label="code-block-5-32"></a></span>
-<span id="cb5-33"><a href="#cb5-33" tabindex="-1" aria-label="code-block-5-33"></a><span class="fu">## Success criteria (check before reporting success)</span></span>
-<span id="cb5-34"><a href="#cb5-34" tabindex="-1" aria-label="code-block-5-34"></a><span class="ss">- </span>At least ~50 entries in the fit window. With fewer, report insufficient</span>
-<span id="cb5-35"><a href="#cb5-35" tabindex="-1" aria-label="code-block-5-35"></a>  statistics and stop — a low-stats fit lets the polynomial absorb the peak and</span>
-<span id="cb5-36"><a href="#cb5-36" tabindex="-1" aria-label="code-block-5-36"></a>  can pass the checks below by accident.</span>
-<span id="cb5-37"><a href="#cb5-37" tabindex="-1" aria-label="code-block-5-37"></a><span class="ss">- </span><span class="pp">|</span>mu - 1.115683 GeV<span class="pp">|</span> &lt; 0.005 GeV.</span>
-<span id="cb5-38"><a href="#cb5-38" tabindex="-1" aria-label="code-block-5-38"></a><span class="ss">- </span>sigma in ~<span class="co">[</span><span class="ot">0.001, 0.005</span><span class="co">]</span> GeV (this is detector resolution, not natural width).</span>
-<span id="cb5-39"><a href="#cb5-39" tabindex="-1" aria-label="code-block-5-39"></a><span class="ss">- </span>chi2/ndf of order 1.</span>
-<span id="cb5-40"><a href="#cb5-40" tabindex="-1" aria-label="code-block-5-40"></a>If any check fails, report the failure and the fit diagnostics, not a result.</span>
-<span id="cb5-41"><a href="#cb5-41" tabindex="-1" aria-label="code-block-5-41"></a></span>
-<span id="cb5-42"><a href="#cb5-42" tabindex="-1" aria-label="code-block-5-42"></a><span class="fu">## Provenance</span></span>
-<span id="cb5-43"><a href="#cb5-43" tabindex="-1" aria-label="code-block-5-43"></a>List the tool calls and their parameters, and the dataset used (campaign and</span>
-<span id="cb5-44"><a href="#cb5-44" tabindex="-1" aria-label="code-block-5-44"></a>file list), so the run can be reproduced.</span></code></pre>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1" aria-label="code-block-5-26"></a>   poll, in batches of ~20 files per job (one big job can hit an upstream idle</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1" aria-label="code-block-5-27"></a>   timeout), so no single tool call outlives the client's timeout. Write any</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1" aria-label="code-block-5-28"></a>   reduce/merge code as plain NumPy array operations (the sandbox rejects tuple</span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1" aria-label="code-block-5-29"></a>   unpacking in loops).</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1" aria-label="code-block-5-30"></a><span class="ss">3. </span>Fit the histogram with a second execute_kernel call (Gaussian + 2nd-order</span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1" aria-label="code-block-5-31"></a>   polynomial over <span class="co">[</span><span class="ot">1.08, 1.16</span><span class="co">]</span> GeV; NumPy/awkward only, no imports).</span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1" aria-label="code-block-5-32"></a><span class="ss">4. </span>Report mu, sigma, signal yield S, and chi2/ndf.</span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1" aria-label="code-block-5-33"></a></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1" aria-label="code-block-5-34"></a><span class="fu">## Success criteria (check before reporting success)</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1" aria-label="code-block-5-35"></a><span class="ss">- </span>At least ~50 entries in the fit window. With fewer, report insufficient</span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1" aria-label="code-block-5-36"></a>  statistics and stop — a low-stats fit lets the polynomial absorb the peak and</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1" aria-label="code-block-5-37"></a>  can pass the checks below by accident.</span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1" aria-label="code-block-5-38"></a><span class="ss">- </span><span class="pp">|</span>mu - 1.115683 GeV<span class="pp">|</span> &lt; 0.005 GeV.</span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1" aria-label="code-block-5-39"></a><span class="ss">- </span>sigma in ~<span class="co">[</span><span class="ot">0.001, 0.005</span><span class="co">]</span> GeV (this is detector resolution, not natural width).</span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1" aria-label="code-block-5-40"></a><span class="ss">- </span>chi2/ndf of order 1.</span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1" aria-label="code-block-5-41"></a>If any check fails, report the failure and the fit diagnostics, not a result.</span>
+<span id="cb5-42"><a href="#cb5-42" tabindex="-1" aria-label="code-block-5-42"></a></span>
+<span id="cb5-43"><a href="#cb5-43" tabindex="-1" aria-label="code-block-5-43"></a><span class="fu">## Provenance</span></span>
+<span id="cb5-44"><a href="#cb5-44" tabindex="-1" aria-label="code-block-5-44"></a>List the tool calls and their parameters, and the dataset used (campaign and</span>
+<span id="cb5-45"><a href="#cb5-45" tabindex="-1" aria-label="code-block-5-45"></a>file list), so the run can be reproduced.</span></code></pre>
 </div>
 <div id="how-clients-load-a-skill" class="callout">
 <div class="callout-square">
@@ -727,7 +728,7 @@ on a file from Episode 3.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -780,7 +781,7 @@ pairs.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>Replace the skill’s Provenance section with:</p>
 <div class="codewrapper sourceCode" id="cb9">
@@ -884,8 +885,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/04-skills.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/04-skills.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-14",
-  "datePublished": "2026-07-14"
+  "dateModified": "2026-07-15",
+  "datePublished": "2026-07-15"
 }
 
   </script><script>
