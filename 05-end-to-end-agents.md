@@ -69,7 +69,7 @@ Everything below runs from the same three-step setup, whatever assistant you use
 2. In your analysis directory, connect your client and put the Episode 4 files in place:
 
    ```bash
-   eic-mcp config opencode > opencode.jsonc
+   eic-mcp config opencode
    cp ~/tutorial-mcp/files/skills/AGENTS.md .
    mkdir -p .opencode/skills
    ln -s ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
@@ -82,10 +82,9 @@ Everything below runs from the same three-step setup, whatever assistant you use
 
 ## Same pipeline, other clients
 
-Only step 2 changes: `eic-mcp config <client>` writes the file each client expects — e.g.
-`eic-mcp config claude > .mcp.json` for Claude Code (preinstalled in eic-shell). The full list is
-in [Episode 3](03-mcp-servers.md). The servers and prompts are identical; put the skill where your
-client reads skills (`.claude/skills/` for Claude Code).
+Only the client name changes: e.g. `eic-mcp config claude` for Claude Code (preinstalled in
+eic-shell). The full list is in [Episode 3](03-mcp-servers.md). The servers and prompts are
+identical; put the skill where your client reads skills (`.claude/skills/` for Claude Code).
 
 :::::::::::::::
 
@@ -148,7 +147,7 @@ merge the histograms, then fit the result and report mu, sigma, the yield, and c
 for both Lambda and anti-Lambda, with the plot.
 ```
 
-The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and then fits it (paste the fit prompt above if it stops). One practical limit: a synchronous `execute_kernel_dataset` call over ~8 files already takes about a minute — right where many clients cut a tool call off. For anything bigger, go async and submit in **batches of ~20 files** — a single 100-file job tends to die with an "upstream idle timeout", while smaller jobs finish reliably. The assistant polls while they run:
+The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the assistant returns the merged histogram and then fits it (paste the fit prompt above if it stops). A synchronous `execute_kernel_dataset` over ~8 files takes about a minute — near where many clients cut a tool call off. For anything bigger, go async in **batches of ~20 files**: a single 100-file job tends to die with an "upstream idle timeout". The assistant polls while they run:
 
 ```{.ai-prompt}
 Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the

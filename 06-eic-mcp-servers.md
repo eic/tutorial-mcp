@@ -210,9 +210,9 @@ The bot runs a small, cheap model, so it hits the failure modes this lesson warn
 
 ## AI smart search on eic.github.io
 
-Another option: the [EIC software portal](https://eic.github.io/) has an AI smart
-search — the "Ask anything about EIC…" box in the header. Type a question and it returns embedded
-search results together with an AI overview built from the public EIC documents. 
+The [EIC software portal](https://eic.github.io/) has an AI smart search — the "Ask anything about
+EIC…" box in the header. Type a question and get search results plus an AI overview built from the
+public EIC docs.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
