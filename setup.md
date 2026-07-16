@@ -67,7 +67,7 @@ eic-shell already has two assistants: **Claude Code** (`claude`) and the **GitHu
 (`copilot`). Run one *inside* the container, alongside the servers (step 4):
 
 ```bash
-eic-mcp config claude    # writes ~/.claude/mcp-config.json  (copilot: eic-mcp config copilot)
+eic-mcp config claude    # writes .mcp.json here  (copilot: eic-mcp config copilot)
 claude                   # or: copilot
 ```
 
@@ -138,9 +138,8 @@ cp ~/tutorial-mcp/files/mcp-config/opencode.jsonc .
 
 If your eic_xl image already ships the servers, they just start; otherwise the **first** run
 bootstraps them automatically (a one-time clone and build, a few minutes). Every later `eic-mcp up`
-starts in seconds. You start and stop the servers per session in
-[Episode 3](../episodes/03-mcp-servers.md) with `eic-mcp up` / `eic-mcp down`;
-`eic-mcp config opencode` writes the client config for you (Episode 3).
+starts in seconds. [Episode 3](../episodes/03-mcp-servers.md) covers the per-session workflow —
+`eic-mcp up` / `eic-mcp down`, and `eic-mcp config opencode` to write your client config.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
