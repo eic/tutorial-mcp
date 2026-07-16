@@ -550,7 +550,7 @@ the servers (step 4):</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">eic-mcp</span> config claude    <span class="co"># writes ~/.claude/mcp-config.json  (copilot: eic-mcp config copilot)</span></span>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">eic-mcp</span> config claude    <span class="co"># writes .mcp.json here  (copilot: eic-mcp config copilot)</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="ex">claude</span>                   <span class="co"># or: copilot</span></span></code></pre>
 </div>
 <p>One browser login the first time; it prints a code to paste, so it
@@ -640,11 +640,9 @@ config into the directory where you launch <code>opencode</code>:</p>
 <p>If your eic_xl image already ships the servers, they just start;
 otherwise the <strong>first</strong> run bootstraps them automatically
 (a one-time clone and build, a few minutes). Every later
-<code>eic-mcp up</code> starts in seconds. You start and stop the
-servers per session in <a href="03-mcp-servers.html">Episode 3</a> with
-<code>eic-mcp up</code> / <code>eic-mcp down</code>;
-<code>eic-mcp config opencode</code> writes the client config for you
-(Episode 3).</p>
+<code>eic-mcp up</code> starts in seconds. <a href="03-mcp-servers.html">Episode 3</a> covers the per-session workflow
+— <code>eic-mcp up</code> / <code>eic-mcp down</code>, and
+<code>eic-mcp config opencode</code> to write your client config.</p>
 <div id="no-credentials-no-data-download" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>

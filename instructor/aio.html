@@ -1603,7 +1603,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-04-skills"><p>Content from <a href="04-skills.html">Persisting instructions: AGENTS.md and SKILL.md</a></p>
 <hr>
-<p>Last updated on 2026-07-15 |
+<p>Last updated on 2026-07-16 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/04-skills.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 50 minutes</p>
@@ -1718,10 +1718,9 @@ work here?”; a <code>SKILL.md</code> answers “how do I carry out
 <hr class="half-width">
 <p><code>AGENTS.md</code> is plain Markdown at your project root
 (subdirectories may override it for files beneath them). opencode,
-Codex, Gemini CLI, Zed, and others read it automatically; where a tool
-uses a different name (Copilot’s <code>copilot-instructions.md</code>,
-Cursor’s <code>.cursorrules</code>), the content transfers
-unchanged.</p>
+Codex, Gemini CLI, Zed, and others read it automatically; a tool that
+looks for a different filename reads the same content through a one-line
+bridge (next section).</p>
 <p>It is loaded on every turn, so keep it short and factual:</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
