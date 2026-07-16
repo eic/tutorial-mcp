@@ -162,15 +162,15 @@ forbids exactly that.
 
 ## Connect the assistant
 
-opencode reads its server list from a JSON config. Generate it in the directory where you launch
-opencode (or write it to `~/.config/opencode/opencode.jsonc`):
+opencode reads its server list from a JSON config. In the directory where you will launch
+opencode, one command writes it:
 
 ```bash
-$ eic-mcp config opencode > opencode.jsonc
+$ eic-mcp config opencode
 ```
 
-which prints the three server URLs
-(committed as the example [`files/mcp-config/opencode.jsonc`](https://github.com/eic/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc)):
+The file it writes, `opencode.jsonc`, is just the three server URLs — print it with
+`eic-mcp config opencode -` (committed as the example [`files/mcp-config/opencode.jsonc`](https://github.com/eic/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc)):
 
 ```json
 {
@@ -189,15 +189,11 @@ Within a session, `/mcp` lists the connected servers and their tools.
 
 ## Other clients point at the same URLs
 
-The HTTP endpoints work with any MCP client, and `eic-mcp config` writes the matching file:
+The HTTP endpoints work with any MCP client, and `eic-mcp config <client>` writes the file where
+that client reads it:
 
 ```bash
-$ mkdir -p ~/.copilot && eic-mcp config copilot > ~/.copilot/mcp-config.json   # Copilot CLI
-$ mkdir -p .vscode && eic-mcp config vscode  > .vscode/mcp.json       # VS Code / Copilot Chat
-$ mkdir -p .cursor && eic-mcp config cursor  > .cursor/mcp.json       # Cursor
-$ mkdir -p .gemini && eic-mcp config gemini  > .gemini/settings.json  # Gemini CLI
-$ eic-mcp config codex  >> ~/.codex/config.toml                       # Codex (TOML, appended)
-$ eic-mcp config claude  > .mcp.json                                  # Claude Code
+$ eic-mcp config claude    # Claude Code (.mcp.json) — likewise copilot, vscode, cursor, gemini, codex
 ```
 
 :::::::::::::::

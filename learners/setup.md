@@ -139,11 +139,8 @@ cp ~/tutorial-mcp/files/mcp-config/opencode.jsonc .
 If your eic_xl image already ships the servers, they just start; otherwise the **first** run
 bootstraps them automatically (a one-time clone and build, a few minutes). Every later `eic-mcp up`
 starts in seconds. You start and stop the servers per session in
-[Episode 3](../episodes/03-mcp-servers.md) with `eic-mcp up` / `eic-mcp down`; point your assistant
-at them with `eic-mcp config opencode` (see Episode 3).
-
-`eic-mcp` and the servers are on their way into eic-shell itself — once the image ships them, the
-clone above goes away and the commands stay exactly the same.
+[Episode 3](../episodes/03-mcp-servers.md) with `eic-mcp up` / `eic-mcp down`;
+`eic-mcp config opencode` writes the client config for you (Episode 3).
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 

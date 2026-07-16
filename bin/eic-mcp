@@ -12,7 +12,7 @@
 #   eic-mcp list              # show the server registry
 #   eic-mcp up                # start them (http://127.0.0.1:910x/mcp)
 #   eic-mcp status            # which are listening
-#   eic-mcp config CLIENT     # print client config (opencode|claude|copilot|vscode|cursor|gemini|codex)
+#   eic-mcp config CLIENT     # write CLIENT's MCP config file ('config CLIENT -' prints it)
 #   eic-mcp logs NAME         # tail a server log
 #   eic-mcp down | restart
 #   eic-mcp setup             # optional pre-build ('up' does this automatically)
@@ -109,6 +109,7 @@ in_container() { [ -n "${APPTAINER_CONTAINER:-}" ] || [ -n "${SINGULARITY_CONTAI
 # EIC_MCP_SIF (remembered), the last hit (cached), EIC_SHELL_PREFIX, the
 # PREFIX= recorded in an eic-shell launcher (./eic-shell or on PATH), then
 # $PWD and the quickstart default ~/eic. Any eic_xl-*.sif version counts.
+# Last resort: the CVMFS nightly image (farms without a local install).
 find_sif() {
   local cache="$EIC_MCP_STATE/sif" d s launcher
   if [ -n "$EIC_MCP_SIF" ]; then
@@ -135,13 +136,19 @@ find_sif() {
     done
     [ -n "$s" ] && { mkdir -p "$EIC_MCP_STATE"; printf '%s\n' "$s" >"$cache"; echo "$s"; return; }
   done
+  # Unpacked directory image; apptainer runs it like a .sif.
+  s="/cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:nightly"
+  if [ -d "$s" ]; then
+    echo "[eic-mcp] no local eic_xl .sif — using the CVMFS image $s" >&2
+    mkdir -p "$EIC_MCP_STATE"; printf '%s\n' "$s" >"$cache"; echo "$s"; return
+  fi
   echo ""
 }
 # Run in the EIC environment the way eic-shell/entrypoint.sh do: source
 # /etc/eic-env.sh explicitly, with --norc --noprofile so user/system dotfiles
 # can't perturb it (matches the container's deliberate no-dotfiles behaviour).
 ENV_PRELUDE='. /etc/eic-env.sh 2>/dev/null; '
-sif_missing() { echo "ERROR: no eic_xl .sif found. macOS: eic-shell is Docker (no .sif) — run eic-mcp INSIDE ./eic-shell. Linux/WSL: run from your eic-shell install directory, or set EIC_MCP_SIF=/path/to/eic_xl-*.sif once (it is remembered)." >&2; }
+sif_missing() { echo "ERROR: no eic_xl .sif found. macOS: eic-shell is Docker (no .sif) — run eic-mcp INSIDE ./eic-shell. Linux/WSL/farm: run from your eic-shell install dir, or set EIC_MCP_SIF once (it is remembered), e.g. EIC_MCP_SIF=/cvmfs/singularity.opensciencegrid.org/eicweb/eic_xl:nightly" >&2; }
 run_in_env() {
   if in_container; then bash --norc --noprofile -c "$ENV_PRELUDE$1"; else
     local sif; sif="$(find_sif)"
@@ -284,7 +291,7 @@ cmd_up() {
   [ ${#launched[@]} -gt 0 ] && echo "Waiting for servers ..."
   for n in ${launched[@]+"${launched[@]}"}; do wait_ready "$n" "${SRV_PORT[$n]}" 60 || rc=1; done
   echo
-  [ "$rc" -eq 0 ] && echo "All servers up. Point your LLM client at them: eic-mcp config <client>" \
+  [ "$rc" -eq 0 ] && echo "All servers up. Write your client's config with: eic-mcp config <client>" \
                   || echo "Some servers failed — check 'eic-mcp logs <name>'." >&2
   return $rc
 }
@@ -322,13 +329,14 @@ cmd_logs() {
   [ -n "${SRV_PORT[$n]:-}" ] || { echo "unknown server '$n' (see: eic-mcp list)" >&2; exit 2; }  # registered name only (no path traversal)
   exec tail -n 100 -f "$LOG_DIR/$n.log"
 }
-# `config CLIENT` prints an MCP client config pointing at the enabled servers'
-# streamable-HTTP URLs. Redirect it to the client's config file:
-#   opencode → opencode.jsonc (launch dir) or ~/.config/opencode/opencode.jsonc
-#   claude   → .mcp.json              copilot → ~/.copilot/mcp-config.json  (CLI, *not* VS Code)
-#   vscode   → .vscode/mcp.json       cursor  → .cursor/mcp.json
-#   gemini   → .gemini/settings.json  codex   → append (>>) to ~/.codex/config.toml
-cmd_config() {
+# `config CLIENT` writes an MCP client config pointing at the enabled servers'
+# streamable-HTTP URLs, in the file that client actually reads:
+#   opencode → opencode.jsonc (launch dir)   claude → .mcp.json
+#   copilot  → ~/.copilot/mcp-config.json    vscode → .vscode/mcp.json  (CLI vs VS Code!)
+#   cursor   → .cursor/mcp.json              gemini → .gemini/settings.json
+#   codex    → ~/.codex/config.toml (appended)
+# It never overwrites an existing file; `config CLIENT -` prints to stdout instead.
+print_config() {
   local client="${1:-opencode}" n url first=1
   case "$client" in
     opencode)
@@ -397,6 +405,39 @@ cmd_config() {
     *) echo "unknown client '$client' (use: opencode | claude | copilot | vscode | cursor | gemini | codex)" >&2; exit 2 ;;
   esac
 }
+config_dest() {  # the file each client actually reads
+  case "$1" in
+    opencode) echo "opencode.jsonc" ;;
+    claude)   echo ".mcp.json" ;;
+    copilot)  echo "$HOME/.copilot/mcp-config.json" ;;
+    vscode)   echo ".vscode/mcp.json" ;;
+    cursor)   echo ".cursor/mcp.json" ;;
+    gemini)   echo ".gemini/settings.json" ;;
+    codex)    echo "$HOME/.codex/config.toml" ;;
+    *) echo "unknown client '$1' (use: opencode | claude | copilot | vscode | cursor | gemini | codex)" >&2; return 2 ;;
+  esac
+}
+write_client_config() {
+  local client="$1" dest; dest="$(config_dest "$client")" || return 2
+  case "$dest" in */*) mkdir -p "${dest%/*}";; esac
+  if [ "$client" = codex ]; then   # TOML: append-only
+    if [ -f "$dest" ] && grep -q "http://$BIND_HOST:" "$dest"; then
+      echo "  • $dest already lists the servers — left unchanged"
+    else
+      print_config codex >>"$dest"; echo "  ✓ appended the server entries to $dest"
+    fi
+  elif [ -e "$dest" ]; then
+    echo "  • $dest exists — left unchanged (print with 'eic-mcp config $client -' and merge by hand)"
+  else
+    print_config "$client" >"$dest"
+    case "$dest" in /*) echo "  ✓ wrote $dest";; *) echo "  ✓ wrote $PWD/$dest — launch $client in this directory";; esac
+  fi
+}
+cmd_config() {  # write CLIENT's config in place; `config CLIENT -` prints to stdout
+  local client="${1:-opencode}"
+  config_dest "$client" >/dev/null || exit 2
+  if [ "${2:-}" = "-" ]; then print_config "$client"; else write_client_config "$client"; fi
+}
 
 case "${1:-}" in
   list)    cmd_list ;;
@@ -406,7 +447,7 @@ case "${1:-}" in
   restart) cmd_down; sleep 1; cmd_up ;;
   status)  cmd_status ;;
   logs)    shift; cmd_logs "${1:-}" ;;
-  config)  shift; cmd_config "${1:-opencode}" ;;
+  config)  shift; cmd_config "${1:-opencode}" "${2:-}" ;;
   ""|-h|--help|help) sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//' ;;
   *) echo "Unknown command: $1" >&2; echo "Try: eic-mcp help" >&2; exit 2 ;;
 esac
