@@ -50,9 +50,8 @@ This lesson uses **[opencode](https://opencode.ai)**:
 curl -fsSL https://opencode.ai/install | bash
 ```
 
-The free hosted models work out of the box without any login. The installer adds `opencode` to your
-shell profile, so open a **new** terminal if the command is not found yet. Run it on your own
-machine, not inside `eic-shell`.
+The free hosted models work out of the box without any login. Run it on your own machine, not
+inside `eic-shell`.
 
 If you prefer an editor — try [VS Code](https://code.visualstudio.com/) plus the
 [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and
@@ -68,8 +67,8 @@ eic-shell already has two assistants: **Claude Code** (`claude`) and the **GitHu
 (`copilot`). Run one *inside* the container, alongside the servers (step 4):
 
 ```bash
-eic-mcp config copilot > ~/.copilot/mcp-config.json    # claude : eic-mcp  config claude > .mcp.json
-copilot                               # or: claude
+eic-mcp config claude    # writes ~/.claude/mcp-config.json  (copilot: eic-mcp config copilot)
+claude                   # or: copilot
 ```
 
 One browser login the first time; it prints a code to paste, so it works over SSH.
@@ -88,14 +87,15 @@ shows code, switch on agent/edit mode — executing, not suggesting, is what is 
 
 ## 4. Start the MCP servers — `eic-mcp up`
 
-The launcher lives in its own repository. Clone it — and this lesson's repository, whose example
-files Episodes 4–5 use — into your home directory (or workdir), so every command in the lesson can be pasted
-as-is:
+**This step is temporary**: `eic-mcp` and the servers are becoming part of eic-shell itself. Once
+the image ships them there are no extra steps — no clone, no PATH line — and the commands stay
+exactly the same. Until then, clone the launcher — and this lesson's repository, whose example
+files Episodes 4–5 use — into your home directory (or workdir):
 
 ```bash
 git clone https://github.com/eic/eic-mcp ~/eic-mcp
 git clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp
-export PATH="$HOME/eic-mcp/bin:$PATH"    # add this line to ~/.bashrc so every shell has it
+echo 'export PATH="$HOME/eic-mcp/bin:$HOME/.opencode/bin:$PATH"' >> ~/.bashrc && . ~/.bashrc
 ```
 
 It runs the three servers (uproot, xrootd, rucio) inside eic-shell:
