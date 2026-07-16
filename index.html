@@ -453,10 +453,8 @@ CLI</a></td>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://opencode.ai/install <span class="kw">|</span> <span class="fu">bash</span></span></code></pre>
 </div>
-<p>The free hosted models work out of the box without any login. The
-installer adds <code>opencode</code> to your shell profile, so open a
-<strong>new</strong> terminal if the command is not found yet. Run it on
-your own machine, not inside <code>eic-shell</code>.</p>
+<p>The free hosted models work out of the box without any login. Run it
+on your own machine, not inside <code>eic-shell</code>.</p>
 <p>If you prefer an editor — try <a href="https://code.visualstudio.com/" class="external-link">VS Code</a> plus the <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot" class="external-link">GitHub
 Copilot</a> and <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat" class="external-link">Copilot
 Chat</a> extensions (sign in with GitHub — students/educators get Pro
@@ -476,8 +474,8 @@ the servers (step 4):</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">eic-mcp</span> config copilot <span class="op">&gt;</span> ~/.copilot/mcp-config.json    <span class="co"># claude : eic-mcp  config claude &gt; .mcp.json</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="ex">copilot</span>                               <span class="co"># or: claude</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">eic-mcp</span> config claude    <span class="co"># writes ~/.claude/mcp-config.json  (copilot: eic-mcp config copilot)</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="ex">claude</span>                   <span class="co"># or: copilot</span></span></code></pre>
 </div>
 <p>One browser login the first time; it prints a code to paste, so it
 works over SSH.</p>
@@ -502,16 +500,18 @@ that prints the PDG Λ⁰ baryon mass in GeV, then run it.”</em> It should
 </div>
 </section><section><h2 class="section-heading" id="start-the-mcp-servers-eic-mcp-up">4. Start the MCP servers — <code>eic-mcp up</code>
 <a class="anchor" aria-label="anchor" href="#start-the-mcp-servers-eic-mcp-up"></a></h2>
-<hr class="half-width"><p>The launcher lives in its own repository. Clone it — and this
+<hr class="half-width"><p><strong>This step is temporary</strong>: <code>eic-mcp</code> and the
+servers are becoming part of eic-shell itself. Once the image ships them
+there are no extra steps — no clone, no PATH line — and the commands
+stay exactly the same. Until then, clone the launcher — and this
 lesson’s repository, whose example files Episodes 4–5 use — into your
-home directory (or workdir), so every command in the lesson can be
-pasted as-is:</p>
+home directory (or workdir):</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp ~/eic-mcp</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="fu">git</span> clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$HOME</span><span class="st">/eic-mcp/bin:</span><span class="va">$PATH</span><span class="st">"</span>    <span class="co"># add this line to ~/.bashrc so every shell has it</span></span></code></pre>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a><span class="bu">echo</span> <span class="st">'export PATH="$HOME/eic-mcp/bin:$HOME/.opencode/bin:$PATH"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc <span class="kw">&amp;&amp;</span> <span class="bu">.</span> ~/.bashrc</span></code></pre>
 </div>
 <p>It runs the three servers (uproot, xrootd, rucio) inside
 eic-shell:</p>
@@ -566,12 +566,9 @@ otherwise the <strong>first</strong> run bootstraps them automatically
 (a one-time clone and build, a few minutes). Every later
 <code>eic-mcp up</code> starts in seconds. You start and stop the
 servers per session in <a href="03-mcp-servers.html">Episode 3</a> with
-<code>eic-mcp up</code> / <code>eic-mcp down</code>; point your
-assistant at them with <code>eic-mcp config opencode</code> (see Episode
-3).</p>
-<p><code>eic-mcp</code> and the servers are on their way into eic-shell
-itself — once the image ships them, the clone above goes away and the
-commands stay exactly the same.</p>
+<code>eic-mcp up</code> / <code>eic-mcp down</code>;
+<code>eic-mcp config opencode</code> writes the client config for you
+(Episode 3).</p>
 <div id="no-credentials-no-data-download" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -643,8 +640,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/index.html",
   "identifier": "https://eic.github.io/tutorial-mcp/index.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-15",
-  "datePublished": "2026-07-15"
+  "dateModified": "2026-07-16",
+  "datePublished": "2026-07-16"
 }
 
   </script><script>

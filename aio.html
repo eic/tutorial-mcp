@@ -986,7 +986,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-03-mcp-servers"><p>Content from <a href="03-mcp-servers.html">Tool servers and the Model Context Protocol (MCP)</a></p>
 <hr>
-<p>Last updated on 2026-07-14 |
+<p>Last updated on 2026-07-16 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/03-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -1236,15 +1236,16 @@ itself — <code>AGENTS.md</code> (Episode 4) forbids exactly that.</p>
 </section><section><h2 class="section-heading" id="connect-the-assistant">Connect the assistant<a class="anchor" aria-label="anchor" href="#connect-the-assistant"></a>
 </h2>
 <hr class="half-width">
-<p>opencode reads its server list from a JSON config. Generate it in the
-directory where you launch opencode (or write it to
-<code>~/.config/opencode/opencode.jsonc</code>):</p>
+<p>opencode reads its server list from a JSON config. In the directory
+where you will launch opencode, one command writes it:</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-mcp config opencode <span class="op">&gt;</span> opencode.jsonc</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-mcp config opencode</span></code></pre>
 </div>
-<p>which prints the three server URLs (committed as the example <a href="https://github.com/eic/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc" class="external-link"><code>files/mcp-config/opencode.jsonc</code></a>):</p>
+<p>The file it writes, <code>opencode.jsonc</code>, is just the three
+server URLs — print it with <code>eic-mcp config opencode -</code>
+(committed as the example <a href="https://github.com/eic/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc" class="external-link"><code>files/mcp-config/opencode.jsonc</code></a>):</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">JSON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -1268,16 +1269,12 @@ their tools.</p>
 <h3 class="callout-title">Other clients point at the same URLs</h3>
 <div class="callout-content">
 <p>The HTTP endpoints work with any MCP client, and
-<code>eic-mcp config</code> writes the matching file:</p>
+<code>eic-mcp config &lt;client&gt;</code> writes the file where that
+client reads it:</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/.copilot <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config copilot <span class="op">&gt;</span> ~/.copilot/mcp-config.json   <span class="co"># Copilot CLI</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .vscode <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config vscode  <span class="op">&gt;</span> .vscode/mcp.json       <span class="co"># VS Code / Copilot Chat</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .cursor <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config cursor  <span class="op">&gt;</span> .cursor/mcp.json       <span class="co"># Cursor</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .gemini <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config gemini  <span class="op">&gt;</span> .gemini/settings.json  <span class="co"># Gemini CLI</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">$</span> eic-mcp config codex  <span class="op">&gt;&gt;</span> ~/.codex/config.toml                       <span class="co"># Codex (TOML, appended)</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1" aria-label="code-block-5-6"></a><span class="ex">$</span> eic-mcp config claude  <span class="op">&gt;</span> .mcp.json                                  <span class="co"># Claude Code</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> eic-mcp config claude    <span class="co"># Claude Code (.mcp.json) — likewise copilot, vscode, cursor, gemini, codex</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -2037,7 +2034,7 @@ on a file from Episode 3.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2090,7 +2087,7 @@ pairs.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>Replace the skill’s Provenance section with:</p>
 <div class="codewrapper sourceCode" id="cb9">
@@ -2138,7 +2135,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-05-end-to-end-agents"><p>Content from <a href="05-end-to-end-agents.html">An end-to-end, reproducible Λ⁰ analysis</a></p>
 <hr>
-<p>Last updated on 2026-07-15 |
+<p>Last updated on 2026-07-16 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/05-end-to-end-agents.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -2231,7 +2228,7 @@ Episode 4 files in place:</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">eic-mcp</span> config opencode <span class="op">&gt;</span> opencode.jsonc</span>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">eic-mcp</span> config opencode</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a><span class="fu">cp</span> ~/tutorial-mcp/files/skills/AGENTS.md .</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a><span class="fu">mkdir</span> <span class="at">-p</span> .opencode/skills</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1" aria-label="code-block-1-4"></a><span class="fu">ln</span> <span class="at">-s</span> ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit</span></code></pre>
@@ -2249,10 +2246,8 @@ paste the pipeline prompt below.</p></li>
 <div id="same-pipeline-other-clients" class="callout-inner">
 <h3 class="callout-title">Same pipeline, other clients</h3>
 <div class="callout-content">
-<p>Only step 2 changes: <code>eic-mcp config &lt;client&gt;</code>
-writes the file each client expects — e.g.
-<code>eic-mcp config claude &gt; .mcp.json</code> for Claude Code
-(preinstalled in eic-shell). The full list is in <a href="03-mcp-servers.html">Episode 3</a>. The servers and prompts are
+<p>Only the client name changes: e.g. <code>eic-mcp config claude</code>
+for Claude Code (preinstalled in eic-shell). The full list is in <a href="03-mcp-servers.html">Episode 3</a>. The servers and prompts are
 identical; put the skill where your client reads skills
 (<code>.claude/skills/</code> for Claude Code).</p>
 </div>
@@ -2335,13 +2330,12 @@ merge the histograms, then fit the result and report mu, sigma, the yield, and c
 for both Lambda and anti-Lambda, with the plot.</code></pre>
 <p>The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the
 assistant returns the merged histogram and then fits it (paste the fit
-prompt above if it stops). One practical limit: a synchronous
-<code>execute_kernel_dataset</code> call over ~8 files already takes
-about a minute — right where many clients cut a tool call off. For
-anything bigger, go async and submit in <strong>batches of ~20
-files</strong> — a single 100-file job tends to die with an “upstream
-idle timeout”, while smaller jobs finish reliably. The assistant polls
-while they run:</p>
+prompt above if it stops). A synchronous
+<code>execute_kernel_dataset</code> over ~8 files takes about a minute —
+near where many clients cut a tool call off. For anything bigger, go
+async in <strong>batches of ~20 files</strong>: a single 100-file job
+tends to die with an “upstream idle timeout”. The assistant polls while
+they run:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
 campaign 26.04.1 BeAGLE eCu ep 10x115 dataset. Submit it with submit_kernel_dataset
 (tree 'events') in batches of about 20 files, poll get_job_status until every job finishes,
@@ -2471,7 +2465,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-06-eic-mcp-servers"><p>Content from <a href="06-eic-mcp-servers.html">Catalog: MCP servers and AI infrastructure in the EIC ecosystem</a></p>
 <hr>
-<p>Last updated on 2026-07-14 |
+<p>Last updated on 2026-07-16 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/06-eic-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -2799,10 +2793,10 @@ mechanically.</li>
 <div id="ai-smart-search-on-eic.github.io" class="callout-inner">
 <h3 class="callout-title">AI smart search on eic.github.io</h3>
 <div class="callout-content">
-<p>Another option: the <a href="https://eic.github.io/" class="external-link">EIC software
-portal</a> has an AI smart search — the “Ask anything about EIC…” box in
-the header. Type a question and it returns embedded search results
-together with an AI overview built from the public EIC documents.</p>
+<p>The <a href="https://eic.github.io/" class="external-link">EIC software portal</a> has an
+AI smart search — the “Ask anything about EIC…” box in the header. Type
+a question and get search results plus an AI overview built from the
+public EIC docs.</p>
 </div>
 </div>
 </div>
@@ -2914,8 +2908,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/aio.html",
   "identifier": "https://eic.github.io/tutorial-mcp/aio.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-15",
-  "datePublished": "2026-07-15"
+  "dateModified": "2026-07-16",
+  "datePublished": "2026-07-16"
 }
 
   </script><script>

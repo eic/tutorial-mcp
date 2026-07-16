@@ -325,7 +325,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>An end-to-end, reproducible Λ⁰ analysis</h1>
-        <p>Last updated on 2026-07-15 |
+        <p>Last updated on 2026-07-16 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/05-end-to-end-agents.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -416,7 +416,7 @@ Episode 4 files in place:</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">eic-mcp</span> config opencode <span class="op">&gt;</span> opencode.jsonc</span>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">eic-mcp</span> config opencode</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a><span class="fu">cp</span> ~/tutorial-mcp/files/skills/AGENTS.md .</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a><span class="fu">mkdir</span> <span class="at">-p</span> .opencode/skills</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1" aria-label="code-block-1-4"></a><span class="fu">ln</span> <span class="at">-s</span> ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit</span></code></pre>
@@ -433,10 +433,8 @@ paste the pipeline prompt below.</p></li>
 <div id="same-pipeline-other-clients" class="callout-inner">
 <h3 class="callout-title">Same pipeline, other clients</h3>
 <div class="callout-content">
-<p>Only step 2 changes: <code>eic-mcp config &lt;client&gt;</code>
-writes the file each client expects — e.g.
-<code>eic-mcp config claude &gt; .mcp.json</code> for Claude Code
-(preinstalled in eic-shell). The full list is in <a href="03-mcp-servers.html">Episode 3</a>. The servers and prompts are
+<p>Only the client name changes: e.g. <code>eic-mcp config claude</code>
+for Claude Code (preinstalled in eic-shell). The full list is in <a href="03-mcp-servers.html">Episode 3</a>. The servers and prompts are
 identical; put the skill where your client reads skills
 (<code>.claude/skills/</code> for Claude Code).</p>
 </div>
@@ -513,13 +511,12 @@ merge the histograms, then fit the result and report mu, sigma, the yield, and c
 for both Lambda and anti-Lambda, with the plot.</code></pre>
 <p>The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the
 assistant returns the merged histogram and then fits it (paste the fit
-prompt above if it stops). One practical limit: a synchronous
-<code>execute_kernel_dataset</code> call over ~8 files already takes
-about a minute — right where many clients cut a tool call off. For
-anything bigger, go async and submit in <strong>batches of ~20
-files</strong> — a single 100-file job tends to die with an “upstream
-idle timeout”, while smaller jobs finish reliably. The assistant polls
-while they run:</p>
+prompt above if it stops). A synchronous
+<code>execute_kernel_dataset</code> over ~8 files takes about a minute —
+near where many clients cut a tool call off. For anything bigger, go
+async in <strong>batches of ~20 files</strong>: a single 100-file job
+tends to die with an “upstream idle timeout”. The assistant polls while
+they run:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
 campaign 26.04.1 BeAGLE eCu ep 10x115 dataset. Submit it with submit_kernel_dataset
 (tree 'events') in batches of about 20 files, poll get_job_status until every job finishes,
@@ -695,8 +692,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/05-end-to-end-agents.html",
   "identifier": "https://eic.github.io/tutorial-mcp/05-end-to-end-agents.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-15",
-  "datePublished": "2026-07-15"
+  "dateModified": "2026-07-16",
+  "datePublished": "2026-07-16"
 }
 
   </script><script>

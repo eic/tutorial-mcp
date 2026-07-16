@@ -326,7 +326,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Tool servers and the Model Context Protocol (MCP)</h1>
-        <p>Last updated on 2026-07-14 |
+        <p>Last updated on 2026-07-16 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/03-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -550,15 +550,16 @@ itself — <code>AGENTS.md</code> (Episode 4) forbids exactly that.</p>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="connect-the-assistant">Connect the assistant<a class="anchor" aria-label="anchor" href="#connect-the-assistant"></a></h2>
-<hr class="half-width"><p>opencode reads its server list from a JSON config. Generate it in the
-directory where you launch opencode (or write it to
-<code>~/.config/opencode/opencode.jsonc</code>):</p>
+<hr class="half-width"><p>opencode reads its server list from a JSON config. In the directory
+where you will launch opencode, one command writes it:</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-mcp config opencode <span class="op">&gt;</span> opencode.jsonc</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-mcp config opencode</span></code></pre>
 </div>
-<p>which prints the three server URLs (committed as the example <a href="https://github.com/eic/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc" class="external-link"><code>files/mcp-config/opencode.jsonc</code></a>):</p>
+<p>The file it writes, <code>opencode.jsonc</code>, is just the three
+server URLs — print it with <code>eic-mcp config opencode -</code>
+(committed as the example <a href="https://github.com/eic/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc" class="external-link"><code>files/mcp-config/opencode.jsonc</code></a>):</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">JSON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -582,16 +583,12 @@ their tools.</p>
 <h3 class="callout-title">Other clients point at the same URLs</h3>
 <div class="callout-content">
 <p>The HTTP endpoints work with any MCP client, and
-<code>eic-mcp config</code> writes the matching file:</p>
+<code>eic-mcp config &lt;client&gt;</code> writes the file where that
+client reads it:</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/.copilot <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config copilot <span class="op">&gt;</span> ~/.copilot/mcp-config.json   <span class="co"># Copilot CLI</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .vscode <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config vscode  <span class="op">&gt;</span> .vscode/mcp.json       <span class="co"># VS Code / Copilot Chat</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .cursor <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config cursor  <span class="op">&gt;</span> .cursor/mcp.json       <span class="co"># Cursor</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="ex">$</span> mkdir <span class="at">-p</span> .gemini <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> config gemini  <span class="op">&gt;</span> .gemini/settings.json  <span class="co"># Gemini CLI</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">$</span> eic-mcp config codex  <span class="op">&gt;&gt;</span> ~/.codex/config.toml                       <span class="co"># Codex (TOML, appended)</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1" aria-label="code-block-5-6"></a><span class="ex">$</span> eic-mcp config claude  <span class="op">&gt;</span> .mcp.json                                  <span class="co"># Claude Code</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> eic-mcp config claude    <span class="co"># Claude Code (.mcp.json) — likewise copilot, vscode, cursor, gemini, codex</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -957,8 +954,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/03-mcp-servers.html",
   "identifier": "https://eic.github.io/tutorial-mcp/03-mcp-servers.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-14",
-  "datePublished": "2026-07-15"
+  "dateModified": "2026-07-16",
+  "datePublished": "2026-07-16"
 }
 
   </script><script>
