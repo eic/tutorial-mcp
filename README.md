@@ -13,7 +13,7 @@ It is built with [The Carpentries Workbench][workbench].
 | `episodes/` | The lesson. **01–03 are the hands-on core** (harness concept; the physics; MCP servers). **04–06 extend it** (Skills; the end-to-end run; the EIC MCP and AI-infrastructure catalogue). |
 | `learners/` | `setup.md`, the glossary (`reference.md`), and reference pages: `about-the-physics.md` (Λ deep-dive), `analysis-approaches.md` (the same analysis in uproot/RDataFrame/TTreeReader/PODIO), and `discuss.md`. |
 | `instructors/` | `instructor-notes.md` (scope, timing, pitfalls). |
-| `bin/eic-mcp` | Copy of the [`eic/eic-mcp`](https://github.com/eic/eic-mcp) launcher (learners clone that repo — see Setup): runs the EIC MCP servers inside eic-shell, bootstrapping them automatically if the image doesn't ship them, and prints client configs (`eic-mcp config <client>`). |
+| `bin/eic-mcp` | Copy of the [`eic/eic-mcp`](https://github.com/eic/eic-mcp) launcher (learners clone that repo — see Setup): runs the EIC MCP servers inside eic-shell, bootstrapping them automatically if the image doesn't ship them, and writes client configs (`eic-mcp config <client>`). |
 | `files/mcp-config/` | Committed examples of the configs `eic-mcp config` generates (opencode, VS Code/Copilot), plus a hand-written Copilot-CLI example. |
 | `files/skills/` | Example `AGENTS.md`, bridge files, and the `lambda-fit` skill. |
 | `extras/` | Stand-alone worked examples (uproot / RDataFrame / TTreeReader / PODIO). |

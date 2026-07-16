@@ -67,7 +67,7 @@ eic-shell already has two assistants: **Claude Code** (`claude`) and the **GitHu
 (`copilot`). Run one *inside* the container, alongside the servers (step 4):
 
 ```bash
-eic-mcp config claude    # writes ~/.claude/mcp-config.json  (copilot: eic-mcp config copilot)
+eic-mcp config claude    # writes .mcp.json here  (copilot: eic-mcp config copilot)
 claude                   # or: copilot
 ```
 
