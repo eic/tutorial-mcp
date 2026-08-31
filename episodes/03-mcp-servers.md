@@ -93,8 +93,9 @@ flowchart LR
 ## Why run the servers inside eic-shell
 
 The servers reuse the container's own `uproot`, `xrdfs`, and `rucio`, so dependencies are pinned and
-one environment runs both analysis and tools. `eic-mcp up` starts them as background HTTP services;
-`eic-mcp down` stops them. They hold no state between sessions.
+one environment runs both analysis and tools. Each server speaks MCP over streamable HTTP natively;
+`eic-mcp up` starts them as background HTTP services and gets out of the way, `eic-mcp down` stops
+them. They hold no state between sessions.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -125,7 +126,7 @@ the code runs in a subprocess with a 30-second wall-clock limit.
 
 ## Start the servers
 
-Start the servers from inside eic-shell (the first run bootstraps them automatically — see
+Start the servers from inside eic-shell (they ship in the image — see
 [Setup](../learners/setup.md)):
 
 ```bash
@@ -134,8 +135,9 @@ $ eic-mcp up
 
 This launches the uproot, xrootd, and rucio servers as MCP-over-HTTP endpoints on `127.0.0.1`,
 ports `9101`, `9102`, `9103`. Stop them with `eic-mcp down`; `eic-mcp status` shows what is
-listening, and `eic-mcp logs xrootd` tails a server's log when something misbehaves. The assistant
-connects to those URLs.
+listening, and `eic-mcp logs xrootd` tails a server's log when something misbehaves (a healthy
+`eic-mcp logs uproot` shows uvicorn's startup banner and one access line per tool call). The
+assistant connects to those URLs.
 
 ::::::::::::::: callout
 
@@ -203,13 +205,14 @@ $ eic-mcp config claude    # Claude Code (.mcp.json) — likewise copilot, vscod
 ## Which side am I on?
 
 Only the **servers** need eic-shell — they use the container's `uproot`, `xrdfs`, and signed-in
-`rucio`. The **client** just talks to `http://127.0.0.1:910x/mcp`, so run it where you normally
-work, and put its config in the directory you launch it from.
+`rucio`. The **client** just talks to `http://127.0.0.1:910x/mcp`. Two modes work:
 
-* **Linux and Windows/WSL:** the same URLs work inside and outside the container.
-* **macOS:** you published the ports in [Setup](../learners/setup.md); on the Mac itself, copy
+* **Assistant inside eic-shell:** the image ships `opencode`, `claude`, and `copilot` — run one in
+  the same shell as the servers (`eic-mcp config opencode && opencode`).
+* **Assistant on your machine:** on Linux and Windows/WSL the same URLs work inside and outside
+  the container; put the config in the directory you launch the client from. On **macOS** you
+  published the ports in [Setup](../learners/setup.md); on the Mac itself, copy
   `files/mcp-config/opencode.jsonc` rather than running `eic-mcp config` (it needs the container).
-* **Can't install a client?** eic-shell ships `claude` and `copilot` — run one *inside* it.
 
 :::::::::::::::
 

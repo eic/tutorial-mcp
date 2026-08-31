@@ -2,20 +2,20 @@
 title: Setup
 ---
 
-The tool **servers** run inside **eic-shell**; your **assistant** runs where you normally work.
-Install an AI assistant (this tutorial will use `opencode`), get `eic-mcp`, and one command starts
-the tool servers. Nothing else — no grid certificate, no data download — the MCP servers reuse
-eic-shell's own `uproot`, `xrdfs`, and `rucio` (already logged in to the shared read-only `eicread`
-account).
+The tool **servers** ship inside **eic-shell**; your **assistant** runs wherever you like — on
+your own machine, or inside the container. Install an AI assistant (this tutorial will use
+`opencode`) and one command starts the tool servers. Nothing else — no clone, no build, no grid
+certificate, no data download — the MCP servers reuse eic-shell's own `uproot`, `xrdfs`, and
+`rucio` (already logged in to the shared read-only `eicread` account).
 
 ::::::::::::::::::::::::::::::::::::::::::::: checklist
 
 ## Quick checklist
 
-* [ ] **eic-shell** working (`./eic-shell` drops you into the container).
-* [ ] One **AI assistant** installed (e.g. `opencode`).
-* [ ] **`eic-mcp`** on your `PATH`, **`~/tutorial-mcp`** cloned (two `git clone`s).
-* [ ] **`eic-mcp up`** starts the three MCP servers (the first run bootstraps them automatically).
+* [ ] **eic-shell** working and recent enough to ship the servers (`./eic-shell --upgrade`).
+* [ ] One **AI assistant** installed (e.g. `opencode`) — or use `claude`/`copilot` inside eic-shell.
+* [ ] **`~/tutorial-mcp`** cloned (this lesson's example files, used in Episodes 4–5).
+* [ ] **`eic-mcp up`** (inside eic-shell) starts the three MCP servers.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -50,8 +50,8 @@ This lesson uses **[opencode](https://opencode.ai)**:
 curl -fsSL https://opencode.ai/install | bash
 ```
 
-The free hosted models work out of the box without any login. Run it on your own machine, not
-inside `eic-shell`.
+The free hosted models work out of the box without any login. (You can skip this entirely and
+use the `opencode` that ships inside `eic-shell` — see step 4.)
 
 If you prefer an editor — try [VS Code](https://code.visualstudio.com/) plus the
 [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and
@@ -63,12 +63,13 @@ If you prefer an editor — try [VS Code](https://code.visualstudio.com/) plus t
 
 ## Not allowed to install anything?
 
-eic-shell already has two assistants: **Claude Code** (`claude`) and the **GitHub Copilot CLI**
-(`copilot`). Run one *inside* the container, alongside the servers (step 4):
+eic-shell already ships three assistants: **opencode** (`opencode`), **Claude Code** (`claude`),
+and the **GitHub Copilot CLI** (`copilot`). Run one *inside* the container, alongside the servers
+(step 4):
 
 ```bash
-eic-mcp config claude    # writes .mcp.json here  (copilot: eic-mcp config copilot)
-claude                   # or: copilot
+eic-mcp config opencode  # writes opencode.jsonc here  (claude: .mcp.json, copilot likewise)
+opencode                 # or: claude, copilot
 ```
 
 One browser login the first time; it prints a code to paste, so it works over SSH.
@@ -87,40 +88,55 @@ shows code, switch on agent/edit mode — executing, not suggesting, is what is 
 
 ## 4. Start the MCP servers — `eic-mcp up`
 
-**This step is temporary**: `eic-mcp` and the servers are becoming part of eic-shell itself. Once
-the image ships them there are no extra steps — no clone, no PATH line — and the commands stay
-exactly the same. Until then, clone the launcher — and this lesson's repository, whose example
-files Episodes 4–5 use — into your home directory (or workdir):
+`eic-mcp` and the three servers ship in the eic_xl image, ready to run. Clone this lesson's
+repository (its example files are used in Episodes 4–5) and start the servers:
 
 ```bash
-git clone https://github.com/eic/eic-mcp ~/eic-mcp
 git clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp
-echo 'export PATH="$HOME/eic-mcp/bin:$HOME/.opencode/bin:$PATH"' >> ~/.bashrc && . ~/.bashrc
 ```
-
-It runs the three servers (uproot, xrootd, rucio) inside eic-shell:
 
 ```bash
-cd ~/eic && eic-mcp up    # first run from your eic-shell folder — it remembers the image
+./eic-shell               # from your eic-shell folder
+eic-mcp up                # starts uproot, xrootd, rucio on 127.0.0.1:9101-9103/mcp
 ```
+
+Each server speaks MCP over streamable HTTP natively — `eic-mcp` just starts them and gets out of
+the way. If `eic-mcp` is not found, or `up` reports a server the image does not ship, your image
+predates them: run `./eic-shell --upgrade` and try again.
+
+### Where does the assistant run?
+
+Both of these work — pick one:
+
+* **(a) Inside eic-shell.** The image ships `opencode`, `claude`, and `copilot`. In the same
+  shell where the servers run:
+
+  ```bash
+  eic-mcp config opencode && opencode
+  ```
+
+  Nothing crosses the container boundary.
+
+* **(b) On your machine.** On Linux and Windows/WSL, Apptainer shares the host network, so the
+  same `http://127.0.0.1:910x/mcp` URLs work from outside the container. Run
+  `eic-mcp config opencode` in a directory you can also see from the host (or copy
+  `~/tutorial-mcp/files/mcp-config/opencode.jsonc`), then launch your assistant there. (macOS
+  needs one extra step — see below.)
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
-## macOS: two extra steps
+## macOS: one extra step
 
-On a Mac, `eic-shell` is Docker: it publishes no ports and does not share your home. Clone the
-launcher **next to `./eic-shell`** instead, and publish the server ports once:
+On a Mac, `eic-shell` is Docker: it publishes no ports. Publish the server ports once:
 
 ```bash
 cd ~/eic                                    # the folder with ./eic-shell (yours may differ)
-git clone https://github.com/eic/eic-mcp
-grep -q 9101 eic-shell || sed -i '' "s|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 -v $PWD/eic-mcp/bin/eic-mcp:/usr/local/bin/eic-mcp:ro |" eic-shell
-grep 'docker run' eic-shell                 # must now show the -p and -v flags
+grep -q 9101 eic-shell || sed -i '' "s|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 |" eic-shell
+grep 'docker run' eic-shell                 # must now show the -p flag
 ./eic-shell
 ```
 
-That one edit publishes the ports **and** puts `eic-mcp` on the container's `PATH` for good, so
-inside eic-shell there is nothing to export — just:
+Then, inside eic-shell:
 
 ```bash
 eic-mcp up
@@ -136,10 +152,8 @@ cp ~/tutorial-mcp/files/mcp-config/opencode.jsonc .
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-If your eic_xl image already ships the servers, they just start; otherwise the **first** run
-bootstraps them automatically (a one-time clone and build, a few minutes). Every later `eic-mcp up`
-starts in seconds. [Episode 3](../episodes/03-mcp-servers.md) covers the per-session workflow —
-`eic-mcp up` / `eic-mcp down`, and `eic-mcp config opencode` to write your client config.
+[Episode 3](../episodes/03-mcp-servers.md) covers the per-session workflow — `eic-mcp up` /
+`eic-mcp down`, and `eic-mcp config opencode` to write your client config.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
