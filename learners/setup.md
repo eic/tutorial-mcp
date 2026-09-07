@@ -125,18 +125,19 @@ Both of these work — pick one:
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
-## macOS: one extra step
+## macOS: publish the server ports
 
-On a Mac, `eic-shell` is Docker: it publishes no ports. Publish the server ports once:
+On a Mac, `eic-shell` is Docker, which publishes no ports. Start it with the ports the servers
+use — the image's `eic-mcp docker-args` prints the `docker run` flags:
 
 ```bash
 cd ~/eic                                    # the folder with ./eic-shell (yours may differ)
-grep -q 9101 eic-shell || sed -i '' "s|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 |" eic-shell
-grep 'docker run' eic-shell                 # must now show the -p flag
-./eic-shell
+grep -q DOCKER_OPTIONS eic-shell || curl -L https://github.com/eic/eic-shell/raw/main/install.sh | bash
+DOCKER_OPTIONS="$(./eic-shell -- eic-mcp docker-args)" ./eic-shell
 ```
 
-Then, inside eic-shell:
+(The `grep` line refreshes a launcher generated before `DOCKER_OPTIONS` existed.) Then, inside
+eic-shell:
 
 ```bash
 eic-mcp up

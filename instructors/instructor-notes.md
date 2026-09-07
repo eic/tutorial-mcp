@@ -45,7 +45,7 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
 * **Statistics:** peak clarity scales with how many `root://` files the assistant processes — a
   few files show a modest excess; tens of files give a clean fit. Set expectations accordingly.
 * **macOS learners:** the classic missed Setup step is port publishing — `/mcp` finds nothing on
-  the Mac when `-p 127.0.0.1:9101-9104` is missing from `./eic-shell`.
+  the Mac when `./eic-shell` was started without `DOCKER_OPTIONS="$(./eic-shell -- eic-mcp docker-args)"`.
 * **Free-tier throttling:** at busy hours the free hosted models can take minutes per agent turn
   (the MCP tool context makes each request large). If the session drags, switch the class to
   another free model in the opencode picker, or keep one paid key as backup.

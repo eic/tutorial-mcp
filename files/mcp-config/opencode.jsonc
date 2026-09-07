@@ -1,8 +1,8 @@
 {
   // opencode MCP config — point the assistant at the three EIC servers.
-  // Generate this file with:  eic-mcp config opencode > opencode.jsonc
-  // in the directory where you launch `opencode` (or write it to
-  // ~/.config/opencode/). Start the servers first with:  eic-mcp up
+  // `eic-mcp config opencode` writes this file in the directory where you
+  // launch `opencode` (or put it in ~/.config/opencode/). Start the servers
+  // first with:  eic-mcp up
   //
   // The servers run inside eic-shell and reuse the container's own
   // uproot/xrootd/rucio. Rucio authenticates automatically with the shared,
