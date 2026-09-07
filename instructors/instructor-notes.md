@@ -26,8 +26,8 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   connected (Setup page). Only the tool servers run inside eic-shell.
 * No JLab account or data download is needed: the `rucio` server signs in automatically with the
   shared read-only `eicread` account, and the assistant reads files over `root://` in place.
-* Have learners run `eic-mcp up` once ahead of time — it confirms their image is recent enough to
-  ship the servers (`./eic-shell --upgrade` if not); starting takes seconds.
+* Have learners run `eic-mcp up` once ahead of time: it shows whether their eic-shell includes the
+  servers (if not, they run `./eic-shell --upgrade`). Starting takes seconds.
 * The Episode 3 exercise pins a campaign (currently `26.04.1`). Campaigns retire — run the
   campaign-listing prompt from Episode 3 beforehand and bump the version in the exercise if
   production has moved on.
@@ -35,7 +35,7 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
 ## Timing and pitfalls
 
 * Total ≈ 2 h 45 m teaching + 1.5 h exercises (a full day with breaks). Episode 3 is the longest; budget time for
-  upgrading stale eic-shell images (`./eic-shell --upgrade` downloads gigabytes) and connecting
+  `./eic-shell --upgrade` on old installations (it downloads gigabytes) and for connecting
   opencode to a model.
 * **Common snag:** the assistant stays in "one-shot" mode and only prints code. Have learners
   confirm **Agent/edit mode** in the Setup page's "Check it works" exercise.
@@ -44,8 +44,8 @@ measurement (Λ⁰ → p π⁻), and is deliberately **tool-agnostic**: learners
   `opencode` was launched.
 * **Statistics:** peak clarity scales with how many `root://` files the assistant processes — a
   few files show a modest excess; tens of files give a clean fit. Set expectations accordingly.
-* **macOS learners:** the classic missed Setup step is port publishing — `/mcp` finds nothing on
-  the Mac when `./eic-shell` was started without `DOCKER_OPTIONS="$(./eic-shell -- eic-mcp docker-args)"`.
+* **macOS learners:** the usual missed Setup step is port publishing. `/mcp` finds nothing on the
+  Mac when `./eic-shell` was started without `DOCKER_OPTIONS="$(./eic-shell -- eic-mcp docker-args)"`.
 * **Free-tier throttling:** at busy hours the free hosted models can take minutes per agent turn
   (the MCP tool context makes each request large). If the session drags, switch the class to
   another free model in the opencode picker, or keep one paid key as backup.

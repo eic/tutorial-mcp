@@ -1,7 +1,7 @@
 {
   "//": "GitHub Copilot / VS Code MCP configuration.",
   "//1": "Generate this file with:  eic-mcp config vscode > .vscode/mcp.json",
-  "//2": "Start the servers first with `eic-mcp up` (inside eic-shell; they ship in the image). Then open",
+  "//2": "Start the servers first with `eic-mcp up` inside eic-shell, where they are installed. Then open",
   "//3": "the Copilot Chat view, switch to Agent mode, and the tools appear.",
   "//4": "Same URLs as every other MCP client; only the wrapper file differs.",
   "servers": {

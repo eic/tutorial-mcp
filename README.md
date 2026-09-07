@@ -23,7 +23,7 @@ It is built with [The Carpentries Workbench][workbench].
 Pair every reconstructed proton (PDG `2212`) with every π⁻ (PDG `-211`), compute the invariant
 mass `m = √((E_p+E_π)² − |p_p+p_π|²)`, and a Λ⁰ peak rises at 1.115683 GeV over a combinatorial
 background. Students reconstruct it themselves by driving the MCP tools from natural-language
-prompts — no analysis code or data ships with the lesson.
+prompts — the lesson includes no analysis code or data.
 
 ## Build and preview locally
 
@@ -42,7 +42,7 @@ See the [Workbench documentation][workbench] for details.
 
 ## Data
 
-No data ships with the lesson. Inside eic-shell the assistant **finds** a dataset with the
+The lesson includes no data. Inside eic-shell the assistant **finds** a dataset with the
 `rucio` tools, **verifies** the files with `xrootd`, and **reads** a `root://` URL in place with
 `uproot` — no download, and no credentials (the shared read-only `eicread` account is built in).
 

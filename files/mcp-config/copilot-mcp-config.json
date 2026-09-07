@@ -3,7 +3,7 @@
   "//1": "Save as ~/.copilot/mcp-config.json (or pass with --additional-mcp-config), then run",
   "//2": "the Copilot CLI from your project root:",
   "//3": "  copilot -p \"...your request...\" --allow-all",
-  "//4": "Start the servers first with `eic-mcp up` (inside eic-shell; they ship in the image).",
+  "//4": "Start the servers first with `eic-mcp up` inside eic-shell, where they are installed.",
   "mcpServers": {
     "uproot": { "type": "http", "url": "http://127.0.0.1:9101/mcp", "tools": ["*"] },
     "xrootd": { "type": "http", "url": "http://127.0.0.1:9102/mcp", "tools": ["*"] },
