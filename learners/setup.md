@@ -36,7 +36,8 @@ opencode
 ```
 
 In opencode, `/mcp` should list `uproot`, `xrootd`, and `rucio` as connected. The free hosted
-models need no login. If `eic-mcp` or `opencode` is not found, run `./eic-shell --upgrade` again.
+models need no login. If `eic-mcp` or `opencode` is not found, exit eic-shell, return to the folder
+containing the launcher, run `./eic-shell --upgrade`, and start eic-shell again.
 
 On macOS, eic-shell is a Docker container: the servers stop when you leave it, and its home
 (`/root`) is wiped, so opencode forgets its settings. Keep your work in the eic-shell folder.
