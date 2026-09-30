@@ -7,7 +7,7 @@ peak near 1.115683 GeV.
 ## Environment
 - Everything runs inside eic-shell; the MCP servers are started with `eic-mcp up`.
 - Data lives on the grid: find a DIS dataset with the `rucio` tools and read its
-  root:// files in place with `uproot` — no download.
+  root:// files in place with `uproot`. Do not download.
 
 ## Tools
 - Use the `rucio` MCP server (list_dids, list_files, list_file_replicas) to locate

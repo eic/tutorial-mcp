@@ -48,7 +48,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
 - How do you give an assistant durable project context?
-- AGENTS.md vs SKILL.md — when to use each?
+- AGENTS.md or SKILL.md: when to use each?
 - How do you make every tool read the same rules?
 - What's in a usable SKILL.md for the Λ⁰ fit?
 
@@ -65,10 +65,10 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 ## Two ways to make instructions persistent
 
-Typing requests (Episode 3) does not scale: you re-explain the data model, conventions, and procedure every session, and nothing keeps two runs the same. Two file-based mechanisms fix this.
+Typed requests (Episode 3) have to repeat the data model, conventions, and procedure every session, and two runs can differ. Two kinds of file solve this.
 
-* **`AGENTS.md`** — always-on **context**, read at the start of every session: environment, data model, conventions, and what "done" means.
-* **`SKILL.md`** — an on-demand **procedure** in a named skill directory, loaded only when a request matches its description. It encodes one repeatable workflow.
+* **`AGENTS.md`**: **context** read at the start of every session: environment, data model, conventions, and what "done" means.
+* **`SKILL.md`**: a **procedure** in a named skill directory, loaded only when a request matches its description. It describes one repeatable workflow.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
@@ -86,7 +86,7 @@ flowchart TD
 
 `AGENTS.md` answers "what is this project and how do we work here?"; a `SKILL.md` answers "how do I carry out *this* task?".
 
-## AGENTS.md — project context
+## AGENTS.md: project context
 
 `AGENTS.md` is plain Markdown at your project root (subdirectories may override it for files beneath them). opencode, Codex, Gemini CLI, Zed, and others read it automatically; a tool that looks for a different filename reads the same content through a one-line bridge (next section).
 
@@ -102,7 +102,7 @@ peak near 1.115683 GeV.
 ## Environment
 - Everything runs inside eic-shell; the MCP servers are started with `eic-mcp up`.
 - Data lives on the grid: find a DIS dataset with the `rucio` tools and read its
-  root:// files in place with `uproot` — no download.
+  root:// files in place with `uproot`. Do not download.
 
 ## Tools
 - Use the `rucio` MCP server (list_dids, list_files, list_file_replicas) to locate
@@ -141,30 +141,28 @@ peak near 1.115683 GeV.
 - Always run the fit and check these before reporting a result.
 ```
 
-This encodes the schema, the tool policy (use the server, not hand-written I/O), the conventions, and an explicit definition of done.
+It records the schema, the tool policy (use the server, not hand-written I/O), the conventions, and a definition of done.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Two rules for a useful AGENTS.md
 
-* **Keep it short.** It is loaded on every turn, so length costs tokens and dilutes attention. Write only what the model cannot infer from the code.
-* **Describe concepts, not file paths.** "The reconstructed tracks are in the `ReconstructedChargedParticles` collection" ages well; a path like `src/old/lambda_v2.py` does not — paths move, and the model then searches confidently in the wrong place.
+* **Keep it short.** It is loaded on every turn, so every line costs tokens. Write only what the model cannot infer from the code.
+* **Describe concepts, not file paths.** "The reconstructed tracks are in the `ReconstructedChargedParticles` collection" stays true; a path like `src/old/lambda_v2.py` goes stale, and the model then searches in the wrong place.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## One source of truth: bridge files
 
-Not every tool reads `AGENTS.md`. Most modern ones do — opencode, Codex, Gemini CLI, Zed — but some look for their own filename and silently ignore it: GitHub Copilot reads `copilot-instructions.md`, Cursor reads `.cursorrules`. A project with only an `AGENTS.md` runs such a tool with no context and no warning.
+opencode, Codex, Gemini CLI, and Zed read `AGENTS.md`. Some tools read only their own file: GitHub Copilot reads `copilot-instructions.md`, Cursor reads `.cursorrules`. Without it they run with no context and no warning.
 
-Don't copy your rules into a second file; two copies drift within a week. **Keep the standard in the center and let each tool read from it**: the tool-specific file becomes a one-line *bridge* pointing at `AGENTS.md`.
-
-`.github/copilot-instructions.md` (GitHub Copilot) — and `.cursorrules` (Cursor) — are one line:
+Do not copy your rules into a second file; the copies will diverge. Make the tool-specific file a one-line *bridge* to `AGENTS.md`. `.github/copilot-instructions.md` (Copilot) and `.cursorrules` (Cursor) contain:
 
 ```markdown
 Follow the project rules in AGENTS.md.
 ```
 
-Now every assistant reads the same source of truth. Copy the ready-made bridge: [`copilot-instructions.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
+The bridge file is in the repository: [`copilot-instructions.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
 
 ## SKILL.md — a named procedure
 
@@ -176,9 +174,9 @@ skills/
     SKILL.md              specification: applicability, inputs, steps, success criteria
 ```
 
-The procedure runs by driving the MCP tools (build the histogram with the uproot kernel, fit the Gaussian + polynomial in the same sandbox), so it needs no bundled scripts.
+The procedure only uses the MCP tools, so it needs no scripts of its own.
 
-The YAML frontmatter carries a `name` and a `description`. The `description` is the part that matters: the client matches your request against it to decide whether to load the skill. **Only the name and description stay in context** — the body is read in *only when* the description matches.
+The YAML frontmatter has a `name` and a `description`. The client matches your request against the `description` to decide whether to load the skill. **Only the name and description stay in context**; the body is read only when the description matches.
 
 ```markdown
 ---
@@ -233,15 +231,13 @@ file list), so the run can be reproduced.
 ## How clients load a skill
 
 opencode reads skills from `.opencode/skills/<name>/SKILL.md` in the project directory (or
-`~/.config/opencode/skills/` for all projects); Claude Code uses `.claude/skills/`. A soft link to
-the tutorial's copy keeps it current:
+`~/.config/opencode/skills/` for all projects); Claude Code uses `.claude/skills/`. Download
+the lesson's copy:
 
 ```bash
-mkdir -p .opencode/skills
-ln -s ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit
+curl -fsSL --create-dirs -o .opencode/skills/lambda-fit/SKILL.md \
+  https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills/lambda-fit/SKILL.md
 ```
-
-(`~/tutorial-mcp` is where [Setup](../learners/setup.md) cloned this lesson's repository.)
 
 Loading is the model's decision, based on the skill's `description`. A small model may answer
 without loading it, so every prompt in this lesson names the skill: "Using the lambda-fit skill".
@@ -249,34 +245,7 @@ Clients without a skill mechanism can reference the procedure from `AGENTS.md` i
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-Get both example files in place: [`files/skills/AGENTS.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md) (copy it to your analysis directory) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md) (link it as above).
-
-## When to use which
-
-| Question | Mechanism |
-| --- | --- |
-| "What is this project, and how do we work here?" | `AGENTS.md` (always loaded) |
-| "How do I perform *this* specific task?" | a `SKILL.md` (loaded on demand) |
-| "What must every result satisfy?" | success criteria — in both, but enforced by the skill |
-
-`AGENTS.md` sets standing context; the skill executes a procedure within it.
-
-::::::::::::::::::::::::::::::::::::::::::::: callout
-
-## Why this is efficient: context economy
-
-The context window is finite, and everything in it costs tokens on every turn.
-
-* **`AGENTS.md` is loaded in full, every turn.** Keep it short and high-signal — every line is paid for on every request.
-* **A skill loads progressively.** Only its `name` and one-line `description` stay in context; the body is read *only when* a request matches. You can install dozens of detailed skills, and none occupies the window until needed.
-
-Put small, always-relevant facts in `AGENTS.md`; put detailed, occasional procedures in skills.
-
-:::::::::::::::::::::::::::::::::::::::::::::
-
-## Why the success criteria matter
-
-Explicit acceptance tests in the skill — peak position, width, $\chi^2/\text{ndf}$ — turn "the assistant said it worked" into "the result passed stated, checkable conditions." Recording the tool calls and dataset makes the run reproducible and auditable.
+Get both example files in place: [`files/skills/AGENTS.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md) (download it to your analysis directory) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md) (download it as above).
 
 ## Your project layout
 
@@ -288,20 +257,12 @@ lambda-analysis/
 ├── .github/
 │   └── copilot-instructions.md      # points to AGENTS.md   (bridge for Copilot)
 ├── .cursorrules                     # points to AGENTS.md   (bridge for Cursor)
-├── opencode.jsonc                   # MCP server connections — `eic-mcp config opencode` (Episode 3)
+├── opencode.jsonc                   # MCP server connections: `eic-mcp config opencode` (Episode 3)
 └── .opencode/
     └── skills/
-        └── lambda-fit/              # soft link to the tutorial's copy (see callout above;
+        └── lambda-fit/              # downloaded from the lesson (see callout above;
             └── SKILL.md             #  `.claude/skills/` for Claude Code)
 ```
-
-::::::::::::::::::::::::::::::::::::::::::::: callout
-
-## The golden rule
-
-Write each instruction once, in the shared open format — `AGENTS.md` for context, `SKILL.md` for procedures, `opencode.jsonc` for tool connections — then point any tool-specific file at it. Never keep duplicate rule files. *Standards in the center, tools at the edges.*
-
-:::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
@@ -337,7 +298,7 @@ rather than guessing.
 ```
 
 Save it as `.opencode/skills/edm4eic-summary/SKILL.md` and name it in the prompt
-("Using the edm4eic-summary skill, …") — a small model may not load it from the description alone.
+("Using the edm4eic-summary skill, …"); a small model may not load it from the description alone.
 
 :::::::::::::::
 
@@ -362,7 +323,7 @@ proton-pion candidate pairs entering the histogram, so the run can be
 reproduced.
 ```
 
-The pair count comes for free: have the kernel return it next to the histogram
+The kernel can return the pair count next to the histogram
 (e.g. `{"counts": ..., "n_pairs": int(len(m))}`) and sum it over files.
 
 :::::::::::::::
@@ -373,9 +334,7 @@ The [next episode](05-end-to-end-agents.md) runs this skill end to end and scale
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
-- AGENTS.md is always-loaded project context; a SKILL.md is a named procedure loaded on demand.
-- Keep one source of truth (AGENTS.md) and point tool-specific files (copilot-instructions.md, .cursorrules) at it — never maintain duplicates.
-- A skill's frontmatter `description` is what the model matches against to decide when to load it.
-- Encode inputs, steps, success criteria, and provenance so a result can be reproduced and audited.
+- `AGENTS.md` holds project context; a `SKILL.md` holds a procedure the assistant loads when needed.
+- Put success criteria in the skill so you can check the result.
 
 :::::::::::::::::::::::::::::::::::::::::::::
