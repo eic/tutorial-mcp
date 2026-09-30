@@ -12,11 +12,11 @@ The worked example is a real measurement from the ePIC experiment: reconstructin
 
 The lesson develops three ideas and applies them end to end:
 
-* an **agentic assistant** — a language model placed in a loop where it can read files, run code,
+* an **agentic assistant**: a language model placed in a loop where it can read files, run code,
   and react to the results, rather than only returning text;
-* the **Model Context Protocol (MCP)** — an open standard for exposing analysis tools to any
+* the **Model Context Protocol (MCP)**: an open standard for offering analysis tools to any
   assistant, so the workflow is portable; and
-* **persistent instructions** (`AGENTS.md` and `SKILL.md`) — versioned context and procedures that
+* **persistent instructions** (`AGENTS.md` and `SKILL.md`): versioned context and procedures that
   make a run repeatable and auditable.
 
 The lesson uses [opencode](https://opencode.ai), but the parts you build (MCP tool servers, a
@@ -27,7 +27,7 @@ skill) work with any assistant.
 ## What you will produce
 
 A workflow in which an assistant opens a real ePIC reconstruction file, queries its schema through
-a verifiable tool interface, builds the Λ⁰ invariant-mass spectrum, and fits it — driven by
+a verifiable tool interface, builds the Λ⁰ invariant-mass spectrum, and fits it, driven by
 natural-language requests, with results and provenance you can independently check.
 
 :::::::::::::::::::::::::::::::::::::::::::::

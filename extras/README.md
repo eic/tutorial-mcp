@@ -5,8 +5,6 @@ the main lesson. They all read the same EDM4eic file, use the same particle mass
 and produce the same peak near **1.1157 GeV** — the point being that PODIO/MCP is one choice
 among many, not a requirement.
 
-These are linked from Episode 3 and from `learners/analysis-approaches.md`.
-
 ## Pick an input file
 
 No data ships with the lesson; every script takes an EDM4eic reconstruction file as its argument

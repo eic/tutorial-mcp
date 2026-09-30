@@ -1,13 +1,7 @@
 {
-  // opencode MCP config — point the assistant at the three EIC servers.
-  // Generate this file with:  eic-mcp config opencode > opencode.jsonc
-  // in the directory where you launch `opencode` (or write it to
-  // ~/.config/opencode/). Start the servers first with:  eic-mcp up
-  //
-  // The servers run inside eic-shell and reuse the container's own
-  // uproot/xrootd/rucio. Rucio authenticates automatically with the shared,
-  // read-only `eicread` account — no key, no proxy. Apptainer shares the host
-  // network, so these 127.0.0.1 URLs work from inside or outside eic-shell.
+  // opencode config for the three EIC MCP servers. `eic-mcp config opencode` writes it
+  // in the directory where you launch `opencode`; start the servers first with
+  // `eic-mcp up` inside eic-shell. The URLs work inside and outside eic-shell.
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "uproot": { "type": "remote", "url": "http://127.0.0.1:9101/mcp", "enabled": true },
