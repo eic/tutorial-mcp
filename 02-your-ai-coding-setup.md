@@ -35,12 +35,12 @@ exercises: 0
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
 - Compute m(p, π) by hand from the four momentum branches and the PDG masses.
-- Sketch the expected spectrum — peak position, width scale, background shape — before touching data.
+- Sketch the expected spectrum (peak position, width scale, background shape) before looking at data.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-You install an assistant and the tool servers on the [Setup](../learners/setup.md) page. This
-episode is the physics you will reconstruct in [Episode 3](03-mcp-servers.md).
+The [Setup](../learners/setup.md) page covers the servers and the assistant. This episode describes
+the physics you reconstruct starting in [Episode 3](03-mcp-servers.md).
 
 ## The decay
 
@@ -89,7 +89,7 @@ ID). For true Λ⁰ decays this equals the parent mass; candidates accumulate in
 ## Width: resolution, not lifetime
 
 The Λ⁰ natural width ($\Gamma = \hbar/\tau \approx 2.5 \times 10^{-6}$ eV) is far below any detector
-effect. The observed peak width — a few MeV — measures **detector momentum and angular
+effect. The observed peak width, a few MeV, measures the **detector momentum and angular
 resolution**, not the particle.
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -98,7 +98,7 @@ resolution**, not the particle.
 
 Most proton–pion pairs do not come from a Λ⁰ at all. These random ("combinatorial") pairs do not
 peak; they form a smooth distribution under the signal. The analysis extracts a yield by fitting a Gaussian
-peak on a low-order polynomial background ([Episode 5](05-end-to-end-agents.md)). The
+peak on top of a low-order polynomial background ([Episode 5](05-end-to-end-agents.md)). The
 charge-conjugate mode Λ̄ → p̄ π⁺ is reconstructed identically with the antiparticles.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
@@ -134,26 +134,16 @@ events  (tree; one entry per event)
 `PDG` is the Particle Data Group code the reconstruction assigns each track. Select protons
 (`2212`) and π⁻ (`-211`) for Λ⁰, antiprotons (`-2212`) and π⁺ (`211`) for Λ̄.
 
-::::::::::::::::::::::::::::::::::::::::::::: callout
-
-## Caveat: PID is a hypothesis too
-
-The `PDG` field is the reconstruction's best guess, not truth. Misidentification feeds the
-combinatorial background — one reason a fit, not a count, is required.
-
-:::::::::::::::::::::::::::::::::::::::::::::
-
 You do not download a file. In [Episode 3](03-mcp-servers.md) the assistant uses the
 [**rucio**](https://github.com/eic/rucio-eic-mcp-server) tools to find a DIS dataset and
 [**xrootd**](https://github.com/eic/xrootd-mcp-server) to verify its files, then reads one of the
 dataset's `root://` URLs (e.g. `root://epicxrd1.sdcc.bnl.gov:1095//...`) **in place** with the
-[**uproot**](https://github.com/eic/uproot-mcp-server) tools — pulling exactly these branches
-without writing any I/O code.
+[**uproot**](https://github.com/eic/uproot-mcp-server) tools. It reads these branches without you
+writing any I/O code.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
-- The observable is the p π⁻ invariant mass; the Λ⁰ appears as a narrow peak over a combinatorial background.
-- The peak width is set by detector resolution, not the negligible Λ⁰ natural width.
-- The data are EDM4eic collections in an `events` tree; momenta are in GeV.
+- The Λ⁰ shows up as a peak at 1.1157 GeV in the proton–pion invariant mass.
+- The peak width comes from detector resolution.
 
 :::::::::::::::::::::::::::::::::::::::::::::
