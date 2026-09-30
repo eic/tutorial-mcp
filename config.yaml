@@ -77,9 +77,6 @@ episodes:
 # Information for Learners
 learners:
 - setup.md
-- about-the-physics.md
-- analysis-approaches.md
-- discuss.md
 - reference.md
 
 # Information for Instructors

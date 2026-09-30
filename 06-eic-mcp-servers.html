@@ -102,7 +102,7 @@
           <button class="nav-link dropdown-toggle" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             More <i data-feather="chevron-down"></i>
           </button>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"><li><a class="dropdown-item" href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li><li><a class="dropdown-item" href="analysis-approaches.html">Alternative Analysis Approaches</a></li><li><a class="dropdown-item" href="discuss.html">Discussion</a></li><li><a class="dropdown-item" href="reference.html">Reference</a></li>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"><li><a class="dropdown-item" href="reference.html">Reference</a></li>
           </ul></li>
       </ul></div>
     <!--
@@ -254,13 +254,12 @@
 
     <div id="flush-collapsecurrent" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushcurrent">
       <div class="accordion-body">
-        <ul><li><a href="#one-protocol-many-tools">One protocol, many tools</a></li>
+        <ul><li><a href="#more-eic-servers">More EIC servers</a></li>
 <li><a href="#analysis-and-data">Analysis and data</a></li>
-<li><a href="#records-and-meetings">Records and meetings</a></li>
+<li><a href="#records">Records</a></li>
 <li><a href="#code-knowledge">Code knowledge</a></li>
-<li><a href="#zero-setup-the-dispatcher-bot">Zero setup: the DISpatcher bot</a></li>
-<li><a href="#beyond-the-bot-corun-ai">Beyond the bot: corun-ai</a></li>
-<li><a href="#where-this-is-going">Where this is going</a></li>
+<li><a href="#no-setup-the-dispatcher-bot">No setup: the DISpatcher bot</a></li>
+<li><a href="#corun-ai">corun-ai</a></li>
         </ul></div><!--/div.accordion-body-->
     </div><!--/div.accordion-collapse-->
 
@@ -289,7 +288,7 @@
                       <li>
                         <a href="profiles.html">Learner Profiles</a>
                       </li>
-                      <li><a href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li><li><a href="analysis-approaches.html">Alternative Analysis Approaches</a></li><li><a href="discuss.html">Discussion</a></li><li><a href="reference.html">Reference</a></li>
+                      <li><a href="reference.html">Reference</a></li>
                     </ul></div>
                 </div>
               </div>
@@ -325,7 +324,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Catalog: MCP servers and AI infrastructure in the EIC ecosystem</h1>
-        <p>Last updated on 2026-07-16 |
+        <p>Last updated on 2026-09-30 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/06-eic-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -384,8 +383,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="card-body">
 <div class="inner">
 <h3 class="card-title">Questions</h3>
-<ul><li>Which MCP servers does EIC/ePIC provide, and which work today?</li>
-<li>How can you use the collaboration’s AI tools with zero setup?</li>
+<ul><li>Which other MCP servers does EIC provide?</li>
+<li>How can you use them without any setup?</li>
 </ul></div>
 </div>
 </div>
@@ -393,24 +392,18 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="card-body">
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
-<ul><li>Decide when to run the servers yourself and when the hosted bot is
-enough.</li>
-<li>Ask DISpatcher a tool-grounded question about data, software, or
+<ul><li>Ask the DISpatcher bot a question about data, software, or
 production.</li>
-<li>Reuse tiered tool exposure and fabrication checks in your own
-harness.</li>
 </ul></div>
 </div>
 </div>
 </div>
 </div>
-<section><h2 class="section-heading" id="one-protocol-many-tools">One protocol, many tools<a class="anchor" aria-label="anchor" href="#one-protocol-many-tools"></a></h2>
-<hr class="half-width"><p>MCP is a standard (<a href="03-mcp-servers.html">Episode 3</a>), so
-the collaboration exposes each piece of its infrastructure as a small
-server. The three you used in this lesson are one corner of a
-fast-growing stack, built mostly in BNL’s NPPS group (this episode is
-based on Torre Wenaus’s June 2026 talk to the ePIC user-learning
-WG).</p>
+<section><h2 class="section-heading" id="more-eic-servers">More EIC servers<a class="anchor" aria-label="anchor" href="#more-eic-servers"></a></h2>
+<hr class="half-width"><p>The three servers you used are part of a larger set, built mostly in
+BNL’s NPPS group (this episode is based on Torre Wenaus’s June 2026 talk
+to the ePIC user-learning WG). The <a href="https://github.com/eic" class="external-link">eic
+GitHub organization</a> has the current list.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
     accTitle: {EIC MCP server catalog}
@@ -426,10 +419,9 @@ flowchart TB
         XR["xrootd-mcp"]:::tool
         RU["rucio-mcp"]:::tool
     end
-    subgraph REC["records &amp; meetings"]
+    subgraph REC["records"]
         direction LR
         ZE["zenodo-mcp"]:::rec
-        IN["indico-mcp"]:::rec
     end
     subgraph CODE["code knowledge"]
         direction LR
@@ -449,29 +441,10 @@ flowchart TB
     click XR "https://github.com/eic/xrootd-mcp-server" _blank
     click RU "https://github.com/eic/rucio-eic-mcp-server" _blank
     click ZE "https://github.com/eic/zenodo-mcp-server" _blank
-    click IN "https://github.com/cohm/indico-mcp" _blank
     click LX "https://eic-code-browser.sdcc.bnl.gov/lxr/source" _blank
     click GH "https://github.com/github/github-mcp-server" _blank
     click PB "https://chat.epic-eic.org/main/channels/dispatcher" _blank</code></pre>
-<p><em>The boxes above are links — click a server to open its repository
-or page.</em></p>
-<div id="current-status" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="current-status" class="callout-inner">
-<h3 class="callout-title">Current status</h3>
-<div class="callout-content">
-<p>uproot/xrootd/rucio/zenodo work today and you ran three of them
-yourself; the LXR MCP server exists but is deployed inside the
-BNL-hosted services rather than as a package you run locally; indico is
-maintained by an individual, not the <code>eic</code> org; the
-production tools are reachable through the bot. See the <a href="https://github.com/eic" class="external-link">eic GitHub organization</a> and the <a href="https://epic-devcloud.org/doc/" class="external-link">ePIC dev-cloud</a> for the current
-set.</p>
-</div>
-</div>
-</div>
+<p><em>Click a box to open the server’s repository or page.</em></p>
 </section><section><h2 class="section-heading" id="analysis-and-data">Analysis and data<a class="anchor" aria-label="anchor" href="#analysis-and-data"></a></h2>
 <hr class="half-width"><div id="uproot-mcp-read-rootedm4eic-files-available-used-in-this-lesson" class="callout">
 <div class="callout-square">
@@ -479,34 +452,29 @@ set.</p>
 </div>
 <span class="callout-header">Callout</span>
 <div id="uproot-mcp-read-rootedm4eic-files-available-used-in-this-lesson" class="callout-inner">
-<h3 class="callout-title">uproot-mcp — read ROOT/EDM4eic files ·
+<h3 class="callout-title">uproot-mcp: read ROOT/EDM4eic files ·
 <em>available · used in this lesson</em>
 </h3>
 <div class="callout-content">
 <figure><img src="fig/logos/uproot.svg" class="mcp-logo figure mx-auto d-block" alt="uproot logo"><div class="figcaption">uproot logo</div>
 </figure><p><a href="https://github.com/eic/uproot-mcp-server" class="external-link"><code>eic/uproot-mcp-server</code></a>
-reads ROOT/EDM4eic files with <a href="https://uproot.readthedocs.io/" class="external-link">uproot</a>, returning compact
-JSON: file structure, branch statistics, histograms, sandboxed
-NumPy/awkward kernels. The analysis backend from Episodes 3 and 5.</p>
+reads ROOT files. Used in Episodes 3 and 5.</p>
 </div>
 </div>
 </div>
-<div id="xrootd-mcp-discover-files-on-the-data-store-available-used-in-this-lesson" class="callout">
+<div id="xrootd-mcp-find-files-on-the-data-store-available-used-in-this-lesson" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="xrootd-mcp-discover-files-on-the-data-store-available-used-in-this-lesson" class="callout-inner">
-<h3 class="callout-title">xrootd-mcp — discover files on the data store
-· <em>available · used in this lesson</em>
+<div id="xrootd-mcp-find-files-on-the-data-store-available-used-in-this-lesson" class="callout-inner">
+<h3 class="callout-title">xrootd-mcp: find files on the data store ·
+<em>available · used in this lesson</em>
 </h3>
 <div class="callout-content">
 <figure><img src="fig/logos/xrootd.png" class="mcp-logo figure mx-auto d-block" alt="XRootD logo"><div class="figcaption">XRootD logo</div>
 </figure><p><a href="https://github.com/eic/xrootd-mcp-server" class="external-link"><code>eic/xrootd-mcp-server</code></a>
-(<a href="https://eic.github.io/xrootd-mcp-server/" class="external-link">docs</a>) browses
-the ePIC XRootD stores (BNL disk by default; the older JLab store via
-configuration): list directories, read metadata, search, monitor
-production campaigns.</p>
+browses the ePIC data stores.</p>
 </div>
 </div>
 </div>
@@ -516,162 +484,67 @@ production campaigns.</p>
 </div>
 <span class="callout-header">Callout</span>
 <div id="rucio-mcp-query-the-data-management-system-available-used-in-this-lesson" class="callout-inner">
-<h3 class="callout-title">rucio-mcp — query the data-management system ·
+<h3 class="callout-title">rucio-mcp: query the data-management system ·
 <em>available · used in this lesson</em>
 </h3>
 <div class="callout-content">
 <figure><img src="fig/logos/rucio.png" class="mcp-logo figure mx-auto d-block" alt="Rucio logo"><div class="figcaption">Rucio logo</div>
 </figure><p><a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>eic/rucio-eic-mcp-server</code></a>
-exposes <a href="https://rucio.cern.ch/" class="external-link">Rucio</a> through ~13 tools
-(dataset discovery, file listing, replicas, rules). Deliberately
-<strong>read-only</strong> — an assistant gets no write access to the
-catalog.</p>
+searches the <a href="https://rucio.cern.ch/" class="external-link">Rucio</a> data catalog
+(read-only).</p>
 </div>
 </div>
 </div>
-</section><section><h2 class="section-heading" id="records-and-meetings">Records and meetings<a class="anchor" aria-label="anchor" href="#records-and-meetings"></a></h2>
+</section><section><h2 class="section-heading" id="records">Records<a class="anchor" aria-label="anchor" href="#records"></a></h2>
 <hr class="half-width"><div id="zenodo-mcp-search-the-open-data-repository-available" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
 <div id="zenodo-mcp-search-the-open-data-repository-available" class="callout-inner">
-<h3 class="callout-title">zenodo-mcp — search the open-data repository ·
+<h3 class="callout-title">zenodo-mcp: search the open-data repository ·
 <em>available</em>
 </h3>
 <div class="callout-content">
 <figure><img src="fig/logos/zenodo.png" class="mcp-logo figure mx-auto d-block" alt="Zenodo logo"><div class="figcaption">Zenodo logo</div>
 </figure><p><a href="https://github.com/eic/zenodo-mcp-server" class="external-link"><code>eic/zenodo-mcp-server</code></a>
-queries <a href="https://zenodo.org/" class="external-link">Zenodo</a> over its REST API:
-search records, read public datasets and DOIs — ePIC document
-access.</p>
-</div>
-</div>
-</div>
-<div id="indico-mcp-search-meetings-and-agendas-available-community" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="indico-mcp-search-meetings-and-agendas-available-community" class="callout-inner">
-<h3 class="callout-title">indico-mcp — search meetings and agendas ·
-<em>available (community)</em>
-</h3>
-<div class="callout-content">
-<figure><img src="fig/logos/indico.png" class="mcp-logo figure mx-auto d-block" alt="Indico logo"><div class="figcaption">Indico logo</div>
-</figure><p><a href="https://github.com/cohm/indico-mcp" class="external-link"><code>cohm/indico-mcp</code></a>
-searches an <a href="https://getindico.io/" class="external-link">Indico</a> instance: find
-events, browse agendas, extract contributions and attachments.
-Maintained by an individual; works with any Indico server.</p>
+searches <a href="https://zenodo.org/" class="external-link">Zenodo</a>, including ePIC
+documents.</p>
 </div>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="code-knowledge">Code knowledge<a class="anchor" aria-label="anchor" href="#code-knowledge"></a></h2>
-<hr class="half-width"><div id="lxr-mcp-source-cross-reference-for-the-assistant-available-bnl-hosted" class="callout">
+<hr class="half-width"><div id="lxr-mcp-source-cross-reference-available-bnl-hosted" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="lxr-mcp-source-cross-reference-for-the-assistant-available-bnl-hosted" class="callout-inner">
-<h3 class="callout-title">LXR-mcp — source cross-reference for the
-assistant · <em>available (BNL-hosted)</em>
+<div id="lxr-mcp-source-cross-reference-available-bnl-hosted" class="callout-inner">
+<h3 class="callout-title">LXR-mcp: source cross-reference ·
+<em>available (BNL-hosted)</em>
 </h3>
 <div class="callout-content">
-<p>The EIC runs an <a href="https://eic-code-browser.sdcc.bnl.gov/lxr/source" class="external-link">LXR source
-cross-reference browser</a> over 55+ ePIC and related repositories,
-<strong>re-indexed nightly</strong> against the head of every
-repository. Its MCP server lets an assistant find where any symbol is
-defined and used, search the whole code base, and read source — so
-software answers are grounded in <em>current</em> code, not the model’s
-training data (the same schema-hallucination cure you saw in Episode 3,
-applied to source). Paired with the standard <strong>GitHub MCP</strong>
-for PRs, commits, and issues.</p>
+<p>Searches the ePIC source code through the <a href="https://eic-code-browser.sdcc.bnl.gov/lxr/source" class="external-link">LXR browser</a>,
+which is updated nightly. It runs only on the BNL-hosted services.</p>
 </div>
 </div>
 </div>
-</section><section><h2 class="section-heading" id="zero-setup-the-dispatcher-bot">Zero setup: the DISpatcher bot<a class="anchor" aria-label="anchor" href="#zero-setup-the-dispatcher-bot"></a></h2>
-<hr class="half-width"><p>In Episode 3 you configured your own client. The collaboration also
-provides a hosted alternative: <strong>DISpatcher</strong>, a Mattermost
-bot in an open channel — <a href="https://chat.epic-eic.org/main/channels/dispatcher" class="external-link">chat.epic-eic.org
-→ <code>dispatcher</code></a> — that anyone in ePIC can use, in the
-channel or by DM. All the complexity you just learned about lives in its
-back end; you need nothing but your Mattermost account. It is wired to
-<strong>roughly 100 MCP tools</strong>: production diagnostics (PanDA —
-why did my jobs fail?), the physics samples in production (PCS), the
-data tools you used in this lesson (rucio, xrootd, uproot), software
-knowledge (LXR + GitHub), and documents (Zenodo, plus a documentation
-RAG).</p>
-<p>Post this in the <code>dispatcher</code> channel (or DM the bot) —
-not in your own assistant, which has no PCS tool and would have to
-invent the answer:</p>
-<pre class="ai-prompt"><code>Summarize the physics tags in the PCS — which processes are covered, and which tags are still draft?</code></pre>
-<div id="two-reusable-harness-patterns" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="two-reusable-harness-patterns" class="callout-inner">
-<h3 class="callout-title">Two reusable harness patterns</h3>
-<div class="callout-content">
-<p>The bot runs a small, cheap model, so it hits the failure modes this
-lesson warned about — at scale. Two of its countermeasures apply to any
-harness:</p>
-<ul><li>
-<strong>Tiered tool exposure.</strong> Tool use degrades past
-roughly 30–50 tools, and the bot has ~100. So its system prompt carries
-only a compact list of everything; a harness loads full descriptions for
-just the tools each request needs; the bot can still reach the rest on
-demand. The same context-economy principle as skills’ progressive
-loading in <a href="04-skills.html">Episode 4</a>.</li>
-<li>
-<strong>The fabrication check.</strong> The bot’s biggest problem is
-making answers up instead of calling a tool — cheerfully reporting “this
-is fine” when nothing was actually checked. The harness hands the model
-a secret token <strong>only when a tool is actually called</strong> and
-requires it in the response; no token, and the user is warned the answer
-was probably fabricated. Verification over confidence (<a href="01-why-genai-for-physics.html">Episode 1</a>), enforced
-mechanically.</li>
-</ul></div>
-</div>
-</div>
-<div id="ai-smart-search-on-eic.github.io" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="ai-smart-search-on-eic.github.io" class="callout-inner">
-<h3 class="callout-title">AI smart search on eic.github.io</h3>
-<div class="callout-content">
-<p>The <a href="https://eic.github.io/" class="external-link">EIC software portal</a> has an
-AI smart search — the “Ask anything about EIC…” box in the header. Type
-a question and get search results plus an AI overview built from the
-public EIC docs.</p>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="beyond-the-bot-corun-ai">Beyond the bot: corun-ai<a class="anchor" aria-label="anchor" href="#beyond-the-bot-corun-ai"></a></h2>
-<hr class="half-width"><p>The bot answers in seconds from a small model, and its answers scroll
-away in the chat history. <a href="https://github.com/BNLNPPS/corun-ai" class="external-link"><strong><code>BNLNPPS/corun-ai</code></strong></a>
-is the complement: runs that take <strong>minutes</strong> on high-level
-models, with the results preserved, browsable, and open to expert
-commentary. Its first application, <strong>codoc-ai</strong> (<a href="https://epic-devcloud.org/doc/" class="external-link">epic-devcloud.org/doc</a>),
-generates software documents grounded in LXR + GitHub. Typical uses:</p>
-<ul><li>
-<em>“I’ve been away from ePIC software development for 6 months —
-give me an overview of simu, reco and framework developments”</em> — run
-across several models and compared;</li>
-<li>documentation pages re-runnable against current code;</li>
-<li>one-click review of any open ePIC pull request.</li>
-</ul><p>Anyone can submit runs and comment — ask Torre for an account. (<a href="https://github.com/eic/corun-mcp-server" class="external-link"><code>eic/corun-mcp-server</code></a>
-wraps it as an MCP server, so your own assistant can browse and submit
-too.) The services are at an early stage, currently hosted on the open
-internet; a move to lab hosting is planned.</p>
-</section><section><h2 class="section-heading" id="where-this-is-going">Where this is going<a class="anchor" aria-label="anchor" href="#where-this-is-going"></a></h2>
-<hr class="half-width"><p>The direction is what this lesson taught in miniature: centrally
-hosted MCP services over HTTP (the transport from Episode 3) that plug
-equally into the bot, corun-ai, and <em>your own</em> assistant — from
-one free assistant and one tool server up to a collaboration-wide
-ecosystem.</p>
+</section><section><h2 class="section-heading" id="no-setup-the-dispatcher-bot">No setup: the DISpatcher bot<a class="anchor" aria-label="anchor" href="#no-setup-the-dispatcher-bot"></a></h2>
+<hr class="half-width"><p><strong>DISpatcher</strong> is a Mattermost bot (<a href="https://chat.epic-eic.org/main/channels/dispatcher" class="external-link">chat.epic-eic.org
+→ <code>dispatcher</code></a>) that anyone in ePIC can use, in the
+channel or by DM. It has the data tools from this lesson plus tools for
+production jobs, physics samples, software, and documents.</p>
+<p>Post this in the <code>dispatcher</code> channel or DM the bot. Your
+own assistant has no PCS tool and would have to invent the answer:</p>
+<pre class="ai-prompt"><code>Summarize the physics tags in the PCS: which processes are covered, and which tags are still draft?</code></pre>
+<p>The <a href="https://eic.github.io/" class="external-link">EIC software portal</a> also has
+an AI search box (“Ask anything about EIC…”).</p>
+</section><section><h2 class="section-heading" id="corun-ai">corun-ai<a class="anchor" aria-label="anchor" href="#corun-ai"></a></h2>
+<hr class="half-width"><p><a href="https://github.com/BNLNPPS/corun-ai" class="external-link"><code>BNLNPPS/corun-ai</code></a>
+runs longer jobs with larger models and keeps the results. Its first
+use, <a href="https://epic-devcloud.org/doc/" class="external-link">codoc-ai</a>, writes
+software documentation and reviews ePIC pull requests. Ask Torre for an
+account.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -679,19 +552,9 @@ ecosystem.</p>
 <span class="callout-header">Key Points</span>
 <div class="callout-inner">
 <div class="callout-content">
-<ul><li>The EIC exposes its infrastructure through MCP: analysis (uproot),
-data (xrootd, rucio), records (zenodo, indico), code (LXR + GitHub), and
-production (PanDA, PCS) — three of which you ran yourself.</li>
-<li>The DISpatcher bot is the zero-setup path: ~100 MCP tools behind a
-Mattermost account, no client configuration at all.</li>
-<li>corun-ai/codoc-ai is the long-latency complement: high-level models,
-preserved and expert-curated outputs, grounded in nightly-indexed code
-knowledge.</li>
-<li>Patterns to reuse: tiered tool exposure (context economy at scale)
-and the secret-token fabrication check (verification over confidence,
-enforced).</li>
-<li>This catalog dates quickly — check the eic GitHub organization and
-the ePIC dev-cloud for the current list.</li>
+<ul><li>EIC provides more MCP servers than the three used here.</li>
+<li>The DISpatcher bot in Mattermost gives you these tools without any
+setup.</li>
 </ul></div>
 </div>
 </div>
@@ -759,8 +622,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/06-eic-mcp-servers.html",
   "identifier": "https://eic.github.io/tutorial-mcp/06-eic-mcp-servers.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-16",
-  "datePublished": "2026-09-29"
+  "dateModified": "2026-09-30",
+  "datePublished": "2026-09-30"
 }
 
   </script><script>

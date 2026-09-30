@@ -102,7 +102,7 @@
           <button class="nav-link dropdown-toggle" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             More <i data-feather="chevron-down"></i>
           </button>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"><hr><li><a class="dropdown-item" href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li><li><a class="dropdown-item" href="analysis-approaches.html">Alternative Analysis Approaches</a></li><li><a class="dropdown-item" href="discuss.html">Discussion</a></li><li><a class="dropdown-item" href="reference.html">Reference</a></li>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"><hr><li><a class="dropdown-item" href="reference.html">Reference</a></li>
           </ul></li>
       </ul></div>
     <!--
@@ -273,7 +273,7 @@
                       <li>
                         <a href="../instructor/images.html">Extract All Images</a>
                       </li>
-                      <hr><li><a class="dropdown-item" href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li><li><a class="dropdown-item" href="analysis-approaches.html">Alternative Analysis Approaches</a></li><li><a class="dropdown-item" href="discuss.html">Discussion</a></li><li><a class="dropdown-item" href="reference.html">Reference</a></li>
+                      <hr><li><a class="dropdown-item" href="reference.html">Reference</a></li>
                     </ul></div>
                 </div>
               </div>
@@ -312,16 +312,16 @@ whole procedure is reproducible.</p>
 reconstructing the weak decay <strong>Λ⁰ → p π⁻</strong> and extracting
 its yield from the proton–pion invariant-mass spectrum.</p>
 <p>The lesson develops three ideas and applies them end to end:</p>
-<ul><li>an <strong>agentic assistant</strong> — a language model placed in a
+<ul><li>an <strong>agentic assistant</strong>: a language model placed in a
 loop where it can read files, run code, and react to the results, rather
 than only returning text;</li>
-<li>the <strong>Model Context Protocol (MCP)</strong> — an open standard
-for exposing analysis tools to any assistant, so the workflow is
+<li>the <strong>Model Context Protocol (MCP)</strong>: an open standard
+for offering analysis tools to any assistant, so the workflow is
 portable; and</li>
 <li>
 <strong>persistent instructions</strong> (<code>AGENTS.md</code> and
-<code>SKILL.md</code>) — versioned context and procedures that make a
-run repeatable and auditable.</li>
+<code>SKILL.md</code>): versioned context and procedures that make a run
+repeatable and auditable.</li>
 </ul><p>The lesson uses <a href="https://opencode.ai" class="external-link">opencode</a>, but the
 parts you build (MCP tool servers, a skill) work with any assistant.</p>
 <div id="what-you-will-produce" class="callout">
@@ -334,7 +334,7 @@ parts you build (MCP tool servers, a skill) work with any assistant.</p>
 <div class="callout-content">
 <p>A workflow in which an assistant opens a real ePIC reconstruction
 file, queries its schema through a verifiable tool interface, builds the
-Λ⁰ invariant-mass spectrum, and fits it — driven by natural-language
+Λ⁰ invariant-mass spectrum, and fits it, driven by natural-language
 requests, with results and provenance you can independently check.</p>
 </div>
 </div>
@@ -400,9 +400,8 @@ background?<br>Which EDM4eic collections and units does it need?
 Protocol (MCP)</a>
 </td>
 <td>
-What is MCP, and what problem does it solve?<br>What does the uproot
-server expose, and how is it sandboxed?<br>How do you connect and drive
-a server?
+What is MCP, and what problem does it solve?<br>What can the EIC tool
+servers do?<br>How do you connect an assistant to them?
 </td>
 </tr><tr><td>
 <span class="visually-hidden">Duration: </span>02h 20m
@@ -412,9 +411,9 @@ a server?
 SKILL.md</a>
 </td>
 <td>
-How do you give an assistant durable project context?<br>AGENTS.md vs
-SKILL.md — when to use each?<br>How do you make every tool read the
-same rules?<br>What’s in a usable SKILL.md for the Λ⁰ fit?
+How do you give an assistant durable project context?<br>AGENTS.md or
+SKILL.md: when to use each?<br>How do you make every tool read the same
+rules?<br>What’s in a usable SKILL.md for the Λ⁰ fit?
 </td>
 </tr><tr><td>
 <span class="visually-hidden">Duration: </span>03h 10m
@@ -436,8 +435,8 @@ yield extracted and made reproducible?
 infrastructure in the EIC ecosystem</a>
 </td>
 <td>
-Which MCP servers does EIC/ePIC provide, and which work today?<br>How
-can you use the collaboration’s AI tools with zero setup?
+Which other MCP servers does EIC provide?<br>How can you use them
+without any setup?
 </td>
 </tr><tr><td>
 <span class="visually-hidden">Duration: </span>04h 20m
@@ -453,14 +452,11 @@ any links that you are not going to use.
  --></tbody></table><p>
       The actual schedule may vary slightly depending on the topics and exercises chosen by the instructor.
       </p>
-      </section><section id="setup"><p>The tool <strong>servers</strong> run inside
-<strong>eic-shell</strong>; your <strong>assistant</strong> runs where
-you normally work. Install an AI assistant (this tutorial will use
-<code>opencode</code>), get <code>eic-mcp</code>, and one command starts
-the tool servers. Nothing else — no grid certificate, no data download —
-the MCP servers reuse eic-shell’s own <code>uproot</code>,
-<code>xrdfs</code>, and <code>rucio</code> (already logged in to the
-shared read-only <code>eicread</code> account).</p>
+      </section><section id="setup"><p>eic-shell contains everything this lesson needs: the three MCP
+servers (uproot, xrootd, rucio), the <code>eic-mcp</code> command that
+starts them, and the <code>opencode</code> assistant. You need no grid
+certificate and download no data: <code>rucio</code> is already signed
+in to the shared read-only <code>eicread</code> account.</p>
 <div id="quick-checklist" class="callout checklist">
 <div class="callout-square">
 <i class="callout-icon" data-feather="check-square"></i>
@@ -469,28 +465,63 @@ shared read-only <code>eicread</code> account).</p>
 <div id="quick-checklist" class="callout-inner">
 <h3 class="callout-title">Quick checklist</h3>
 <div class="callout-content">
-<ul class="task-list"><li><label><input type="checkbox"><strong>eic-shell</strong> working
-(<code>./eic-shell</code> drops you into the container).</label></li>
-<li><label><input type="checkbox">One <strong>AI assistant</strong>
-installed (e.g. <code>opencode</code>).</label></li>
-<li><label><input type="checkbox"><strong><code>eic-mcp</code></strong> on your
-<code>PATH</code>, <strong><code>~/tutorial-mcp</code></strong> cloned
-(two <code>git clone</code>s).</label></li>
-<li><label><input type="checkbox"><strong><code>eic-mcp up</code></strong> starts the
-three MCP servers (the first run bootstraps them
-automatically).</label></li>
+<ul class="task-list"><li><label><input type="checkbox"><strong>eic-shell</strong> is up to
+date (<code>./eic-shell --upgrade</code>).</label></li>
+<li><label><input type="checkbox">Inside eic-shell,
+<strong><code>eic-mcp up</code></strong> starts three servers and
+<strong><code>opencode</code></strong> opens.</label></li>
 </ul></div>
 </div>
 </div>
 <section><h2 class="section-heading" id="eic-shell">1. eic-shell<a class="anchor" aria-label="anchor" href="#eic-shell"></a></h2>
-<hr class="half-width"><p>Make sure <code>./eic-shell</code> drops you into the container. (See
-<a href="https://eic.github.io/tutorial-setting-up-environment/" class="external-link">environment
-setup guide</a>.)</p>
-</section><section><h2 class="section-heading" id="choose-an-ai-assistant">2. Choose an AI assistant<a class="anchor" aria-label="anchor" href="#choose-an-ai-assistant"></a></h2>
+<hr class="half-width"><p>See the <a href="https://eic.github.io/tutorial-setting-up-environment/" class="external-link">environment
+setup guide</a> if you do not have eic-shell yet. Then, in the folder
+with <code>./eic-shell</code>:</p>
+<div class="codewrapper sourceCode" id="cb1">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="bu">cd</span> ~/eic                  <span class="co"># yours may differ</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a><span class="ex">./eic-shell</span> <span class="at">--upgrade</span></span></code></pre>
+</div>
+</section><section><h2 class="section-heading" id="start-the-servers-and-the-assistant">2. Start the servers and the assistant<a class="anchor" aria-label="anchor" href="#start-the-servers-and-the-assistant"></a></h2>
+<hr class="half-width"><div class="codewrapper sourceCode" id="cb2">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">./eic-shell</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="fu">mkdir</span> <span class="at">-p</span> lambda <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> lambda     <span class="co"># a working directory for the analysis</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1" aria-label="code-block-2-3"></a><span class="ex">eic-mcp</span> up                       <span class="co"># uproot, xrootd, rucio on 127.0.0.1:9101-9103</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1" aria-label="code-block-2-4"></a><span class="ex">eic-mcp</span> config opencode          <span class="co"># writes opencode.jsonc here</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1" aria-label="code-block-2-5"></a><span class="ex">opencode</span></span></code></pre>
+</div>
+<p>In opencode, <code>/mcp</code> should list <code>uproot</code>,
+<code>xrootd</code>, and <code>rucio</code> as connected. The free
+hosted models need no login. If <code>eic-mcp</code> or
+<code>opencode</code> is not found, exit eic-shell, return to the folder
+containing the launcher, run <code>./eic-shell --upgrade</code>, and
+start eic-shell again.</p>
+<p>On macOS, eic-shell is a Docker container: the servers stop when you
+leave it, and its home (<code>/root</code>) is wiped, so opencode
+forgets its settings. Keep your work in the eic-shell folder.</p>
+<div id="check-it-works" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="check-it-works" class="callout-inner">
+<h3 class="callout-title">Check it works</h3>
+<div class="callout-content">
+<p>In an empty directory, ask: <em>“Create hello.py that prints the PDG
+Λ⁰ baryon mass in GeV, then run it.”</em> The assistant should write the
+file and run it, printing <code>1.115683</code>. If it only shows the
+code, switch it to agent (build) mode.</p>
+</div>
+</div>
+</div>
+</section><section><h2 class="section-heading" id="other-assistants">Other assistants<a class="anchor" aria-label="anchor" href="#other-assistants"></a></h2>
 <hr class="half-width"><figure><img src="../fig/one-ring.svg" alt="gold ring engraved with the words EIC" width="160" class="figure mx-auto d-block"></figure><p><strong>One assistant to rule them all?</strong> Any
 <strong>agentic</strong> assistant — one that can read/write your files
-and run commands, not just emit text — works, and MCP works with any.
-This tutorial is based on <a href="https://opencode.ai" class="external-link">opencode</a>.</p>
+and run commands, not just emit text — works, and MCP works with
+any.</p>
 <table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>Tool</th>
 <th>Interface</th>
 <th>Free access</th>
@@ -507,7 +538,7 @@ maintainers</td>
 </tr><tr><td><a href="https://github.com/google-gemini/gemini-cli" class="external-link">Gemini
 CLI</a></td>
 <td>terminal</td>
-<td>open source; generous free tier with a personal Google account</td>
+<td>open source; free tier with a personal Google account</td>
 </tr><tr><td><a href="https://developers.openai.com/codex" class="external-link">Codex</a></td>
 <td>terminal, IDE</td>
 <td>included with ChatGPT plans</td>
@@ -522,141 +553,37 @@ CLI</a></td>
 </td>
 <td>VS Code extensions</td>
 <td>open source; bring your own key</td>
-</tr></tbody></table></section><section><h2 class="section-heading" id="install-one">3. Install one<a class="anchor" aria-label="anchor" href="#install-one"></a></h2>
-<hr class="half-width"><p>This lesson uses <strong><a href="https://opencode.ai" class="external-link">opencode</a></strong>:</p>
-<div class="codewrapper sourceCode" id="cb1">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://opencode.ai/install <span class="kw">|</span> <span class="fu">bash</span></span></code></pre>
-</div>
-<p>The free hosted models work out of the box without any login. Run it
-on your own machine, not inside <code>eic-shell</code>.</p>
-<p>If you prefer an editor — try <a href="https://code.visualstudio.com/" class="external-link">VS Code</a> plus the <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot" class="external-link">GitHub
-Copilot</a> and <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat" class="external-link">Copilot
-Chat</a> extensions (sign in with GitHub — students/educators get Pro
-free — and use <strong>Agent</strong> mode), or <a href="https://cursor.com/" class="external-link">Cursor</a>.</p>
-<div id="not-allowed-to-install-anything" class="callout">
+</tr></tbody></table><p>eic-shell also has <code>claude</code> and <code>copilot</code>: run
+<code>eic-mcp config claude</code> (or <code>copilot</code>), then start
+it. The first login prints a code to paste in a browser, so it works
+over SSH.</p>
+<div id="assistant-outside-eic-shell" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="not-allowed-to-install-anything" class="callout-inner">
-<h3 class="callout-title">Not allowed to install anything?</h3>
+<div id="assistant-outside-eic-shell" class="callout-inner">
+<h3 class="callout-title">Assistant outside eic-shell</h3>
 <div class="callout-content">
-<p>eic-shell already has two assistants: <strong>Claude Code</strong>
-(<code>claude</code>) and the <strong>GitHub Copilot CLI</strong>
-(<code>copilot</code>). Run one <em>inside</em> the container, alongside
-the servers (step 4):</p>
-<div class="codewrapper sourceCode" id="cb2">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">eic-mcp</span> config claude    <span class="co"># writes .mcp.json here  (copilot: eic-mcp config copilot)</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a><span class="ex">claude</span>                   <span class="co"># or: copilot</span></span></code></pre>
-</div>
-<p>One browser login the first time; it prints a code to paste, so it
-works over SSH.</p>
-</div>
-</div>
-</div>
-<div id="check-it-works" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="check-it-works" class="callout-inner">
-<h3 class="callout-title">Check it works</h3>
-<div class="callout-content">
-<p>Open an empty folder in your assistant and ask: <em>“Create hello.py
-that prints the PDG Λ⁰ baryon mass in GeV, then run it.”</em> It should
-<strong>write</strong> the file and <strong>run</strong> it, printing
-<code>1.115683</code>. If it only shows code, switch on agent/edit mode
-— executing, not suggesting, is what is needed.</p>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="start-the-mcp-servers-eic-mcp-up">4. Start the MCP servers — <code>eic-mcp up</code>
-<a class="anchor" aria-label="anchor" href="#start-the-mcp-servers-eic-mcp-up"></a></h2>
-<hr class="half-width"><p><strong>This step is temporary</strong>: <code>eic-mcp</code> and the
-servers are becoming part of eic-shell itself. Once the image ships them
-there are no extra steps — no clone, no PATH line — and the commands
-stay exactly the same. Until then, clone the launcher — and this
-lesson’s repository, whose example files Episodes 4–5 use — into your
-home directory (or workdir):</p>
+<p>The servers must run in eic-shell, but the client can run on your
+machine. Keep <code>eic-mcp up</code> running and put the client config
+in the directory where you start the client.</p>
+<ul><li><p><strong>Linux, WSL:</strong> apptainer shares the host network.
+Run <code>eic-mcp config &lt;client&gt;</code> there.</p></li>
+<li>
+<p><strong>macOS:</strong> publish the ports once, restart
+<code>./eic-shell</code>, and download the example config
+(<code>eic-mcp</code> does not run on the Mac itself):</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp ~/eic-mcp</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="fu">git</span> clone https://github.com/eic/tutorial-mcp ~/tutorial-mcp</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a><span class="bu">echo</span> <span class="st">'export PATH="$HOME/eic-mcp/bin:$HOME/.opencode/bin:$PATH"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc <span class="kw">&amp;&amp;</span> <span class="bu">.</span> ~/.bashrc</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="bu">cd</span> ~/eic</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="fu">grep</span> <span class="at">-q</span> 9101 eic-shell <span class="kw">||</span> <span class="fu">sed</span> <span class="at">-i</span> <span class="st">''</span> <span class="st">'s|^docker run |docker run -p 127.0.0.1:9101-9103:9101-9103 |'</span> eic-shell</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a><span class="bu">cd</span> lambda                   <span class="co"># or the directory where you will launch opencode</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1" aria-label="code-block-3-4"></a><span class="ex">curl</span> <span class="at">-fsSLO</span> https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/opencode.jsonc</span></code></pre>
 </div>
-<p>It runs the three servers (uproot, xrootd, rucio) inside
-eic-shell:</p>
-<div class="codewrapper sourceCode" id="cb4">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="bu">cd</span> ~/eic <span class="kw">&amp;&amp;</span> <span class="ex">eic-mcp</span> up    <span class="co"># first run from your eic-shell folder — it remembers the image</span></span></code></pre>
-</div>
-<div id="macos-two-extra-steps" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="macos-two-extra-steps" class="callout-inner">
-<h3 class="callout-title">macOS: two extra steps</h3>
-<div class="callout-content">
-<p>On a Mac, <code>eic-shell</code> is Docker: it publishes no ports and
-does not share your home. Clone the launcher <strong>next to
-<code>./eic-shell</code></strong> instead, and publish the server ports
-once:</p>
-<div class="codewrapper sourceCode" id="cb5">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="bu">cd</span> ~/eic                                    <span class="co"># the folder with ./eic-shell (yours may differ)</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="fu">git</span> clone https://github.com/eic/eic-mcp</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="fu">grep</span> <span class="at">-q</span> 9101 eic-shell <span class="kw">||</span> <span class="fu">sed</span> <span class="at">-i</span> <span class="st">''</span> <span class="st">"s|^docker run |docker run -p 127.0.0.1:9101-9104:9101-9104 -v </span><span class="va">$PWD</span><span class="st">/eic-mcp/bin/eic-mcp:/usr/local/bin/eic-mcp:ro |"</span> eic-shell</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="fu">grep</span> <span class="st">'docker run'</span> eic-shell                 <span class="co"># must now show the -p and -v flags</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="ex">./eic-shell</span></span></code></pre>
-</div>
-<p>That one edit publishes the ports <strong>and</strong> puts
-<code>eic-mcp</code> on the container’s <code>PATH</code> for good, so
-inside eic-shell there is nothing to export — just:</p>
-<div class="codewrapper sourceCode" id="cb6">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="ex">eic-mcp</span> up</span></code></pre>
-</div>
-<p>Leave this window open: the container — and the servers inside it —
-only live while <code>./eic-shell</code> runs. Your assistant stays
-<strong>on the Mac</strong>, in a second terminal; copy the ready-made
-config into the directory where you launch <code>opencode</code>:</p>
-<div class="codewrapper sourceCode" id="cb7">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1" aria-label="code-block-7-1"></a><span class="fu">cp</span> ~/tutorial-mcp/files/mcp-config/opencode.jsonc .</span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<p>If your eic_xl image already ships the servers, they just start;
-otherwise the <strong>first</strong> run bootstraps them automatically
-(a one-time clone and build, a few minutes). Every later
-<code>eic-mcp up</code> starts in seconds. <a href="03-mcp-servers.html">Episode 3</a> covers the per-session workflow
-— <code>eic-mcp up</code> / <code>eic-mcp down</code>, and
-<code>eic-mcp config opencode</code> to write your client config.</p>
-<div id="no-credentials-no-data-download" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="no-credentials-no-data-download" class="callout-inner">
-<h3 class="callout-title">No credentials, no data download</h3>
-<div class="callout-content">
-<p>The <code>rucio</code> server signs in automatically with the shared,
-read-only <code>eicread</code> account baked into eic-shell — the same
-one the <code>rucio</code> command line uses. You never enter a password
-and you never download a dataset: the assistant reads ROOT files in
-place over <code>root://</code>.</p>
-</div>
+</li>
+</ul></div>
 </div>
 </div>
 <!--
@@ -714,8 +641,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/index.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/index.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-09-29",
-  "datePublished": "2026-09-29"
+  "dateModified": "2026-09-30",
+  "datePublished": "2026-09-30"
 }
 
   </script><script>

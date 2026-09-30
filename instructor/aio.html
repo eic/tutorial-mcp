@@ -128,9 +128,6 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 <hr>
-<li><a class="dropdown-item" href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li>
-<li><a class="dropdown-item" href="analysis-approaches.html">Alternative Analysis Approaches</a></li>
-<li><a class="dropdown-item" href="discuss.html">Discussion</a></li>
 <li><a class="dropdown-item" href="reference.html">Reference</a></li>
           </ul>
 </li>
@@ -334,9 +331,6 @@
                         <a href="../instructor/images.html">Extract All Images</a>
                       </li>
                       <hr>
-<li><a class="dropdown-item" href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li>
-<li><a class="dropdown-item" href="analysis-approaches.html">Alternative Analysis Approaches</a></li>
-<li><a class="dropdown-item" href="discuss.html">Discussion</a></li>
 <li><a class="dropdown-item" href="reference.html">Reference</a></li>
                     </ul>
 </div>
@@ -369,7 +363,7 @@
         
 <section id="aio-01-why-genai-for-physics"><p>Content from <a href="01-why-genai-for-physics.html">Generative AI as an agentic research tool</a></p>
 <hr>
-<p>Last updated on 2026-07-14 |
+<p>Last updated on 2026-09-30 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/01-why-genai-for-physics.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 55 minutes</p>
@@ -456,25 +450,25 @@ capability.</li>
 <section><h2 class="section-heading" id="the-bottleneck-is-rarely-the-physics">The bottleneck is rarely the physics<a class="anchor" aria-label="anchor" href="#the-bottleneck-is-rarely-the-physics"></a>
 </h2>
 <hr class="half-width">
-<p>In a typical analysis the physics is modest: select a final state,
-build an observable, fit a signal, etc. Most effort goes into the
-software around it — locating datasets, decoding a data model, getting
-branch names and units right, iterating on plotting and analysis code.
-LLMs compress this overhead well, but only if they produce
-<em>checkable</em> results. Later episodes apply this to the decay <span class="math inline">\(\Lambda^0 \to p\,\pi^-\)</span>.</p>
+<p>In a typical analysis the physics steps are few: select a final
+state, build an observable, fit a signal. Most of the time goes into the
+software around them: finding datasets, learning the data model, getting
+branch names and units right, and iterating on plotting and analysis
+code. LLMs can reduce this work, but only if their results can be
+checked. Later episodes apply this to the decay <span class="math inline">\(\Lambda^0 \to p\,\pi^-\)</span>.</p>
 </section><section><h2 class="section-heading" id="two-modes-of-use">Two modes of use<a class="anchor" aria-label="anchor" href="#two-modes-of-use"></a>
 </h2>
 <hr class="half-width">
-<p>A <strong>chat completion</strong> is a single forward pass: prompt
-in, text out, exchange ends. If that text is code, <em>you</em> execute
-it, inspect the error, and feed it back by hand. The model never
-observes your data or the result of running anything.</p>
-<p>An <strong>agentic loop</strong> wraps the same model in a control
-structure that lets it <em>act</em>: the model proposes an action, an
-external <strong>tool</strong> carries it out, the result is appended to
-the context, and the model is invoked again — until a stopping condition
-is met. In the loop the model is conditioned on the actual state of your
-files and real computation output, not on its prior alone.</p>
+<p>A <strong>chat completion</strong> is a single request: a prompt goes
+in, text comes out. If the text is code, you run it, read the error, and
+paste it back by hand. The model never observes your data or the result
+of running anything.</p>
+<p>An <strong>agentic loop</strong> runs the same model inside a control
+structure that lets it act. The model proposes an action, an external
+<strong>tool</strong> carries it out, the result is added to the
+context, and the model is called again, until a stopping condition is
+met. The model then works from the actual state of your files and the
+output of real computations, not only from its training.</p>
 <div id="scope" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -483,15 +477,15 @@ files and real computation output, not on its prior alone.</p>
 <div id="scope" class="callout-inner">
 <h3 class="callout-title">Scope</h3>
 <div class="callout-content">
-<p>Here, “generative AI” means an LLM-based coding assistant in this
-agentic mode — not machine learning for reconstruction or particle
-identification. The object of study is the <em>analysis-authoring</em>
-workflow.</p>
+<p>Here, “generative AI” means an LLM-based coding assistant used in
+this agentic mode. Machine learning for reconstruction or particle
+identification is not covered. The subject is writing and running
+analyses.</p>
 </div>
 </div>
 </div>
-<p>That loop is the first of <strong>four</strong>, each wrapped around
-the one before it. This episode walks up the stack.</p>
+<p>This loop is the first of four. Each one wraps the one before it, and
+this episode goes through them in order.</p>
 </section><section><h2 class="section-heading" id="level-1-the-agent-loop">Level 1 — the agent loop<a class="anchor" aria-label="anchor" href="#level-1-the-agent-loop"></a>
 </h2>
 <hr class="half-width">
@@ -510,49 +504,29 @@ flowchart TD
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
     classDef user fill:#f1f3f5,stroke:#868e96,stroke-width:1.5px,color:#212529;</code></pre>
-<p>A model plus the machinery that runs this cycle is a
-<strong>harness</strong>, and it has exactly four parts:</p>
+<p>The model together with the software that runs this cycle is called a
+<strong>harness</strong>. It has four parts:</p>
 <ul>
 <li>
-<strong>Model</strong> — reasoning and code generation.
-<em>Interchangeable</em>: provider and model are an implementation
-choice, not part of the method.</li>
+<strong>Model</strong>: reasoning and code generation. The provider
+and model can be swapped; they are not part of the method.</li>
 <li>
-<strong>Context</strong> — everything the model attends to in a
-step: system instructions, files, prior turns, tool outputs. Bounded by
-the <em>context window</em> (in tokens), so what is included, and when,
-is deliberate.</li>
+<strong>Context</strong>: everything the model sees in a step:
+instructions, files, earlier turns, tool outputs. Its size is limited
+(the <em>context window</em>).</li>
 <li>
-<strong>Tools</strong> — operations the model may invoke, each with
-a typed interface (name, arguments, return schema). The only channel
-through which the model affects the outside world.</li>
+<strong>Tools</strong>: operations the model may call. Tools are the
+only way the model can change anything outside itself.</li>
 <li>
-<strong>Control loop</strong> — the policy that alternates
-<em>propose → execute → observe</em> until done. This distinguishes an
-agent from a chatbot.</li>
+<strong>Control loop</strong>: repeats <em>propose → execute →
+observe</em> until the task is done. This is what separates an agent
+from a chatbot.</li>
 </ul>
-<div id="why-the-loop-is-essential" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="why-the-loop-is-essential" class="callout-inner">
-<h3 class="callout-title">Why the loop is essential</h3>
-<div class="callout-content">
-<p>Feeding tool results back lets the assistant correct course against
-ground truth: read the actual branch names rather than guessing, run a
-fit and read back its <span class="math inline">\(\chi^2/\mathrm{ndf}\)</span>, refit if the peak is
-misplaced. A single completion cannot, because it never observes a
-consequence of its actions.</p>
-</div>
-</div>
-</div>
 <div class="section level3">
-<h3 id="extending-the-harness-the-modern-toolkit">Extending the harness: the modern toolkit<a class="anchor" aria-label="anchor" href="#extending-the-harness-the-modern-toolkit"></a>
+<h3 id="extending-the-harness">Extending the harness<a class="anchor" aria-label="anchor" href="#extending-the-harness"></a>
 </h3>
-<p>Production assistants keep that small core and surround it with
-standard extension points. The vocabulary recurs in every modern
-assistant’s documentation.</p>
+<p>Current assistants add a few standard extension points to this
+core.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
     accTitle: {AI agent harness}
@@ -565,76 +539,29 @@ flowchart TB
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;</code></pre>
 <ul>
-<li>
-<strong>MCP servers</strong> — the <em>tools</em> layer,
-standardized. A server (in our case eic-shell) exposes tools, data, and
-prompts over the Model Context Protocol so one implementation works in
-any client. This is how we give the assistant physics capabilities (<a href="03-mcp-servers.html">Episode 3</a>).</li>
-<li>
-<strong>Subagents (agents)</strong> — a separate assistant instance
-with its own context window, tools, and instructions, spawned for a
-sub-task. They isolate context and enable divide-and-conquer.</li>
-<li>
-<strong>Skills</strong> — packaged, versioned <em>procedures</em> (a
-<code>SKILL.md</code> plus scripts) loaded on demand when a request
-matches (<a href="04-skills.html">Episode 4</a>). A tool is a
-capability; a skill is a recipe.</li>
-</ul>
-<table class="table">
-<colgroup>
-<col width="33%">
-<col width="33%">
-<col width="33%">
-</colgroup>
-<thead><tr>
-<th>Component</th>
-<th>What it adds to the core loop</th>
-<th>In this tutorial</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>MCP servers</td>
-<td>external tools &amp; data, client-agnostic</td>
-<td>Episodes 3 &amp; 5 (the <a href="https://github.com/eic/uproot-mcp-server" class="external-link">uproot</a>/<a href="https://github.com/eic/xrootd-mcp-server" class="external-link">xrootd</a> servers)</td>
-</tr>
-<tr>
-<td>Subagents</td>
-<td>isolated, specialized helpers</td>
-<td>concept</td>
-</tr>
-<tr>
-<td>Skills</td>
-<td>reusable, versioned procedures</td>
-<td>Episode 4 (<code>SKILL.md</code>)</td>
-</tr>
-</tbody>
-</table>
-<p>Two smaller helpers matter for the loops later in this episode:</p>
-<ul>
-<li>
-<strong>Hooks</strong> — small scripts the harness runs
-automatically at fixed moments (before or after a tool call, at session
-end). Simple examples: re-format code after every edit; refuse any
-command that would delete data; append each tool call to a provenance
-log.</li>
-<li>
-<strong>Monitors</strong> — watchers for work that outlives a single
-turn: they follow background state and re-invoke the assistant when it
-changes. Simple examples: watch a long fit or batch job and wake the
-assistant with the result when it finishes; watch a directory and react
-when a new file appears.</li>
+<li><p><strong>MCP servers</strong>: tools in a standard form that works
+with any assistant. This is how the assistant gets physics tools (<a href="03-mcp-servers.html">Episode 3</a>).</p></li>
+<li><p><strong>Subagents</strong>: separate assistants started for a
+sub-task, so a large task can be split up.</p></li>
+<li><p><strong>Skills</strong>: versioned <em>procedures</em> (a
+<code>SKILL.md</code> plus scripts) loaded when a request matches (<a href="04-skills.html">Episode 4</a>). A tool is a capability; a skill is
+a recipe.</p></li>
+<li><p><strong>Hooks</strong>: scripts the harness runs at fixed
+moments, e.g. reformat code after every edit or log each tool
+call.</p></li>
+<li><p><strong>Monitors</strong>: watch background work, e.g. a long
+batch job, and call the assistant again when it finishes.</p></li>
 </ul>
 </div>
 </section><section><h2 class="section-heading" id="level-2-the-verification-loop">Level 2 — the verification loop<a class="anchor" aria-label="anchor" href="#level-2-the-verification-loop"></a>
 </h2>
 <hr class="half-width">
-<p>A level-1 agent stops when <em>it</em> thinks the task is complete —
-and an LLM is stochastic: identical prompts can yield different outputs,
-and a confident answer is not evidence of a correct one. The fix is a
-second loop around the first: a <strong>grader</strong> checks the
-agent’s result against explicit acceptance criteria before it is
-accepted, and a failure goes back in as feedback for another
-attempt.</p>
+<p>A level-1 agent stops when it decides the task is complete. An LLM is
+stochastic: the same prompt can give different outputs, and a confident
+answer is not evidence of a correct one. A second loop around the first
+handles this. A <strong>grader</strong> checks the agent’s result
+against explicit acceptance criteria, and a failure goes back to the
+agent as feedback for another attempt.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
     accTitle: {Level 2 the verification loop}
@@ -646,32 +573,29 @@ flowchart TD
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;</code></pre>
-<p>Treat every model output as a <strong>hypothesis</strong>, accepted
-only after checking it against something external — the data, a fit
+<p>Treat every model output as a <strong>hypothesis</strong> and accept
+it only after checking it against something external: the data, a fit
 statistic, a known physical value, or an independent implementation. For
 the <span class="math inline">\(\Lambda^0\)</span> measurement the
 criteria are physical and checkable: <span class="math inline">\(|\mu -
 1.115683\,\mathrm{GeV}| &lt; 5\,\mathrm{MeV}\)</span>, <span class="math inline">\(\sigma\)</span> consistent with detector
 resolution, <span class="math inline">\(\chi^2/\mathrm{ndf}\)</span> of
-order 1. In <a href="04-skills.html">Episode 4</a> you will write
-exactly this grader into the lambda-fit skill’s <strong>success
-criteria</strong> — and a passing agent reports the numbers, while a
-failing one must report the failure, not a result.</p>
-<p>Grading costs time and tokens. It is the right trade wherever
-correctness matters more than speed — almost always. So favor tools that
-return compact, inspectable quantities — counts, edges, fit parameters —
-and keep a record of what was run: reproducibility and provenance are
-the criteria by which an automated result earns trust. At collaboration
-scale the grader can be mechanical, like the secret-token fabrication
-check in DISpatcher <a href="06-eic-mcp-servers.html">Episode 6</a>.</p>
+order 1. In <a href="04-skills.html">Episode 4</a> you write this grader
+into the lambda-fit skill’s <strong>success criteria</strong>. An agent
+that passes reports the numbers; one that fails must report the failure
+instead of a result.</p>
+<p>Grading costs time and tokens, but in physics analysis correctness
+matters more than speed. Prefer tools that return small quantities you
+can inspect (counts, bin edges, fit parameters), and keep a record of
+what was run.</p>
 </section><section><h2 class="section-heading" id="level-3-the-operation-loop">Level 3 — the operation loop<a class="anchor" aria-label="anchor" href="#level-3-the-operation-loop"></a>
 </h2>
 <hr class="half-width">
-<p>With verification in place, the agent no longer needs you to press
-enter. A third loop makes it a <em>component</em>: an event — a
-schedule, a finished production job, a new pull request — triggers the
-agent, its verified output updates something (a report, a documentation
-page, an alert), and the system goes back to waiting.</p>
+<p>With verification in place, the agent no longer needs you to start
+it. In a third loop an event (a schedule, a finished production job, a
+new pull request) starts the agent, its verified output updates
+something (a report, a documentation page, an alert), and the system
+goes back to waiting.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {Level 3 the operation loop}
@@ -682,22 +606,18 @@ flowchart LR
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
     classDef pkg fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;</code></pre>
-<p>Hooks and monitors (above) are the entry-level version of this. The
-collaboration-scale version is in <a href="06-eic-mcp-servers.html">Episode 6</a>: documentation regenerated
-on schedule against the current code base, and pull-request reviews
-triggered per PR.</p>
-</section><section><h2 class="section-heading" id="level-4-the-improvement-loop-in-a-word">Level 4 — the improvement loop, in a word<a class="anchor" aria-label="anchor" href="#level-4-the-improvement-loop-in-a-word"></a>
+<p><a href="06-eic-mcp-servers.html">Episode 6</a> shows collaboration
+examples: documentation regenerated on a schedule, and reviews triggered
+per pull request.</p>
+</section><section><h2 class="section-heading" id="level-4-the-improvement-loop">Level 4 — the improvement loop<a class="anchor" aria-label="anchor" href="#level-4-the-improvement-loop"></a>
 </h2>
 <hr class="half-width">
-<p>There is one more loop, around everything: periodically look at what
-the agent <em>actually did</em> — transcripts, failed fits, wrong tool
-choices — and feed that back into the <strong>harness itself</strong>:
-sharpen <code>AGENTS.md</code>, tighten a skill’s success criteria, add
-the missing tool. Levels 1–3 make the agent do the work; level 4 makes
-the agent <em>better at</em> the work, which is where the gains
-compound. You will practice a small version of it every time a prompt in
-this lesson goes wrong and you fix the instructions instead of retyping
-the request.</p>
+<p>The last loop goes around everything. From time to time, look at what
+the agent actually did (transcripts, failed fits, wrong tool choices)
+and change the <strong>harness</strong> accordingly: clarify
+<code>AGENTS.md</code>, tighten a skill’s success criteria, add a
+missing tool. You do a small version of this whenever a prompt goes
+wrong and you fix the instructions instead of retyping the request.</p>
 <div id="where-a-human-belongs-in-each-loop" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -706,32 +626,14 @@ the request.</p>
 <div id="where-a-human-belongs-in-each-loop" class="callout-inner">
 <h3 class="callout-title">Where a human belongs in each loop</h3>
 <div class="callout-content">
-<p>Autonomy does not mean absence of judgement — each level has a
-natural checkpoint: approving a sensitive tool call (1), signing off a
-graded result (2), reviewing what runs unattended (3), and deciding
-which harness changes to keep (4). Put yourself at the checkpoints.</p>
+<p>Each level has a point where a person should decide: approving a
+sensitive tool call (1), signing off a graded result (2), reviewing what
+runs unattended (3), and choosing which harness changes to keep (4).</p>
 </div>
 </div>
 </div>
-<div id="one-interface-many-assistants" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="one-interface-many-assistants" class="callout-inner">
-<h3 class="callout-title">One interface, many assistants</h3>
-<div class="callout-content">
-<p>The <strong>Model Context Protocol (MCP)</strong> is an open standard
-for exposing tools to language-model clients. A tool implemented once
-against MCP works in any compliant assistant — like a hardware bus that
-decouples peripherals from hosts. In <a href="03-mcp-servers.html">Episode 3</a> you connect the eic-shell
-servers and see that any MCP-compliant client connects the same way,
-making the workflow reproducible across environments.</p>
-</div>
-</div>
-</div>
-<p>The <a href="02-your-ai-coding-setup.html">next episode</a> states
-the physics measurement; you install an assistant on the <a href="index.html#setup">Setup</a> page.</p>
+<p>The <a href="02-your-ai-coding-setup.html">next episode</a> describes
+the physics measurement.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -740,19 +642,10 @@ the physics measurement; you install an assistant on the <a href="index.html#set
 <div class="callout-inner">
 <div class="callout-content">
 <ul>
-<li>A conversational model returns text; an agentic harness executes
-tools and conditions on their output.</li>
-<li>Level 1, the agent loop, runs in a harness with four parts: the
-model, the context window, a set of typed tools, and a control loop —
-extended by MCP tools, subagents, skills, hooks, and monitors.</li>
-<li>Level 2 wraps the agent in a verification loop: a grader checks each
-result against explicit success criteria, because stochastic output must
-be treated as a hypothesis, not an answer.</li>
-<li>Level 3 runs the verified agent on events and schedules; level 4
-feeds what actually happened back into the harness, where gains
-compound.</li>
-<li>Building on the open Model Context Protocol keeps tools portable
-across assistants and supports reproducibility.</li>
+<li>An agentic assistant runs tools and reads their output; a chat model
+only returns text.</li>
+<li>Treat every result as a hypothesis and check it against clear
+criteria before you accept it.</li>
 </ul>
 </div>
 </div>
@@ -765,7 +658,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-02-your-ai-coding-setup"><p>Content from <a href="02-your-ai-coding-setup.html">The measurement: Λ⁰ → p π⁻</a></p>
 <hr>
-<p>Last updated on 2026-07-14 |
+<p>Last updated on 2026-09-30 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/02-your-ai-coding-setup.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 20 minutes</p>
@@ -815,16 +708,17 @@ background?</li>
 <ul>
 <li>Compute m(p, π) by hand from the four momentum branches and the PDG
 masses.</li>
-<li>Sketch the expected spectrum — peak position, width scale,
-background shape — before touching data.</li>
+<li>Sketch the expected spectrum (peak position, width scale, background
+shape) before looking at data.</li>
 </ul>
 </div>
 </div>
 </div>
 </div>
 </div>
-<p>You install an assistant and the tool servers on the <a href="index.html#setup">Setup</a> page. This episode is the physics you will
-reconstruct in <a href="03-mcp-servers.html">Episode 3</a>.</p>
+<p>The <a href="index.html#setup">Setup</a> page covers the servers and the
+assistant. This episode describes the physics you reconstruct starting
+in <a href="03-mcp-servers.html">Episode 3</a>.</p>
 <section><h2 class="section-heading" id="the-decay">The decay<a class="anchor" aria-label="anchor" href="#the-decay"></a>
 </h2>
 <hr class="half-width">
@@ -872,8 +766,9 @@ GeV</strong>.</p>
 <div class="callout-content">
 <p>The Λ⁰ natural width (<span class="math inline">\(\Gamma = \hbar/\tau
 \approx 2.5 \times 10^{-6}\)</span> eV) is far below any detector
-effect. The observed peak width — a few MeV — measures <strong>detector
-momentum and angular resolution</strong>, not the particle.</p>
+effect. The observed peak width, a few MeV, measures the
+<strong>detector momentum and angular resolution</strong>, not the
+particle.</p>
 </div>
 </div>
 </div>
@@ -884,7 +779,7 @@ momentum and angular resolution</strong>, not the particle.</p>
 <p>Most proton–pion pairs do not come from a Λ⁰ at all. These random
 (“combinatorial”) pairs do not peak; they form a smooth distribution
 under the signal. The analysis extracts a yield by fitting a Gaussian
-peak on a low-order polynomial background (<a href="05-end-to-end-agents.html">Episode 5</a>). The charge-conjugate
+peak on top of a low-order polynomial background (<a href="05-end-to-end-agents.html">Episode 5</a>). The charge-conjugate
 mode Λ̄ → p̄ π⁺ is reconstructed identically with the antiparticles.</p>
 <div id="reference-values-pdg" class="callout">
 <div class="callout-square">
@@ -944,20 +839,6 @@ reconstructed charged tracks, and four members:</p>
 assigns each track. Select protons (<code>2212</code>) and π⁻
 (<code>-211</code>) for Λ⁰, antiprotons (<code>-2212</code>) and π⁺
 (<code>211</code>) for Λ̄.</p>
-<div id="caveat-pid-is-a-hypothesis-too" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="caveat-pid-is-a-hypothesis-too" class="callout-inner">
-<h3 class="callout-title">Caveat: PID is a hypothesis too</h3>
-<div class="callout-content">
-<p>The <code>PDG</code> field is the reconstruction’s best guess, not
-truth. Misidentification feeds the combinatorial background — one reason
-a fit, not a count, is required.</p>
-</div>
-</div>
-</div>
 <p>You do not download a file. In <a href="03-mcp-servers.html">Episode
 3</a> the assistant uses the <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><strong>rucio</strong></a>
 tools to find a DIS dataset and <a href="https://github.com/eic/xrootd-mcp-server" class="external-link"><strong>xrootd</strong></a>
@@ -965,7 +846,7 @@ to verify its files, then reads one of the dataset’s
 <code>root://</code> URLs
 (e.g. <code>root://epicxrd1.sdcc.bnl.gov:1095//...</code>) <strong>in
 place</strong> with the <a href="https://github.com/eic/uproot-mcp-server" class="external-link"><strong>uproot</strong></a>
-tools — pulling exactly these branches without writing any I/O code.</p>
+tools. It reads these branches without you writing any I/O code.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -974,12 +855,9 @@ tools — pulling exactly these branches without writing any I/O code.</p>
 <div class="callout-inner">
 <div class="callout-content">
 <ul>
-<li>The observable is the p π⁻ invariant mass; the Λ⁰ appears as a
-narrow peak over a combinatorial background.</li>
-<li>The peak width is set by detector resolution, not the negligible Λ⁰
-natural width.</li>
-<li>The data are EDM4eic collections in an <code>events</code> tree;
-momenta are in GeV.</li>
+<li>The Λ⁰ shows up as a peak at 1.1157 GeV in the proton–pion invariant
+mass.</li>
+<li>The peak width comes from detector resolution.</li>
 </ul>
 </div>
 </div>
@@ -990,7 +868,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-03-mcp-servers"><p>Content from <a href="03-mcp-servers.html">Tool servers and the Model Context Protocol (MCP)</a></p>
 <hr>
-<p>Last updated on 2026-07-16 |
+<p>Last updated on 2026-09-30 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/03-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 65 minutes</p>
@@ -1047,8 +925,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <h3 class="card-title">Questions</h3>
 <ul>
 <li>What is MCP, and what problem does it solve?</li>
-<li>What does the uproot server expose, and how is it sandboxed?</li>
-<li>How do you connect and drive a server?</li>
+<li>What can the EIC tool servers do?</li>
+<li>How do you connect an assistant to them?</li>
 </ul>
 </div>
 </div>
@@ -1058,7 +936,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
 <ul>
-<li>Bring the servers up, check them, and read a log when one misbehaves
+<li>Start the servers, check them, and read a server log when something
+fails
 (<code>eic-mcp up</code>/<code>status</code>/<code>logs</code>).</li>
 <li>Generate the connection file for your own client with
 <code>eic-mcp config</code>.</li>
@@ -1072,139 +951,45 @@ what.</li>
 </div>
 </div>
 </div>
-<section><h2 class="section-heading" id="the-interoperability-problem">The interoperability problem<a class="anchor" aria-label="anchor" href="#the-interoperability-problem"></a>
+<section><h2 class="section-heading" id="one-interface-for-tools">One interface for tools<a class="anchor" aria-label="anchor" href="#one-interface-for-tools"></a>
 </h2>
 <hr class="half-width">
 <p>Tools are the only way an assistant can act (<a href="01-why-genai-for-physics.html">Episode 1</a>). The <strong>Model
-Context Protocol (MCP)</strong> standardizes the interface: implement a
-tool once as a <strong>server</strong>, and any MCP-compliant
-<strong>client</strong> (the assistant) can use it.</p>
-<p>MCP is a client–server protocol over <strong>JSON-RPC 2.0</strong>. A
-server offers three object types — <strong>tools</strong> (callable
-functions), <strong>resources</strong> (readable data), and
-<strong>prompts</strong> (templated instructions). There are two
-transports: <strong>stdio</strong> (the client launches the server as a
-subprocess and talks to it over standard input/output) and
-<strong>streamable HTTP</strong> for servers reached over the network.
-The lesson’s servers run inside eic-shell and speak streamable HTTP on
-<code>127.0.0.1</code>.</p>
+Context Protocol (MCP)</strong> defines a standard interface for them:
+write a tool once as a <strong>server</strong>, and any
+<strong>client</strong> (assistant) that supports MCP can use it.</p>
+<p>The lesson’s servers run inside eic-shell, and the assistant talks to
+them over a local web address.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {EIC MCP data tools}
     accDescr: {EIC MCP data tools}
-    A["AI assistant&lt;br/&gt;opencode · Copilot · Cursor"]:::core &lt;--&gt;|"JSON-RPC / HTTP"| S["uproot tool server&lt;br/&gt;(MCP, in eic-shell)"]:::tool
+    A["AI assistant&lt;br/&gt;opencode · Copilot · Cursor"]:::core &lt;--&gt;|"MCP"| S["uproot tool server&lt;br/&gt;(MCP, in eic-shell)"]:::tool
     S &lt;--&gt;|"uproot"| F["EDM4eic ROOT file"]:::data
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef data fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;</code></pre>
-<div id="why-run-the-servers-inside-eic-shell" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="why-run-the-servers-inside-eic-shell" class="callout-inner">
-<h3 class="callout-title">Why run the servers inside eic-shell</h3>
-<div class="callout-content">
-<p>The servers reuse the container’s own <code>uproot</code>,
-<code>xrdfs</code>, and <code>rucio</code>, so dependencies are pinned
-and one environment runs both analysis and tools.
-<code>eic-mcp up</code> starts them as background HTTP services;
-<code>eic-mcp down</code> stops them. They hold no state between
-sessions.</p>
-</div>
-</div>
-</div>
 </section><section><h2 class="section-heading" id="the-uproot-tool-server">The uproot tool server<a class="anchor" aria-label="anchor" href="#the-uproot-tool-server"></a>
 </h2>
 <hr class="half-width">
 <p>The ePIC <a href="https://github.com/eic/uproot-mcp-server" class="external-link">uproot
-tool server</a> reads ROOT/EDM4eic files with <a href="reference.html">uproot</a> and returns <strong>JSON
-summaries</strong> — edges, counts, statistics, fit inputs — not raw
-arrays. One caveat: <code>get_file_structure</code> on an EDM4eic file
-lists all ~6,000 branches (megabytes of JSON); for schema questions
-<code>get_tree_info</code> is the compact choice. It exposes 15 tools in
-four groups:</p>
-<table class="table">
-<colgroup>
-<col width="33%">
-<col width="33%">
-<col width="33%">
-</colgroup>
-<thead><tr>
-<th>Group</th>
-<th>Representative tools</th>
-<th>Purpose</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>Inspection</td>
-<td>
-<code>get_file_structure</code>, <code>get_tree_info</code>,
-<code>get_branch_statistics</code>,
-<code>validate_dataset_schema</code>
-</td>
-<td>enumerate trees, branches, types, and summary statistics</td>
-</tr>
-<tr>
-<td>Single-file compute</td>
-<td>
-<code>histogram_branch</code>, <code>execute_kernel</code>
-</td>
-<td>histogram a branch; run sandboxed NumPy/awkward over branches</td>
-</tr>
-<tr>
-<td>Dataset (multi-file)</td>
-<td>
-<code>get_dataset_file_list</code>, <code>histogram_dataset</code>,
-<code>get_dataset_statistics</code>,
-<code>execute_kernel_dataset</code>,
-<code>estimate_dataset_cost</code>
-</td>
-<td>enumerate matching files, then accumulate operations across
-them</td>
-</tr>
-<tr>
-<td>Asynchronous jobs</td>
-<td>
-<code>submit_kernel_dataset</code>, <code>get_job_status</code>,
-<code>get_job_result</code>, <code>cancel_job</code>
-</td>
-<td>dispatch long dataset jobs and poll them</td>
-</tr>
-</tbody>
-</table>
-<div id="the-execution-sandbox" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="the-execution-sandbox" class="callout-inner">
-<h3 class="callout-title">The execution sandbox</h3>
-<div class="callout-content">
-<p><code>execute_kernel</code> runs client-supplied Python in a
-restricted environment: no <code>import</code>, no file or network I/O,
-only <code>np</code> (NumPy) and <code>ak</code> (awkward) in scope.
-Limits are enforced at compile time, and the code runs in a subprocess
-with a 30-second wall-clock limit.</p>
-</div>
-</div>
-</div>
+tool server</a> reads ROOT/EDM4eic files with <a href="reference.html">uproot</a>. It can list a file’s contents, compute
+statistics and histograms, and run short NumPy calculations over one
+file or a whole dataset. It returns small summaries (counts, bin edges,
+statistics) that you can check, not raw data. The calculations run in a
+sandbox that cannot install software or write files.</p>
 </section><section><h2 class="section-heading" id="start-the-servers">Start the servers<a class="anchor" aria-label="anchor" href="#start-the-servers"></a>
 </h2>
 <hr class="half-width">
-<p>Start the servers from inside eic-shell (the first run bootstraps
-them automatically — see <a href="index.html#setup">Setup</a>):</p>
+<p>Start the servers inside eic-shell (see <a href="index.html#setup">Setup</a>):</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">$</span> eic-mcp up</span></code></pre>
 </div>
-<p>This launches the uproot, xrootd, and rucio servers as MCP-over-HTTP
-endpoints on <code>127.0.0.1</code>, ports <code>9101</code>,
-<code>9102</code>, <code>9103</code>. Stop them with
-<code>eic-mcp down</code>; <code>eic-mcp status</code> shows what is
-listening, and <code>eic-mcp logs xrootd</code> tails a server’s log
-when something misbehaves. The assistant connects to those URLs.</p>
+<p>This starts the uproot, xrootd, and rucio servers.
+<code>eic-mcp status</code> shows which are running, and
+<code>eic-mcp logs uproot</code> shows a server’s log.</p>
 <div id="if-rucio-answers-but-xrootduproot-time-out" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -1214,173 +999,74 @@ when something misbehaves. The assistant connects to those URLs.</p>
 <h3 class="callout-title">If rucio answers but xrootd/uproot time
 out</h3>
 <div class="callout-content">
-<p>The rucio catalog and the data store are different services. If
-dataset queries work but every file access hangs, the XRootD store may
-be temporarily down — check with
-<code>xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO</code>
-(inside eic-shell) and retry later. Your setup is fine; the store isn’t
-answering.</p>
-<p>Current campaigns (25.12.0 onward) are served from BNL disk, which is
-what <code>eic-mcp</code> points the xrootd server at by default. Older
-campaigns (up to 25.10.x) live on the JLab store instead — browse those
-with
-<code>XROOTD_SERVER=root://dtn-eic.jlab.org XROOTD_BASE_DIR=/volatile/eic/EPIC eic-mcp restart</code>
-(a plain <code>up</code> skips servers that are already running, so the
-new setting would never take effect). Either way, <code>rucio</code>
-replicas always tell you where a file really is.</p>
-<p>If instead <em>every</em> uproot call starts timing out after one big
-one, the server is <strong>busy, not broken</strong>: it handles one
-request at a time, and a call your client gave up on is still running.
-Wait a minute, or clear it with
-<code>EIC_MCP_SERVERS=uproot eic-mcp restart</code>. Do not let the
-assistant “work around” it by installing packages or reading the file
-itself — <code>AGENTS.md</code> (Episode 4) forbids exactly that.</p>
+<p>If dataset queries work but file access hangs, the XRootD store may
+be down; check with
+<code>xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO</code>.</p>
+<p>The default store (BNL) has campaigns from 25.12.0. For older ones
+(up to 25.10.x) use JLab:
+<code>XROOTD_SERVER=root://dtn2304.jlab.org:8443 XROOTD_BASE_DIR=/jlab-osdf-ro/eic/EPIC/volatile eic-mcp restart</code>.</p>
+<p>If every uproot call times out after one large call, the server is
+busy, not broken: it handles one request at a time. Wait, or run
+<code>EIC_MCP_SERVERS=uproot eic-mcp restart</code>.</p>
 </div>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="connect-the-assistant">Connect the assistant<a class="anchor" aria-label="anchor" href="#connect-the-assistant"></a>
 </h2>
 <hr class="half-width">
-<p>opencode reads its server list from a JSON config. In the directory
-where you will launch opencode, one command writes it:</p>
+<p>Write opencode’s config file in the directory where you start
+opencode, then start it:</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-mcp config opencode</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-mcp config opencode</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="ex">$</span> opencode</span></code></pre>
 </div>
-<p>The file it writes, <code>opencode.jsonc</code>, is just the three
-server URLs — print it with <code>eic-mcp config opencode -</code>
-(committed as the example <a href="https://github.com/eic/tutorial-mcp/blob/main/files/mcp-config/opencode.jsonc" class="external-link"><code>files/mcp-config/opencode.jsonc</code></a>):</p>
-<div class="codewrapper sourceCode" id="cb4">
-<h3 class="code-label">JSON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode json" tabindex="0"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="fu">{</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a>  <span class="dt">"$schema"</span><span class="fu">:</span> <span class="st">"https://opencode.ai/config.json"</span><span class="fu">,</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a>  <span class="dt">"mcp"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1" aria-label="code-block-4-4"></a>    <span class="dt">"uproot"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9101/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">},</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1" aria-label="code-block-4-5"></a>    <span class="dt">"xrootd"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9102/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">},</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1" aria-label="code-block-4-6"></a>    <span class="dt">"rucio"</span><span class="fu">:</span>  <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"remote"</span><span class="fu">,</span> <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"http://127.0.0.1:9103/mcp"</span><span class="fu">,</span> <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">}</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1" aria-label="code-block-4-7"></a>  <span class="fu">}</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1" aria-label="code-block-4-8"></a><span class="fu">}</span></span></code></pre>
-</div>
-<p>Within a session, <code>/mcp</code> lists the connected servers and
+<p>In the session, <code>/mcp</code> lists the connected servers and
 their tools.</p>
-<div id="other-clients-point-at-the-same-urls" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="other-clients-point-at-the-same-urls" class="callout-inner">
-<h3 class="callout-title">Other clients point at the same URLs</h3>
-<div class="callout-content">
-<p>The HTTP endpoints work with any MCP client, and
-<code>eic-mcp config &lt;client&gt;</code> writes the file where that
-client reads it:</p>
-<div class="codewrapper sourceCode" id="cb5">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="ex">$</span> eic-mcp config claude    <span class="co"># Claude Code (.mcp.json) — likewise copilot, vscode, cursor, gemini, codex</span></span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<div id="which-side-am-i-on" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="which-side-am-i-on" class="callout-inner">
-<h3 class="callout-title">Which side am I on?</h3>
-<div class="callout-content">
-<p>Only the <strong>servers</strong> need eic-shell — they use the
-container’s <code>uproot</code>, <code>xrdfs</code>, and signed-in
-<code>rucio</code>. The <strong>client</strong> just talks to
-<code>http://127.0.0.1:910x/mcp</code>, so run it where you normally
-work, and put its config in the directory you launch it from.</p>
-<ul>
-<li>
-<strong>Linux and Windows/WSL:</strong> the same URLs work inside
-and outside the container.</li>
-<li>
-<strong>macOS:</strong> you published the ports in <a href="index.html#setup">Setup</a>; on the Mac itself, copy
-<code>files/mcp-config/opencode.jsonc</code> rather than running
-<code>eic-mcp config</code> (it needs the container).</li>
-<li>
-<strong>Can’t install a client?</strong> eic-shell ships
-<code>claude</code> and <code>copilot</code> — run one <em>inside</em>
-it.</li>
-</ul>
-</div>
-</div>
-</div>
+<p>Other clients use the same URLs: <code>eic-mcp config claude</code>
+(or <code>copilot</code>, <code>vscode</code>, <code>cursor</code>,
+<code>gemini</code>, <code>codex</code>) writes the file where that
+client reads it.</p>
 </section><section><h2 class="section-heading" id="finding-the-data-with-mcp">Finding the data with MCP<a class="anchor" aria-label="anchor" href="#finding-the-data-with-mcp"></a>
 </h2>
 <hr class="half-width">
-<p>You never download a dataset. The other two MCP servers let the
-assistant find and verify the real files — replacing the manual
-<code>rucio</code> + <code>xrdfs</code> recipe — and
-<code>uproot-mcp</code> then reads them straight from the store.</p>
+<p>You do not download a dataset. The other two MCP servers let the
+assistant find and verify the files, in place of running
+<code>rucio</code> and <code>xrdfs</code> by hand, and
+<code>uproot-mcp</code> then reads them directly from the store.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {EIC MCP data tools}
     accDescr: {EIC MCP data tools}
-    R["rucio-mcp&lt;br/&gt;list_dids · list_files · list_file_replicas"]:::tool --&gt;|"DID + root:// replica URLs"| X["xrootd-mcp&lt;br/&gt;list_datasets · check_file_exists · get_dataset_event_statistics"]:::tool
-    X --&gt;|"verified root:// paths"| U["uproot-mcp&lt;br/&gt;analyze in place"]:::core
+    R["rucio-mcp&lt;br/&gt;find the dataset"]:::tool --&gt;|"file locations"| X["xrootd-mcp&lt;br/&gt;check the files"]:::tool
+    X --&gt;|"checked files"| U["uproot-mcp&lt;br/&gt;analyze in place"]:::core
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;</code></pre>
 <ul>
 <li>
 <strong><a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>rucio-mcp</code></a></strong>
-queries the data-management catalog: <code>list_dids</code> finds the
-dataset identifier (DID) by name, <code>get_did_metadata</code> and
-<code>list_files</code> describe its contents,
-<code>list_file_replicas</code> returns the physical
-<code>root://</code> locations.</li>
+searches the data catalog: it finds a dataset by name, lists its files,
+and gives their <code>root://</code> locations.</li>
 <li>
 <strong><a href="https://github.com/eic/xrootd-mcp-server" class="external-link"><code>xrootd-mcp</code></a></strong>
-works directly on the store: <code>list_campaigns</code> /
-<code>list_datasets</code> browse it, <code>list_directory</code> and
-<code>check_file_exists</code> enumerate and verify files, and
-<code>get_dataset_event_statistics</code> reports total events across a
-dataset.</li>
+browses the data store and checks that the files exist.</li>
 </ul>
-<p>rucio tells you <em>what</em> the dataset is and <em>where</em> its
-replicas live, xrootd confirms the files are there, and
-<code>uproot-mcp</code> reads a <code>root://</code> URL <strong>in
-place</strong>.</p>
-<div id="rucio-works-automatically-no-key" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="rucio-works-automatically-no-key" class="callout-inner">
-<h3 class="callout-title">rucio works automatically — no key</h3>
-<div class="callout-content">
-<p>Inside eic-shell, <code>rucio-mcp</code> signs in to the
-authenticated catalog with the shared, read-only <code>eicread</code>
-account. No password or grid proxy. The xrootd path is public, so to
-only <em>browse</em> the store you can use <code>xrootd-mcp</code>
-alone.</p>
-</div>
-</div>
-</div>
+<p><code>uproot-mcp</code> then reads a <code>root://</code> file
+<strong>in place</strong>.</p>
 </section><section><h2 class="section-heading" id="list-the-available-campaigns">List the available campaigns<a class="anchor" aria-label="anchor" href="#list-the-available-campaigns"></a>
 </h2>
 <hr class="half-width">
-<p>ePIC data is organized by <strong>production campaign</strong> — a
-version such as <code>26.06.0</code> — together with the beam/target and
-physics, all encoded in the rucio DID
+<p>ePIC data is organized by <strong>production campaign</strong>, a
+version such as <code>26.06.0</code>. The campaign, the beam/target, and
+the physics process are all part of the rucio DID
 (e.g. <code>epic:/RECO/26.06.0/epic_craterlake/DIS/pythia8.316-1.0/NC/noRad/ep/18x275/...</code>).
 Before locating a specific dataset, check which campaigns exist so you
 use a current one:</p>
 <pre class="ai-prompt"><code>Using the rucio tools, find which production campaigns are available (the version field in the DIDs, e.g. 26.06.0) and show the most recent few.</code></pre>
-<p>The assistant calls <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>list_dids</code></a>
-on scope <code>epic</code> and groups the DIDs by their campaign
-component. Watch how it does this: the catalog holds thousands of DIDs
-and the pages are not sorted newest-first, so sampling one page can miss
-the current campaigns entirely. Narrowing with a version wildcard
-(<code>/RECO/26.*</code>) — or one call to the <code>xrootd</code>
-server’s <code>list_campaigns</code> — gives the honest answer.</p>
+<p>Watch how the assistant does this: the catalog holds thousands of
+datasets in no particular order, so looking at only the first page of
+results can miss the newest campaigns.</p>
 <div id="exercise-locate-a-dataset-10-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
@@ -1389,8 +1075,7 @@ server’s <code>list_campaigns</code> — gives the honest answer.</p>
 <div id="exercise-locate-a-dataset-10-min" class="callout-inner">
 <h3 class="callout-title">Exercise: locate a dataset (≈ 10 min)</h3>
 <div class="callout-content">
-<p>With <code>rucio</code> and <code>xrootd</code> connected (no
-credentials — see the callout), ask your assistant:</p>
+<p>Ask your assistant:</p>
 <pre class="ai-prompt"><code>Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu ep 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.</code></pre>
 </div>
 </div>
@@ -1400,19 +1085,13 @@ credentials — see the callout), ask your assistant:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
-<p>The assistant calls <code>list_scopes</code>/<code>list_dids</code>
-(scope <code>epic</code>, narrowing by a name glob on the campaign and
-beam/target) to find the DID, <code>list_files</code> to enumerate it
-(374 files), and <code>list_file_replicas</code> for the
-<code>root://</code> URLs. It then switches to <code>xrootd-mcp</code>
-(<code>list_directory_filtered</code>, <code>check_file_exists</code>)
-to verify the files. For the event total: rucio does not store event
-counts, and scanning all 374 files would take an hour — so a sensible
-assistant checks a few files (≈ 1,220 events each) and extrapolates. The
-DID is <em>discovered</em> with <code>list_dids</code>, not hard-coded —
-what you want when campaign names change.</p>
+<p>The assistant finds the dataset with rucio (374 files), gets their
+<code>root://</code> locations, and checks them with xrootd. rucio does
+not store event counts, and reading all 374 files would take an hour, so
+a good answer checks a few files (≈ 1,220 events each) and
+extrapolates.</p>
 </div>
 </div>
 </div>
@@ -1420,11 +1099,11 @@ what you want when campaign names change.</p>
 </section><section><h2 class="section-heading" id="inspect-the-dataset">Inspect the dataset<a class="anchor" aria-label="anchor" href="#inspect-the-dataset"></a>
 </h2>
 <hr class="half-width">
-<p>You say what you want in plain language and the assistant makes the
-matching tool calls. Take one of the <code>root://</code> URLs from the
-previous exercise — written below as
-<code>root://epicxrd1.sdcc.bnl.gov:1095//…</code> — and analyze it
-<strong>in place</strong>.</p>
+<p>You describe what you want in plain language and the assistant makes
+the tool calls. Take one of the <code>root://</code> URLs from the
+previous exercise (written below as
+<code>root://epicxrd1.sdcc.bnl.gov:1095//…</code>) and analyze it in
+place.</p>
 <div id="exercise-enumerate-the-schema-10-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
@@ -1443,12 +1122,10 @@ previous exercise — written below as
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
-<p>The assistant calls <code>get_tree_info</code> on the
-<code>events</code> tree (not the full <code>get_file_structure</code>
-dump, which runs to megabytes on an EDM4eic file) and reports something
-like:</p>
+<p>The assistant reads the structure of the <code>events</code> tree and
+reports something like:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -1462,9 +1139,8 @@ ReconstructedChargedParticles collection:
   ReconstructedChargedParticles.momentum.z   float[]   p_z [GeV]
   … energy, charge, mass, type, referencePoint.*, covMatrix.*</code></pre>
 </div>
-<p>The names are read from the file, not inferred — eliminating the
-schema-hallucination failure mode from Episode 1. These <em>are</em> the
-branches you’re looking for.</p>
+<p>The names are read from the file, not guessed, so the assistant
+cannot invent branch names.</p>
 </div>
 </div>
 </div>
@@ -1488,13 +1164,10 @@ min)</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
-<p>The assistant calls <code>histogram_branch</code>, setting the bins
-and range so each integer code gets its own bin (the default
-auto-binning would merge neighbouring codes, e.g. 0 and 11). The
-distribution is discrete — spikes at the PDG codes present. Counting
-over a reconstructed-DIS file gives, for example:</p>
+<p>The assistant makes a histogram with one bin per PDG code. A
+reconstructed-DIS file gives, for example:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -1512,10 +1185,10 @@ over a reconstructed-DIS file gives, for example:</p>
 <figure><img src="../fig/pdg_species.svg" alt="Bar histogram of reconstructed charged-particle PDG codes in the file, with pions dominating and protons rare" class="figure mx-auto d-block"><div class="figcaption">Reconstructed charged-particle species in the
 file</div>
 </figure><p>Pions dominate; <strong>protons are rare</strong> (≈ 2%), so the Λ⁰
-signal will be small. A sizeable fraction of tracks carry <strong>no
-PID</strong> (code 0) or a wrong one — misidentification that feeds the
-combinatorial background and is why we <em>fit</em> the peak rather than
-count it.</p>
+signal will be small. A sizeable fraction of tracks have <strong>no
+PID</strong> (code 0) or a wrong one. This misidentification adds to the
+combinatorial background, which is why we fit the peak instead of
+counting it.</p>
 </div>
 </div>
 </div>
@@ -1528,49 +1201,18 @@ count it.</p>
 <div id="verify-the-returned-quantities" class="callout-inner">
 <h3 class="callout-title">Verify the returned quantities</h3>
 <div class="callout-content">
-<p>Inspect the returned numbers — bin edges, counts, statistics: do the
+<p>Look at the returned numbers (bin edges, counts, statistics). Do the
 PDG peaks fall at physical codes, and are the proton and pion yields
 plausible? <a href="04-skills.html">Episode 4</a> turns this into
 explicit success criteria.</p>
 </div>
 </div>
 </div>
-</section><section><h2 class="section-heading" id="one-data-model-several-access-paths">One data model, several access paths<a class="anchor" aria-label="anchor" href="#one-data-model-several-access-paths"></a>
-</h2>
-<hr class="half-width">
-<p>ePIC data follow the <strong>PODIO</strong> model (EDM4eic): an
-<code>events</code> tree whose branches are per-event collections such
-as <code>ReconstructedChargedParticles</code> and
-<code>MCParticles</code>. We read it with <strong>uproot</strong>
-because that needs only eic-shell — no compiled framework. uproot is one
-of several equivalent access paths.</p>
-<div id="equivalent-implementations" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="equivalent-implementations" class="callout-inner">
-<h3 class="callout-title">Equivalent implementations</h3>
-<div class="callout-content">
-<p>The same Λ⁰ peak comes out of:</p>
-<ul>
-<li>
-<strong>ROOT RDataFrame</strong> — declarative, columnar,
-parallel;</li>
-<li>
-<strong>ROOT TTreeReader</strong> — an explicit event loop;</li>
-<li>
-<strong>bare uproot</strong> — Python with no tool server; and</li>
-<li>
-<strong>the PODIO Frame API</strong> — the native interface.</li>
-</ul>
-<p>Worked implementations of each are in <a href="analysis-approaches.html">Alternative analysis approaches</a>.</p>
-</div>
-</div>
-</div>
-<p>The assistant can now query the data through a verifiable interface.
-The next episode captures this procedure as a reusable, versioned
-<strong>skill</strong>.</p>
+<p>The same Λ⁰ peak can be obtained without MCP, with ROOT RDataFrame,
+TTreeReader, plain uproot, or the PODIO Frame API; scripts are in <a href="https://github.com/eic/tutorial-mcp/tree/main/extras" class="external-link"><code>extras/</code></a>.</p>
+<p>The assistant can now query the data through tools whose output you
+can check. The next episode writes this procedure down as a reusable,
+versioned <strong>skill</strong>.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -1579,20 +1221,11 @@ The next episode captures this procedure as a reusable, versioned
 <div class="callout-inner">
 <div class="callout-content">
 <ul>
-<li>MCP is a JSON-RPC client–server protocol; a server exposes tools,
-resources, and prompts to any compliant client.</li>
-<li>The uproot server returns compact, JSON-serializable summaries
-rather than raw arrays, which keeps results inspectable.</li>
+<li>MCP servers give an assistant tools; any MCP assistant can use
+them.</li>
 <li>
-<code>execute_kernel</code> runs client-supplied Python in a
-restricted sandbox: no imports or I/O, only NumPy/awkward, with a
-timeout.</li>
-<li>The servers run inside eic-shell (<code>eic-mcp up</code>) and speak
-streamable HTTP; opencode and other clients connect to the same
-<code>127.0.0.1</code> URLs
-(<code>eic-mcp config &lt;client&gt;</code>).</li>
-<li>PODIO/uproot is one access path; RDataFrame, TTreeReader, and bare
-uproot give the same result (see the extras).</li>
+<code>eic-mcp up</code> starts the servers in eic-shell and
+<code>eic-mcp config opencode</code> connects opencode.</li>
 </ul>
 </div>
 </div>
@@ -1603,7 +1236,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-04-skills"><p>Content from <a href="04-skills.html">Persisting instructions: AGENTS.md and SKILL.md</a></p>
 <hr>
-<p>Last updated on 2026-07-16 |
+<p>Last updated on 2026-09-30 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/04-skills.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 50 minutes</p>
@@ -1660,7 +1293,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <h3 class="card-title">Questions</h3>
 <ul>
 <li>How do you give an assistant durable project context?</li>
-<li>AGENTS.md vs SKILL.md — when to use each?</li>
+<li>AGENTS.md or SKILL.md: when to use each?</li>
 <li>How do you make every tool read the same rules?</li>
 <li>What’s in a usable SKILL.md for the Λ⁰ fit?</li>
 </ul>
@@ -1685,19 +1318,18 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <section><h2 class="section-heading" id="two-ways-to-make-instructions-persistent">Two ways to make instructions persistent<a class="anchor" aria-label="anchor" href="#two-ways-to-make-instructions-persistent"></a>
 </h2>
 <hr class="half-width">
-<p>Typing requests (Episode 3) does not scale: you re-explain the data
-model, conventions, and procedure every session, and nothing keeps two
-runs the same. Two file-based mechanisms fix this.</p>
+<p>Typed requests (Episode 3) have to repeat the data model,
+conventions, and procedure every session, and two runs can differ. Two
+kinds of file solve this.</p>
 <ul>
 <li>
-<strong><code>AGENTS.md</code></strong> — always-on
-<strong>context</strong>, read at the start of every session:
-environment, data model, conventions, and what “done” means.</li>
+<strong><code>AGENTS.md</code></strong>: <strong>context</strong>
+read at the start of every session: environment, data model,
+conventions, and what “done” means.</li>
 <li>
-<strong><code>SKILL.md</code></strong> — an on-demand
-<strong>procedure</strong> in a named skill directory, loaded only when
-a request matches its description. It encodes one repeatable
-workflow.</li>
+<strong><code>SKILL.md</code></strong>: a <strong>procedure</strong>
+in a named skill directory, loaded only when a request matches its
+description. It describes one repeatable workflow.</li>
 </ul>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
@@ -1713,7 +1345,7 @@ flowchart TD
 <p><code>AGENTS.md</code> answers “what is this project and how do we
 work here?”; a <code>SKILL.md</code> answers “how do I carry out
 <em>this</em> task?”.</p>
-</section><section><h2 class="section-heading" id="agents-md-project-context">AGENTS.md — project context<a class="anchor" aria-label="anchor" href="#agents-md-project-context"></a>
+</section><section><h2 class="section-heading" id="agents-md-project-context">AGENTS.md: project context<a class="anchor" aria-label="anchor" href="#agents-md-project-context"></a>
 </h2>
 <hr class="half-width">
 <p><code>AGENTS.md</code> is plain Markdown at your project root
@@ -1734,7 +1366,7 @@ bridge (next section).</p>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1" aria-label="code-block-2-7"></a><span class="fu">## Environment</span></span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1" aria-label="code-block-2-8"></a><span class="ss">- </span>Everything runs inside eic-shell; the MCP servers are started with <span class="in">`eic-mcp up`</span>.</span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1" aria-label="code-block-2-9"></a><span class="ss">- </span>Data lives on the grid: find a DIS dataset with the <span class="in">`rucio`</span> tools and read its</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1" aria-label="code-block-2-10"></a>  root:// files in place with <span class="in">`uproot`</span> — no download.</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1" aria-label="code-block-2-10"></a>  root:// files in place with <span class="in">`uproot`</span>. Do not download.</span>
 <span id="cb2-11"><a href="#cb2-11" tabindex="-1" aria-label="code-block-2-11"></a></span>
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1" aria-label="code-block-2-12"></a><span class="fu">## Tools</span></span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1" aria-label="code-block-2-13"></a><span class="ss">- </span>Use the <span class="in">`rucio`</span> MCP server (list_dids, list_files, list_file_replicas) to locate</span>
@@ -1772,9 +1404,8 @@ bridge (next section).</p>
 <span id="cb2-45"><a href="#cb2-45" tabindex="-1" aria-label="code-block-2-45"></a><span class="ss">- </span>Fitted peak within a few MeV of 1.115683 GeV and chi2/ndf of order 1.</span>
 <span id="cb2-46"><a href="#cb2-46" tabindex="-1" aria-label="code-block-2-46"></a><span class="ss">- </span>Always run the fit and check these before reporting a result.</span></code></pre>
 </div>
-<p>This encodes the schema, the tool policy (use the server, not
-hand-written I/O), the conventions, and an explicit definition of
-done.</p>
+<p>It records the schema, the tool policy (use the server, not
+hand-written I/O), the conventions, and a definition of done.</p>
 <div id="two-rules-for-a-useful-agents.md" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -1785,15 +1416,15 @@ done.</p>
 <div class="callout-content">
 <ul>
 <li>
-<strong>Keep it short.</strong> It is loaded on every turn, so
-length costs tokens and dilutes attention. Write only what the model
-cannot infer from the code.</li>
+<strong>Keep it short.</strong> It is loaded on every turn, so every
+line costs tokens. Write only what the model cannot infer from the
+code.</li>
 <li>
 <strong>Describe concepts, not file paths.</strong> “The
 reconstructed tracks are in the
-<code>ReconstructedChargedParticles</code> collection” ages well; a path
-like <code>src/old/lambda_v2.py</code> does not — paths move, and the
-model then searches confidently in the wrong place.</li>
+<code>ReconstructedChargedParticles</code> collection” stays true; a
+path like <code>src/old/lambda_v2.py</code> goes stale, and the model
+then searches in the wrong place.</li>
 </ul>
 </div>
 </div>
@@ -1801,25 +1432,21 @@ model then searches confidently in the wrong place.</li>
 </section><section><h2 class="section-heading" id="one-source-of-truth-bridge-files">One source of truth: bridge files<a class="anchor" aria-label="anchor" href="#one-source-of-truth-bridge-files"></a>
 </h2>
 <hr class="half-width">
-<p>Not every tool reads <code>AGENTS.md</code>. Most modern ones do —
-opencode, Codex, Gemini CLI, Zed — but some look for their own filename
-and silently ignore it: GitHub Copilot reads
+<p>opencode, Codex, Gemini CLI, and Zed read <code>AGENTS.md</code>.
+Some tools read only their own file: GitHub Copilot reads
 <code>copilot-instructions.md</code>, Cursor reads
-<code>.cursorrules</code>. A project with only an <code>AGENTS.md</code>
-runs such a tool with no context and no warning.</p>
-<p>Don’t copy your rules into a second file; two copies drift within a
-week. <strong>Keep the standard in the center and let each tool read
-from it</strong>: the tool-specific file becomes a one-line
-<em>bridge</em> pointing at <code>AGENTS.md</code>.</p>
-<p><code>.github/copilot-instructions.md</code> (GitHub Copilot) — and
-<code>.cursorrules</code> (Cursor) — are one line:</p>
+<code>.cursorrules</code>. Without it they run with no context and no
+warning.</p>
+<p>Do not copy your rules into a second file; the copies will diverge.
+Make the tool-specific file a one-line <em>bridge</em> to
+<code>AGENTS.md</code>. <code>.github/copilot-instructions.md</code>
+(Copilot) and <code>.cursorrules</code> (Cursor) contain:</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a>Follow the project rules in AGENTS.md.</span></code></pre>
 </div>
-<p>Now every assistant reads the same source of truth. Copy the
-ready-made bridge: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md" class="external-link"><code>copilot-instructions.md</code></a>.</p>
+<p>The bridge file is in the repository: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md" class="external-link"><code>copilot-instructions.md</code></a>.</p>
 </section><section><h2 class="section-heading" id="skill-md-a-named-procedure">SKILL.md — a named procedure<a class="anchor" aria-label="anchor" href="#skill-md-a-named-procedure"></a>
 </h2>
 <hr class="half-width">
@@ -1832,15 +1459,13 @@ ready-made bridge: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a>  <span class="ex">lambda-fit/</span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a>    <span class="ex">SKILL.md</span>              specification: applicability, inputs, steps, success criteria</span></code></pre>
 </div>
-<p>The procedure runs by driving the MCP tools (build the histogram with
-the uproot kernel, fit the Gaussian + polynomial in the same sandbox),
-so it needs no bundled scripts.</p>
-<p>The YAML frontmatter carries a <code>name</code> and a
-<code>description</code>. The <code>description</code> is the part that
-matters: the client matches your request against it to decide whether to
-load the skill. <strong>Only the name and description stay in
-context</strong> — the body is read in <em>only when</em> the
-description matches.</p>
+<p>The procedure only uses the MCP tools, so it needs no scripts of its
+own.</p>
+<p>The YAML frontmatter has a <code>name</code> and a
+<code>description</code>. The client matches your request against the
+<code>description</code> to decide whether to load the skill.
+<strong>Only the name and description stay in context</strong>; the body
+is read only when the description matches.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -1901,16 +1526,14 @@ description matches.</p>
 <p>opencode reads skills from
 <code>.opencode/skills/&lt;name&gt;/SKILL.md</code> in the project
 directory (or <code>~/.config/opencode/skills/</code> for all projects);
-Claude Code uses <code>.claude/skills/</code>. A soft link to the
-tutorial’s copy keeps it current:</p>
+Claude Code uses <code>.claude/skills/</code>. Download the lesson’s
+copy:</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> .opencode/skills</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a><span class="fu">ln</span> <span class="at">-s</span> ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> <span class="at">--create-dirs</span> <span class="at">-o</span> .opencode/skills/lambda-fit/SKILL.md <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a>  https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills/lambda-fit/SKILL.md</span></code></pre>
 </div>
-<p>(<code>~/tutorial-mcp</code> is where <a href="index.html#setup">Setup</a>
-cloned this lesson’s repository.)</p>
 <p>Loading is the model’s decision, based on the skill’s
 <code>description</code>. A small model may answer without loading it,
 so every prompt in this lesson names the skill: “Using the lambda-fit
@@ -1920,72 +1543,8 @@ from <code>AGENTS.md</code> instead.</p>
 </div>
 </div>
 <p>Get both example files in place: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md" class="external-link"><code>files/skills/AGENTS.md</code></a>
-(copy it to your analysis directory) and <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md" class="external-link"><code>files/skills/lambda-fit/SKILL.md</code></a>
-(link it as above).</p>
-</section><section><h2 class="section-heading" id="when-to-use-which">When to use which<a class="anchor" aria-label="anchor" href="#when-to-use-which"></a>
-</h2>
-<hr class="half-width">
-<table class="table">
-<colgroup>
-<col width="50%">
-<col width="50%">
-</colgroup>
-<thead><tr>
-<th>Question</th>
-<th>Mechanism</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>“What is this project, and how do we work here?”</td>
-<td>
-<code>AGENTS.md</code> (always loaded)</td>
-</tr>
-<tr>
-<td>“How do I perform <em>this</em> specific task?”</td>
-<td>a <code>SKILL.md</code> (loaded on demand)</td>
-</tr>
-<tr>
-<td>“What must every result satisfy?”</td>
-<td>success criteria — in both, but enforced by the skill</td>
-</tr>
-</tbody>
-</table>
-<p><code>AGENTS.md</code> sets standing context; the skill executes a
-procedure within it.</p>
-<div id="why-this-is-efficient-context-economy" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="why-this-is-efficient-context-economy" class="callout-inner">
-<h3 class="callout-title">Why this is efficient: context economy</h3>
-<div class="callout-content">
-<p>The context window is finite, and everything in it costs tokens on
-every turn.</p>
-<ul>
-<li>
-<strong><code>AGENTS.md</code> is loaded in full, every
-turn.</strong> Keep it short and high-signal — every line is paid for on
-every request.</li>
-<li>
-<strong>A skill loads progressively.</strong> Only its
-<code>name</code> and one-line <code>description</code> stay in context;
-the body is read <em>only when</em> a request matches. You can install
-dozens of detailed skills, and none occupies the window until
-needed.</li>
-</ul>
-<p>Put small, always-relevant facts in <code>AGENTS.md</code>; put
-detailed, occasional procedures in skills.</p>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="why-the-success-criteria-matter">Why the success criteria matter<a class="anchor" aria-label="anchor" href="#why-the-success-criteria-matter"></a>
-</h2>
-<hr class="half-width">
-<p>Explicit acceptance tests in the skill — peak position, width, <span class="math inline">\(\chi^2/\text{ndf}\)</span> — turn “the assistant
-said it worked” into “the result passed stated, checkable conditions.”
-Recording the tool calls and dataset makes the run reproducible and
-auditable.</p>
+(download it to your analysis directory) and <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md" class="external-link"><code>files/skills/lambda-fit/SKILL.md</code></a>
+(download it as above).</p>
 </section><section><h2 class="section-heading" id="your-project-layout">Your project layout<a class="anchor" aria-label="anchor" href="#your-project-layout"></a>
 </h2>
 <hr class="half-width">
@@ -1998,27 +1557,11 @@ auditable.</p>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1" aria-label="code-block-7-3"></a><span class="ex">├──</span> .github/</span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1" aria-label="code-block-7-4"></a><span class="ex">│</span>   └── copilot-instructions.md      <span class="co"># points to AGENTS.md   (bridge for Copilot)</span></span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1" aria-label="code-block-7-5"></a><span class="ex">├──</span> .cursorrules                     <span class="co"># points to AGENTS.md   (bridge for Cursor)</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1" aria-label="code-block-7-6"></a><span class="ex">├──</span> opencode.jsonc                   <span class="co"># MCP server connections — `eic-mcp config opencode` (Episode 3)</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1" aria-label="code-block-7-6"></a><span class="ex">├──</span> opencode.jsonc                   <span class="co"># MCP server connections: `eic-mcp config opencode` (Episode 3)</span></span>
 <span id="cb7-7"><a href="#cb7-7" tabindex="-1" aria-label="code-block-7-7"></a><span class="ex">└──</span> .opencode/</span>
 <span id="cb7-8"><a href="#cb7-8" tabindex="-1" aria-label="code-block-7-8"></a>    <span class="ex">└──</span> skills/</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1" aria-label="code-block-7-9"></a>        <span class="ex">└──</span> lambda-fit/              <span class="co"># soft link to the tutorial's copy (see callout above;</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1" aria-label="code-block-7-9"></a>        <span class="ex">└──</span> lambda-fit/              <span class="co"># downloaded from the lesson (see callout above;</span></span>
 <span id="cb7-10"><a href="#cb7-10" tabindex="-1" aria-label="code-block-7-10"></a>            <span class="ex">└──</span> SKILL.md             <span class="co">#  `.claude/skills/` for Claude Code)</span></span></code></pre>
-</div>
-<div id="the-golden-rule" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="the-golden-rule" class="callout-inner">
-<h3 class="callout-title">The golden rule</h3>
-<div class="callout-content">
-<p>Write each instruction once, in the shared open format —
-<code>AGENTS.md</code> for context, <code>SKILL.md</code> for
-procedures, <code>opencode.jsonc</code> for tool connections — then
-point any tool-specific file at it. Never keep duplicate rule files.
-<em>Standards in the center, tools at the edges.</em></p>
-</div>
-</div>
 </div>
 <div id="exercise-a-summary-skill-10-min" class="callout challenge">
 <div class="callout-square">
@@ -2067,7 +1610,7 @@ on a file from Episode 3.</p>
 <span id="cb8-21"><a href="#cb8-21" tabindex="-1" aria-label="code-block-8-21"></a>rather than guessing.</span></code></pre>
 </div>
 <p>Save it as <code>.opencode/skills/edm4eic-summary/SKILL.md</code> and
-name it in the prompt (“Using the edm4eic-summary skill, …”) — a small
+name it in the prompt (“Using the edm4eic-summary skill, …”); a small
 model may not load it from the description alone.</p>
 </div>
 </div>
@@ -2104,9 +1647,9 @@ pairs.</p>
 <span id="cb9-4"><a href="#cb9-4" tabindex="-1" aria-label="code-block-9-4"></a>proton-pion candidate pairs entering the histogram, so the run can be</span>
 <span id="cb9-5"><a href="#cb9-5" tabindex="-1" aria-label="code-block-9-5"></a>reproduced.</span></code></pre>
 </div>
-<p>The pair count comes for free: have the kernel return it next to the
-histogram (e.g. <code>{"counts": ..., "n_pairs": int(len(m))}</code>)
-and sum it over files.</p>
+<p>The kernel can return the pair count next to the histogram
+(e.g. <code>{"counts": ..., "n_pairs": int(len(m))}</code>) and sum it
+over files.</p>
 </div>
 </div>
 </div>
@@ -2121,15 +1664,11 @@ skill end to end and scales it from one file to the full sample.</p>
 <div class="callout-inner">
 <div class="callout-content">
 <ul>
-<li>AGENTS.md is always-loaded project context; a SKILL.md is a named
-procedure loaded on demand.</li>
-<li>Keep one source of truth (AGENTS.md) and point tool-specific files
-(copilot-instructions.md, .cursorrules) at it — never maintain
-duplicates.</li>
-<li>A skill’s frontmatter <code>description</code> is what the model
-matches against to decide when to load it.</li>
-<li>Encode inputs, steps, success criteria, and provenance so a result
-can be reproduced and audited.</li>
+<li>
+<code>AGENTS.md</code> holds project context; a
+<code>SKILL.md</code> holds a procedure the assistant loads when
+needed.</li>
+<li>Put success criteria in the skill so you can check the result.</li>
 </ul>
 </div>
 </div>
@@ -2140,7 +1679,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-05-end-to-end-agents"><p>Content from <a href="05-end-to-end-agents.html">An end-to-end, reproducible Λ⁰ analysis</a></p>
 <hr>
-<p>Last updated on 2026-07-16 |
+<p>Last updated on 2026-09-30 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/05-end-to-end-agents.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 55 minutes</p>
@@ -2209,10 +1748,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <h3 class="card-title">Objectives</h3>
 <ul>
 <li>Set up any MCP client for the end-to-end run in three steps.</li>
-<li>Pick the right kernel tool for the sample size
-(<code>execute_kernel</code> vs
-<code>execute_kernel_dataset</code>).</li>
-<li>Sign off — or reject — an agent-produced yield using the audit
+<li>Scale the analysis from one file to a full dataset.</li>
+<li>Accept or reject an agent-produced yield using the audit
 checklist.</li>
 </ul>
 </div>
@@ -2223,54 +1760,31 @@ checklist.</li>
 <section><h2 class="section-heading" id="run-it-in-your-client">Run it in your client<a class="anchor" aria-label="anchor" href="#run-it-in-your-client"></a>
 </h2>
 <hr class="half-width">
-<p>Everything below runs from the same three-step setup, whatever
-assistant you use:</p>
-<ol style="list-style-type: decimal">
-<li><p>Inside eic-shell, start the servers:
-<code>eic-mcp up</code>.</p></li>
-<li>
-<p>In your analysis directory, connect your client and put the
-Episode 4 files in place:</p>
+<p>In eic-shell, in your analysis directory:</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">eic-mcp</span> config opencode</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a><span class="fu">cp</span> ~/tutorial-mcp/files/skills/AGENTS.md .</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a><span class="fu">mkdir</span> <span class="at">-p</span> .opencode/skills</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1" aria-label="code-block-1-4"></a><span class="fu">ln</span> <span class="at">-s</span> ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">eic-mcp</span> up</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a><span class="ex">eic-mcp</span> config opencode</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a><span class="va">R</span><span class="op">=</span>https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1" aria-label="code-block-1-4"></a><span class="ex">curl</span> <span class="at">-fsSLO</span> <span class="va">$R</span>/AGENTS.md</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1" aria-label="code-block-1-5"></a><span class="ex">curl</span> <span class="at">-fsSL</span> <span class="at">--create-dirs</span> <span class="at">-o</span> .opencode/skills/lambda-fit/SKILL.md <span class="va">$R</span>/lambda-fit/SKILL.md</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1" aria-label="code-block-1-6"></a><span class="ex">opencode</span></span></code></pre>
 </div>
-</li>
-<li><p>Launch <code>opencode</code>, check <code>/mcp</code> lists
-<code>uproot</code>, <code>xrootd</code>, and <code>rucio</code>, and
-paste the pipeline prompt below.</p></li>
-</ol>
-<div id="same-pipeline-other-clients" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="same-pipeline-other-clients" class="callout-inner">
-<h3 class="callout-title">Same pipeline, other clients</h3>
-<div class="callout-content">
-<p>Only the client name changes: e.g. <code>eic-mcp config claude</code>
-for Claude Code (preinstalled in eic-shell). The full list is in <a href="03-mcp-servers.html">Episode 3</a>. The servers and prompts are
-identical; put the skill where your client reads skills
-(<code>.claude/skills/</code> for Claude Code).</p>
-</div>
-</div>
-</div>
+<p>Check that <code>/mcp</code> lists <code>uproot</code>,
+<code>xrootd</code>, and <code>rucio</code>, then paste the prompts
+below. For Claude Code, use <code>eic-mcp config claude</code> and
+<code>.claude/skills/</code>.</p>
 </section><section><h2 class="section-heading" id="the-composed-pipeline">The composed pipeline<a class="anchor" aria-label="anchor" href="#the-composed-pipeline"></a>
 </h2>
 <hr class="half-width">
-<p>The previous episodes combine into one procedure run from a single
-request: the lambda-fit skill (Episode 4) supplies the steps, the <a href="https://github.com/eic/uproot-mcp-server" class="external-link">uproot tool server</a>
-(Episode 3) supplies verifiable data access, and the agentic loop
-(Episode 1) carries it out and checks the result.</p>
+<p>The skill (Episode 4) gives the steps, the uproot server (Episode 3)
+reads the data, and the agent loop (Episode 1) runs and checks it.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {End-to-end agent run}
     accDescr: {End-to-end agent run}
-    A["resolve input&lt;br/&gt;root:// file or file list"]:::data --&gt; B["build m(p,π) histogram&lt;br/&gt;uproot MCP · execute_kernel"]:::tool
+    A["resolve input&lt;br/&gt;root:// file or file list"]:::data --&gt; B["build m(p,π) histogram&lt;br/&gt;uproot MCP"]:::tool
     B --&gt; C["fit Gaussian + poly-2&lt;br/&gt;opencode prompt"]:::tool
     C --&gt; D["report μ, σ, S, χ²/ndf&lt;br/&gt;+ plot + provenance"]:::out
     classDef data fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;
@@ -2287,61 +1801,48 @@ to find a DIS dataset and <code>list_file_replicas</code> for the URLs,
 place:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, measure the Lambda0 peak in this file:
 root://epicxrd1.sdcc.bnl.gov:1095//... (one root:// file of the campaign 26.04.1
-BeAGLE eCu ep 10x115 dataset — Episode 3's exercise).
+BeAGLE eCu ep 10x115 dataset from Episode 3's exercise).
 Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
-fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot — or report insufficient
+fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot, or report insufficient
 statistics if the fit window is too sparse.</code></pre>
-<p>The assistant calls <code>execute_kernel</code> (tree
-<code>events</code>, proton/pion branches) to build the histogram, then
-fits it with a Gaussian-plus-polynomial model. If your model stops after
-the histogram (small models do), paste the fit as its own request:</p>
+<p>The assistant builds the histogram with the uproot server, then fits
+it. If your model stops after the histogram (small models do), paste the
+fit as its own request:</p>
 <pre class="ai-prompt"><code>Fit the histogram you just built with execute_kernel: a Gaussian plus a 2nd-order polynomial
 over [1.08, 1.16] GeV. Report mu, sigma, the signal yield S, and chi2/ndf, checked against
 the lambda-fit skill's success criteria.</code></pre>
-<p>One file yields only ~8 candidates in the fit window, so the honest
-answer is <em>insufficient statistics</em> — the skill says stop rather
-than fit, and a model that quotes <span class="math inline">\(\mu\)</span> anyway has ignored it. The peak at
+<p>One file gives only ~8 candidates in the fit window, so the correct
+answer is <em>insufficient statistics</em>: the skill says to stop
+instead of fitting, and a model that quotes <span class="math inline">\(\mu\)</span> anyway has ignored it. The peak at
 <span class="math inline">\(\mu \approx 1.1157\)</span> GeV comes from
 the larger sample below.</p>
-<div id="smaller-models-take-shortcuts-verify-the-result-not-the-route" class="callout">
+<div id="smaller-models-take-shortcuts-check-the-result-not-the-route" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="smaller-models-take-shortcuts-verify-the-result-not-the-route" class="callout-inner">
-<h3 class="callout-title">Smaller models take shortcuts — verify the
+<div id="smaller-models-take-shortcuts-check-the-result-not-the-route" class="callout-inner">
+<h3 class="callout-title">Smaller models take shortcuts: check the
 result, not the route</h3>
 <div class="callout-content">
-<p>A capable model uses <code>execute_kernel</code> as instructed. A
-cheaper model may reach for <code>execute_kernel_dataset</code> on a
-single file, or write its own NumPy in the kernel — both produce the
-same histogram. The audit checklist below judges the <em>result</em>
-(peak position, width, <span class="math inline">\(\chi^2/\text{ndf}\)</span>, recorded inputs), not
-which tool produced it.</p>
+<p>A smaller model may call different tools than the skill says and
+still get the same histogram. The audit checklist below judges the
+result, not the route.</p>
 </div>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="scaling-to-the-full-sample">Scaling to the full sample<a class="anchor" aria-label="anchor" href="#scaling-to-the-full-sample"></a>
 </h2>
 <hr class="half-width">
-<p>The same kernel works unchanged on many files; only the tool differs.
-<code>execute_kernel</code> runs one file;
-<code>execute_kernel_dataset</code> runs the identical kernel over a
-whole file list and returns one merged histogram, so peak memory does
-not grow with dataset size. Enumerate the files with
-<code>get_dataset_file_list</code>, then run it across them:</p>
+<p>The same calculation can run over many files and return one merged
+histogram:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, run the same proton-pion mass kernel across the first 8 files of the
 campaign 26.04.1 BeAGLE eCu ep 10x115 dataset with execute_kernel_dataset (tree 'events'),
 merge the histograms, then fit the result and report mu, sigma, the yield, and chi2/ndf
 for both Lambda and anti-Lambda, with the plot.</code></pre>
-<p>The kernel sandbox is NumPy/awkward only (no imports, no I/O), so the
-assistant returns the merged histogram and then fits it (paste the fit
-prompt above if it stops). A synchronous
-<code>execute_kernel_dataset</code> over ~8 files takes about a minute —
-near where many clients cut a tool call off. For anything bigger, go
-async in <strong>batches of ~20 files</strong>: a single 100-file job
-tends to die with an “upstream idle timeout”. The assistant polls while
-they run:</p>
+<p>Eight files take about a minute (paste the fit prompt above if it
+stops). For more files, run background jobs in <strong>batches of ~20
+files</strong> and let the assistant wait for them:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
 campaign 26.04.1 BeAGLE eCu ep 10x115 dataset. Submit it with submit_kernel_dataset
 (tree 'events') in batches of about 20 files, poll get_job_status until every job finishes,
@@ -2373,13 +1874,11 @@ f(m) = A \exp\!\left[ -\tfrac{1}{2} (m - \mu)^2 / \sigma^2 \right] +
 \]</span></p>
 <p>The polynomial absorbs the combinatorial background (Episode 2); the
 integrated signal is <span class="math inline">\(S =
-A\sqrt{2\pi}\,\sigma / (\text{bin width})\)</span>. Report <span class="math inline">\(S\)</span> with its uncertainty alongside <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(\chi^2/\text{ndf}\)</span> — a bare bin count
-mixes signal with background.</p>
-</section><section><h2 class="section-heading" id="reproducibility-and-audit">Reproducibility and audit<a class="anchor" aria-label="anchor" href="#reproducibility-and-audit"></a>
+A\sqrt{2\pi}\,\sigma / (\text{bin width})\)</span>. Report <span class="math inline">\(S\)</span> with its uncertainty alongside <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(\chi^2/\text{ndf}\)</span>; a bare bin count mixes
+signal with background.</p>
+</section><section><h2 class="section-heading" id="audit">Audit<a class="anchor" aria-label="anchor" href="#audit"></a>
 </h2>
 <hr class="half-width">
-<p>Before treating an automated result as final, confirm it meets the
-skill’s criteria:</p>
 <div id="audit-checklist" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -2403,8 +1902,8 @@ recorded.</li>
 <strong>Provenance.</strong> Tool calls and their arguments logged,
 so the run can be reconstructed.</li>
 <li>
-<strong>Cost bounded.</strong> File count capped during development
-before scaling up with <code>execute_kernel_dataset</code>.</li>
+<strong>Cost bounded.</strong> A few files during development before
+scaling up.</li>
 <li>
 <strong>Oversight.</strong> A human inspected the fit before the
 result was reported.</li>
@@ -2417,10 +1916,8 @@ result was reported.</li>
 <hr class="half-width">
 <ul>
 <li>Run the single-file chain through your assistant and report <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(S\)</span>, and <span class="math inline">\(\chi^2/\text{ndf}\)</span>.</li>
-<li>Process 8 files with <code>execute_kernel_dataset</code> and compare
-the fitted parameters to the ~100-file result; comment on the change in
-statistical uncertainty. (More than that, and the synchronous call
-outlives your client’s tool timeout — use the async prompt above.)</li>
+<li>Process 8 files and compare the fit to the ~100-file result; comment
+on the statistical uncertainty.</li>
 <li>Complete the audit checklist for your run, attaching the recorded
 tool calls as provenance.</li>
 </ul>
@@ -2432,18 +1929,14 @@ tool calls as provenance.</li>
 <div id="try-a-different-beam" class="callout-inner">
 <h3 class="callout-title">Try a different beam</h3>
 <div class="callout-content">
-<p>Nothing here is tied to the eCu sample — point the skill at any
-reconstructed-DIS DID and the same prompt works. Nuclear beams (eCu,
-eAu) give the most Λ per event; plain ep samples need a few times more
-files for the same peak, but have thousands to spare. Find the DIDs with
-<code>list_dids</code> as in Episode 3.</p>
+<p>The same prompt works with any reconstructed-DIS DID. Nuclear beams
+(eCu, eAu) give the most Λ per event; ep samples need a few times more
+files.</p>
 </div>
 </div>
 </div>
-<p>You now have the complete workflow: a free assistant, portable tool
-servers, a versioned skill, and a reproducible Λ⁰ measurement you can
-verify at every step. The <a href="06-eic-mcp-servers.html">final
-episode</a> catalogs the other MCP servers the EIC provides.</p>
+<p>The <a href="06-eic-mcp-servers.html">final episode</a> lists the
+other MCP servers the EIC provides.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -2452,15 +1945,9 @@ episode</a> catalogs the other MCP servers the EIC provides.</p>
 <div class="callout-inner">
 <div class="callout-content">
 <ul>
-<li>The full analysis combines Episodes 1, 3, and 4: the agentic loop,
-the uproot MCP tools, and the lambda-fit skill.</li>
-<li>The same kernel scales from <code>execute_kernel</code> (one root://
-file) through <code>execute_kernel_dataset</code> (a small batch) to the
-async <code>submit_kernel_dataset</code> (the full sample), merging into
-one histogram.</li>
-<li>The yield comes from a Gaussian-plus-polynomial fit; report <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(S\)</span>, and <span class="math inline">\(\chi^2/\text{ndf}\)</span>, not a bare count.</li>
-<li>Pinning inputs and recording tool calls make the measurement
-reproducible and auditable.</li>
+<li>One prompt runs the whole Λ⁰ analysis, from one file up to the full
+dataset.</li>
+<li>Check the fit against the audit checklist before you trust it.</li>
 </ul>
 </div>
 </div>
@@ -2471,7 +1958,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-06-eic-mcp-servers"><p>Content from <a href="06-eic-mcp-servers.html">Catalog: MCP servers and AI infrastructure in the EIC ecosystem</a></p>
 <hr>
-<p>Last updated on 2026-07-16 |
+<p>Last updated on 2026-09-30 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/06-eic-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 15 minutes</p>
@@ -2527,8 +2014,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="inner">
 <h3 class="card-title">Questions</h3>
 <ul>
-<li>Which MCP servers does EIC/ePIC provide, and which work today?</li>
-<li>How can you use the collaboration’s AI tools with zero setup?</li>
+<li>Which other MCP servers does EIC provide?</li>
+<li>How can you use them without any setup?</li>
 </ul>
 </div>
 </div>
@@ -2538,27 +2025,21 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
 <ul>
-<li>Decide when to run the servers yourself and when the hosted bot is
-enough.</li>
-<li>Ask DISpatcher a tool-grounded question about data, software, or
+<li>Ask the DISpatcher bot a question about data, software, or
 production.</li>
-<li>Reuse tiered tool exposure and fabrication checks in your own
-harness.</li>
 </ul>
 </div>
 </div>
 </div>
 </div>
 </div>
-<section><h2 class="section-heading" id="one-protocol-many-tools">One protocol, many tools<a class="anchor" aria-label="anchor" href="#one-protocol-many-tools"></a>
+<section><h2 class="section-heading" id="more-eic-servers">More EIC servers<a class="anchor" aria-label="anchor" href="#more-eic-servers"></a>
 </h2>
 <hr class="half-width">
-<p>MCP is a standard (<a href="03-mcp-servers.html">Episode 3</a>), so
-the collaboration exposes each piece of its infrastructure as a small
-server. The three you used in this lesson are one corner of a
-fast-growing stack, built mostly in BNL’s NPPS group (this episode is
-based on Torre Wenaus’s June 2026 talk to the ePIC user-learning
-WG).</p>
+<p>The three servers you used are part of a larger set, built mostly in
+BNL’s NPPS group (this episode is based on Torre Wenaus’s June 2026 talk
+to the ePIC user-learning WG). The <a href="https://github.com/eic" class="external-link">eic
+GitHub organization</a> has the current list.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TB
     accTitle: {EIC MCP server catalog}
@@ -2574,10 +2055,9 @@ flowchart TB
         XR["xrootd-mcp"]:::tool
         RU["rucio-mcp"]:::tool
     end
-    subgraph REC["records &amp; meetings"]
+    subgraph REC["records"]
         direction LR
         ZE["zenodo-mcp"]:::rec
-        IN["indico-mcp"]:::rec
     end
     subgraph CODE["code knowledge"]
         direction LR
@@ -2597,29 +2077,10 @@ flowchart TB
     click XR "https://github.com/eic/xrootd-mcp-server" _blank
     click RU "https://github.com/eic/rucio-eic-mcp-server" _blank
     click ZE "https://github.com/eic/zenodo-mcp-server" _blank
-    click IN "https://github.com/cohm/indico-mcp" _blank
     click LX "https://eic-code-browser.sdcc.bnl.gov/lxr/source" _blank
     click GH "https://github.com/github/github-mcp-server" _blank
     click PB "https://chat.epic-eic.org/main/channels/dispatcher" _blank</code></pre>
-<p><em>The boxes above are links — click a server to open its repository
-or page.</em></p>
-<div id="current-status" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="current-status" class="callout-inner">
-<h3 class="callout-title">Current status</h3>
-<div class="callout-content">
-<p>uproot/xrootd/rucio/zenodo work today and you ran three of them
-yourself; the LXR MCP server exists but is deployed inside the
-BNL-hosted services rather than as a package you run locally; indico is
-maintained by an individual, not the <code>eic</code> org; the
-production tools are reachable through the bot. See the <a href="https://github.com/eic" class="external-link">eic GitHub organization</a> and the <a href="https://epic-devcloud.org/doc/" class="external-link">ePIC dev-cloud</a> for the current
-set.</p>
-</div>
-</div>
-</div>
+<p><em>Click a box to open the server’s repository or page.</em></p>
 </section><section><h2 class="section-heading" id="analysis-and-data">Analysis and data<a class="anchor" aria-label="anchor" href="#analysis-and-data"></a>
 </h2>
 <hr class="half-width">
@@ -2629,34 +2090,29 @@ set.</p>
 </div>
 <span class="callout-header">Callout</span>
 <div id="uproot-mcp-read-rootedm4eic-files-available-used-in-this-lesson" class="callout-inner">
-<h3 class="callout-title">uproot-mcp — read ROOT/EDM4eic files ·
+<h3 class="callout-title">uproot-mcp: read ROOT/EDM4eic files ·
 <em>available · used in this lesson</em>
 </h3>
 <div class="callout-content">
 <figure><img src="../fig/logos/uproot.svg" class="mcp-logo figure mx-auto d-block" alt="uproot logo"><div class="figcaption">uproot logo</div>
 </figure><p><a href="https://github.com/eic/uproot-mcp-server" class="external-link"><code>eic/uproot-mcp-server</code></a>
-reads ROOT/EDM4eic files with <a href="https://uproot.readthedocs.io/" class="external-link">uproot</a>, returning compact
-JSON: file structure, branch statistics, histograms, sandboxed
-NumPy/awkward kernels. The analysis backend from Episodes 3 and 5.</p>
+reads ROOT files. Used in Episodes 3 and 5.</p>
 </div>
 </div>
 </div>
-<div id="xrootd-mcp-discover-files-on-the-data-store-available-used-in-this-lesson" class="callout">
+<div id="xrootd-mcp-find-files-on-the-data-store-available-used-in-this-lesson" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="xrootd-mcp-discover-files-on-the-data-store-available-used-in-this-lesson" class="callout-inner">
-<h3 class="callout-title">xrootd-mcp — discover files on the data store
-· <em>available · used in this lesson</em>
+<div id="xrootd-mcp-find-files-on-the-data-store-available-used-in-this-lesson" class="callout-inner">
+<h3 class="callout-title">xrootd-mcp: find files on the data store ·
+<em>available · used in this lesson</em>
 </h3>
 <div class="callout-content">
 <figure><img src="../fig/logos/xrootd.png" class="mcp-logo figure mx-auto d-block" alt="XRootD logo"><div class="figcaption">XRootD logo</div>
 </figure><p><a href="https://github.com/eic/xrootd-mcp-server" class="external-link"><code>eic/xrootd-mcp-server</code></a>
-(<a href="https://eic.github.io/xrootd-mcp-server/" class="external-link">docs</a>) browses
-the ePIC XRootD stores (BNL disk by default; the older JLab store via
-configuration): list directories, read metadata, search, monitor
-production campaigns.</p>
+browses the ePIC data stores.</p>
 </div>
 </div>
 </div>
@@ -2666,20 +2122,18 @@ production campaigns.</p>
 </div>
 <span class="callout-header">Callout</span>
 <div id="rucio-mcp-query-the-data-management-system-available-used-in-this-lesson" class="callout-inner">
-<h3 class="callout-title">rucio-mcp — query the data-management system ·
+<h3 class="callout-title">rucio-mcp: query the data-management system ·
 <em>available · used in this lesson</em>
 </h3>
 <div class="callout-content">
 <figure><img src="../fig/logos/rucio.png" class="mcp-logo figure mx-auto d-block" alt="Rucio logo"><div class="figcaption">Rucio logo</div>
 </figure><p><a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><code>eic/rucio-eic-mcp-server</code></a>
-exposes <a href="https://rucio.cern.ch/" class="external-link">Rucio</a> through ~13 tools
-(dataset discovery, file listing, replicas, rules). Deliberately
-<strong>read-only</strong> — an assistant gets no write access to the
-catalog.</p>
+searches the <a href="https://rucio.cern.ch/" class="external-link">Rucio</a> data catalog
+(read-only).</p>
 </div>
 </div>
 </div>
-</section><section><h2 class="section-heading" id="records-and-meetings">Records and meetings<a class="anchor" aria-label="anchor" href="#records-and-meetings"></a>
+</section><section><h2 class="section-heading" id="records">Records<a class="anchor" aria-label="anchor" href="#records"></a>
 </h2>
 <hr class="half-width">
 <div id="zenodo-mcp-search-the-open-data-repository-available" class="callout">
@@ -2688,154 +2142,55 @@ catalog.</p>
 </div>
 <span class="callout-header">Callout</span>
 <div id="zenodo-mcp-search-the-open-data-repository-available" class="callout-inner">
-<h3 class="callout-title">zenodo-mcp — search the open-data repository ·
+<h3 class="callout-title">zenodo-mcp: search the open-data repository ·
 <em>available</em>
 </h3>
 <div class="callout-content">
 <figure><img src="../fig/logos/zenodo.png" class="mcp-logo figure mx-auto d-block" alt="Zenodo logo"><div class="figcaption">Zenodo logo</div>
 </figure><p><a href="https://github.com/eic/zenodo-mcp-server" class="external-link"><code>eic/zenodo-mcp-server</code></a>
-queries <a href="https://zenodo.org/" class="external-link">Zenodo</a> over its REST API:
-search records, read public datasets and DOIs — ePIC document
-access.</p>
-</div>
-</div>
-</div>
-<div id="indico-mcp-search-meetings-and-agendas-available-community" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="indico-mcp-search-meetings-and-agendas-available-community" class="callout-inner">
-<h3 class="callout-title">indico-mcp — search meetings and agendas ·
-<em>available (community)</em>
-</h3>
-<div class="callout-content">
-<figure><img src="../fig/logos/indico.png" class="mcp-logo figure mx-auto d-block" alt="Indico logo"><div class="figcaption">Indico logo</div>
-</figure><p><a href="https://github.com/cohm/indico-mcp" class="external-link"><code>cohm/indico-mcp</code></a>
-searches an <a href="https://getindico.io/" class="external-link">Indico</a> instance: find
-events, browse agendas, extract contributions and attachments.
-Maintained by an individual; works with any Indico server.</p>
+searches <a href="https://zenodo.org/" class="external-link">Zenodo</a>, including ePIC
+documents.</p>
 </div>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="code-knowledge">Code knowledge<a class="anchor" aria-label="anchor" href="#code-knowledge"></a>
 </h2>
 <hr class="half-width">
-<div id="lxr-mcp-source-cross-reference-for-the-assistant-available-bnl-hosted" class="callout">
+<div id="lxr-mcp-source-cross-reference-available-bnl-hosted" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="lxr-mcp-source-cross-reference-for-the-assistant-available-bnl-hosted" class="callout-inner">
-<h3 class="callout-title">LXR-mcp — source cross-reference for the
-assistant · <em>available (BNL-hosted)</em>
+<div id="lxr-mcp-source-cross-reference-available-bnl-hosted" class="callout-inner">
+<h3 class="callout-title">LXR-mcp: source cross-reference ·
+<em>available (BNL-hosted)</em>
 </h3>
 <div class="callout-content">
-<p>The EIC runs an <a href="https://eic-code-browser.sdcc.bnl.gov/lxr/source" class="external-link">LXR source
-cross-reference browser</a> over 55+ ePIC and related repositories,
-<strong>re-indexed nightly</strong> against the head of every
-repository. Its MCP server lets an assistant find where any symbol is
-defined and used, search the whole code base, and read source — so
-software answers are grounded in <em>current</em> code, not the model’s
-training data (the same schema-hallucination cure you saw in Episode 3,
-applied to source). Paired with the standard <strong>GitHub MCP</strong>
-for PRs, commits, and issues.</p>
+<p>Searches the ePIC source code through the <a href="https://eic-code-browser.sdcc.bnl.gov/lxr/source" class="external-link">LXR browser</a>,
+which is updated nightly. It runs only on the BNL-hosted services.</p>
 </div>
 </div>
 </div>
-</section><section><h2 class="section-heading" id="zero-setup-the-dispatcher-bot">Zero setup: the DISpatcher bot<a class="anchor" aria-label="anchor" href="#zero-setup-the-dispatcher-bot"></a>
+</section><section><h2 class="section-heading" id="no-setup-the-dispatcher-bot">No setup: the DISpatcher bot<a class="anchor" aria-label="anchor" href="#no-setup-the-dispatcher-bot"></a>
 </h2>
 <hr class="half-width">
-<p>In Episode 3 you configured your own client. The collaboration also
-provides a hosted alternative: <strong>DISpatcher</strong>, a Mattermost
-bot in an open channel — <a href="https://chat.epic-eic.org/main/channels/dispatcher" class="external-link">chat.epic-eic.org
-→ <code>dispatcher</code></a> — that anyone in ePIC can use, in the
-channel or by DM. All the complexity you just learned about lives in its
-back end; you need nothing but your Mattermost account. It is wired to
-<strong>roughly 100 MCP tools</strong>: production diagnostics (PanDA —
-why did my jobs fail?), the physics samples in production (PCS), the
-data tools you used in this lesson (rucio, xrootd, uproot), software
-knowledge (LXR + GitHub), and documents (Zenodo, plus a documentation
-RAG).</p>
-<p>Post this in the <code>dispatcher</code> channel (or DM the bot) —
-not in your own assistant, which has no PCS tool and would have to
-invent the answer:</p>
-<pre class="ai-prompt"><code>Summarize the physics tags in the PCS — which processes are covered, and which tags are still draft?</code></pre>
-<div id="two-reusable-harness-patterns" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="two-reusable-harness-patterns" class="callout-inner">
-<h3 class="callout-title">Two reusable harness patterns</h3>
-<div class="callout-content">
-<p>The bot runs a small, cheap model, so it hits the failure modes this
-lesson warned about — at scale. Two of its countermeasures apply to any
-harness:</p>
-<ul>
-<li>
-<strong>Tiered tool exposure.</strong> Tool use degrades past
-roughly 30–50 tools, and the bot has ~100. So its system prompt carries
-only a compact list of everything; a harness loads full descriptions for
-just the tools each request needs; the bot can still reach the rest on
-demand. The same context-economy principle as skills’ progressive
-loading in <a href="04-skills.html">Episode 4</a>.</li>
-<li>
-<strong>The fabrication check.</strong> The bot’s biggest problem is
-making answers up instead of calling a tool — cheerfully reporting “this
-is fine” when nothing was actually checked. The harness hands the model
-a secret token <strong>only when a tool is actually called</strong> and
-requires it in the response; no token, and the user is warned the answer
-was probably fabricated. Verification over confidence (<a href="01-why-genai-for-physics.html">Episode 1</a>), enforced
-mechanically.</li>
-</ul>
-</div>
-</div>
-</div>
-<div id="ai-smart-search-on-eic.github.io" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="ai-smart-search-on-eic.github.io" class="callout-inner">
-<h3 class="callout-title">AI smart search on eic.github.io</h3>
-<div class="callout-content">
-<p>The <a href="https://eic.github.io/" class="external-link">EIC software portal</a> has an
-AI smart search — the “Ask anything about EIC…” box in the header. Type
-a question and get search results plus an AI overview built from the
-public EIC docs.</p>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="beyond-the-bot-corun-ai">Beyond the bot: corun-ai<a class="anchor" aria-label="anchor" href="#beyond-the-bot-corun-ai"></a>
+<p><strong>DISpatcher</strong> is a Mattermost bot (<a href="https://chat.epic-eic.org/main/channels/dispatcher" class="external-link">chat.epic-eic.org
+→ <code>dispatcher</code></a>) that anyone in ePIC can use, in the
+channel or by DM. It has the data tools from this lesson plus tools for
+production jobs, physics samples, software, and documents.</p>
+<p>Post this in the <code>dispatcher</code> channel or DM the bot. Your
+own assistant has no PCS tool and would have to invent the answer:</p>
+<pre class="ai-prompt"><code>Summarize the physics tags in the PCS: which processes are covered, and which tags are still draft?</code></pre>
+<p>The <a href="https://eic.github.io/" class="external-link">EIC software portal</a> also has
+an AI search box (“Ask anything about EIC…”).</p>
+</section><section><h2 class="section-heading" id="corun-ai">corun-ai<a class="anchor" aria-label="anchor" href="#corun-ai"></a>
 </h2>
 <hr class="half-width">
-<p>The bot answers in seconds from a small model, and its answers scroll
-away in the chat history. <a href="https://github.com/BNLNPPS/corun-ai" class="external-link"><strong><code>BNLNPPS/corun-ai</code></strong></a>
-is the complement: runs that take <strong>minutes</strong> on high-level
-models, with the results preserved, browsable, and open to expert
-commentary. Its first application, <strong>codoc-ai</strong> (<a href="https://epic-devcloud.org/doc/" class="external-link">epic-devcloud.org/doc</a>),
-generates software documents grounded in LXR + GitHub. Typical uses:</p>
-<ul>
-<li>
-<em>“I’ve been away from ePIC software development for 6 months —
-give me an overview of simu, reco and framework developments”</em> — run
-across several models and compared;</li>
-<li>documentation pages re-runnable against current code;</li>
-<li>one-click review of any open ePIC pull request.</li>
-</ul>
-<p>Anyone can submit runs and comment — ask Torre for an account. (<a href="https://github.com/eic/corun-mcp-server" class="external-link"><code>eic/corun-mcp-server</code></a>
-wraps it as an MCP server, so your own assistant can browse and submit
-too.) The services are at an early stage, currently hosted on the open
-internet; a move to lab hosting is planned.</p>
-</section><section><h2 class="section-heading" id="where-this-is-going">Where this is going<a class="anchor" aria-label="anchor" href="#where-this-is-going"></a>
-</h2>
-<hr class="half-width">
-<p>The direction is what this lesson taught in miniature: centrally
-hosted MCP services over HTTP (the transport from Episode 3) that plug
-equally into the bot, corun-ai, and <em>your own</em> assistant — from
-one free assistant and one tool server up to a collaboration-wide
-ecosystem.</p>
+<p><a href="https://github.com/BNLNPPS/corun-ai" class="external-link"><code>BNLNPPS/corun-ai</code></a>
+runs longer jobs with larger models and keeps the results. Its first
+use, <a href="https://epic-devcloud.org/doc/" class="external-link">codoc-ai</a>, writes
+software documentation and reviews ePIC pull requests. Ask Torre for an
+account.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -2844,19 +2199,9 @@ ecosystem.</p>
 <div class="callout-inner">
 <div class="callout-content">
 <ul>
-<li>The EIC exposes its infrastructure through MCP: analysis (uproot),
-data (xrootd, rucio), records (zenodo, indico), code (LXR + GitHub), and
-production (PanDA, PCS) — three of which you ran yourself.</li>
-<li>The DISpatcher bot is the zero-setup path: ~100 MCP tools behind a
-Mattermost account, no client configuration at all.</li>
-<li>corun-ai/codoc-ai is the long-latency complement: high-level models,
-preserved and expert-curated outputs, grounded in nightly-indexed code
-knowledge.</li>
-<li>Patterns to reuse: tiered tool exposure (context economy at scale)
-and the secret-token fabrication check (verification over confidence,
-enforced).</li>
-<li>This catalog dates quickly — check the eic GitHub organization and
-the ePIC dev-cloud for the current list.</li>
+<li>EIC provides more MCP servers than the three used here.</li>
+<li>The DISpatcher bot in Mattermost gives you these tools without any
+setup.</li>
 </ul>
 </div>
 </div>
@@ -2915,8 +2260,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/aio.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/aio.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-09-29",
-  "datePublished": "2026-09-29"
+  "dateModified": "2026-09-30",
+  "datePublished": "2026-09-30"
 }
 
   </script><script>

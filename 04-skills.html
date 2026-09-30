@@ -102,7 +102,7 @@
           <button class="nav-link dropdown-toggle" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             More <i data-feather="chevron-down"></i>
           </button>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"><li><a class="dropdown-item" href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li><li><a class="dropdown-item" href="analysis-approaches.html">Alternative Analysis Approaches</a></li><li><a class="dropdown-item" href="discuss.html">Discussion</a></li><li><a class="dropdown-item" href="reference.html">Reference</a></li>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"><li><a class="dropdown-item" href="reference.html">Reference</a></li>
           </ul></li>
       </ul></div>
     <!--
@@ -237,11 +237,9 @@
     <div id="flush-collapsecurrent" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushcurrent">
       <div class="accordion-body">
         <ul><li><a href="#two-ways-to-make-instructions-persistent">Two ways to make instructions persistent</a></li>
-<li><a href="#agents.md-project-context">AGENTS.md — project context</a></li>
+<li><a href="#agents.md-project-context">AGENTS.md: project context</a></li>
 <li><a href="#one-source-of-truth-bridge-files">One source of truth: bridge files</a></li>
 <li><a href="#skill.md-a-named-procedure">SKILL.md — a named procedure</a></li>
-<li><a href="#when-to-use-which">When to use which</a></li>
-<li><a href="#why-the-success-criteria-matter">Why the success criteria matter</a></li>
 <li><a href="#your-project-layout">Your project layout</a></li>
         </ul></div><!--/div.accordion-body-->
     </div><!--/div.accordion-collapse-->
@@ -289,7 +287,7 @@
                       <li>
                         <a href="profiles.html">Learner Profiles</a>
                       </li>
-                      <li><a href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li><li><a href="analysis-approaches.html">Alternative Analysis Approaches</a></li><li><a href="discuss.html">Discussion</a></li><li><a href="reference.html">Reference</a></li>
+                      <li><a href="reference.html">Reference</a></li>
                     </ul></div>
                 </div>
               </div>
@@ -325,7 +323,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Persisting instructions: AGENTS.md and SKILL.md</h1>
-        <p>Last updated on 2026-07-16 |
+        <p>Last updated on 2026-09-30 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/04-skills.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -385,7 +383,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="inner">
 <h3 class="card-title">Questions</h3>
 <ul><li>How do you give an assistant durable project context?</li>
-<li>AGENTS.md vs SKILL.md — when to use each?</li>
+<li>AGENTS.md or SKILL.md: when to use each?</li>
 <li>How do you make every tool read the same rules?</li>
 <li>What’s in a usable SKILL.md for the Λ⁰ fit?</li>
 </ul></div>
@@ -405,18 +403,17 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 </div>
 </div>
 <section><h2 class="section-heading" id="two-ways-to-make-instructions-persistent">Two ways to make instructions persistent<a class="anchor" aria-label="anchor" href="#two-ways-to-make-instructions-persistent"></a></h2>
-<hr class="half-width"><p>Typing requests (Episode 3) does not scale: you re-explain the data
-model, conventions, and procedure every session, and nothing keeps two
-runs the same. Two file-based mechanisms fix this.</p>
+<hr class="half-width"><p>Typed requests (Episode 3) have to repeat the data model,
+conventions, and procedure every session, and two runs can differ. Two
+kinds of file solve this.</p>
 <ul><li>
-<strong><code>AGENTS.md</code></strong> — always-on
-<strong>context</strong>, read at the start of every session:
-environment, data model, conventions, and what “done” means.</li>
+<strong><code>AGENTS.md</code></strong>: <strong>context</strong>
+read at the start of every session: environment, data model,
+conventions, and what “done” means.</li>
 <li>
-<strong><code>SKILL.md</code></strong> — an on-demand
-<strong>procedure</strong> in a named skill directory, loaded only when
-a request matches its description. It encodes one repeatable
-workflow.</li>
+<strong><code>SKILL.md</code></strong>: a <strong>procedure</strong>
+in a named skill directory, loaded only when a request matches its
+description. It describes one repeatable workflow.</li>
 </ul><pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
     accTitle: {Skills and AGENTS.md}
@@ -431,7 +428,7 @@ flowchart TD
 <p><code>AGENTS.md</code> answers “what is this project and how do we
 work here?”; a <code>SKILL.md</code> answers “how do I carry out
 <em>this</em> task?”.</p>
-</section><section><h2 class="section-heading" id="agents-md-project-context">AGENTS.md — project context<a class="anchor" aria-label="anchor" href="#agents-md-project-context"></a></h2>
+</section><section><h2 class="section-heading" id="agents-md-project-context">AGENTS.md: project context<a class="anchor" aria-label="anchor" href="#agents-md-project-context"></a></h2>
 <hr class="half-width"><p><code>AGENTS.md</code> is plain Markdown at your project root
 (subdirectories may override it for files beneath them). opencode,
 Codex, Gemini CLI, Zed, and others read it automatically; a tool that
@@ -450,7 +447,7 @@ bridge (next section).</p>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1" aria-label="code-block-2-7"></a><span class="fu">## Environment</span></span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1" aria-label="code-block-2-8"></a><span class="ss">- </span>Everything runs inside eic-shell; the MCP servers are started with <span class="in">`eic-mcp up`</span>.</span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1" aria-label="code-block-2-9"></a><span class="ss">- </span>Data lives on the grid: find a DIS dataset with the <span class="in">`rucio`</span> tools and read its</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1" aria-label="code-block-2-10"></a>  root:// files in place with <span class="in">`uproot`</span> — no download.</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1" aria-label="code-block-2-10"></a>  root:// files in place with <span class="in">`uproot`</span>. Do not download.</span>
 <span id="cb2-11"><a href="#cb2-11" tabindex="-1" aria-label="code-block-2-11"></a></span>
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1" aria-label="code-block-2-12"></a><span class="fu">## Tools</span></span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1" aria-label="code-block-2-13"></a><span class="ss">- </span>Use the <span class="in">`rucio`</span> MCP server (list_dids, list_files, list_file_replicas) to locate</span>
@@ -488,9 +485,8 @@ bridge (next section).</p>
 <span id="cb2-45"><a href="#cb2-45" tabindex="-1" aria-label="code-block-2-45"></a><span class="ss">- </span>Fitted peak within a few MeV of 1.115683 GeV and chi2/ndf of order 1.</span>
 <span id="cb2-46"><a href="#cb2-46" tabindex="-1" aria-label="code-block-2-46"></a><span class="ss">- </span>Always run the fit and check these before reporting a result.</span></code></pre>
 </div>
-<p>This encodes the schema, the tool policy (use the server, not
-hand-written I/O), the conventions, and an explicit definition of
-done.</p>
+<p>It records the schema, the tool policy (use the server, not
+hand-written I/O), the conventions, and a definition of done.</p>
 <div id="two-rules-for-a-useful-agents.md" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -500,38 +496,34 @@ done.</p>
 <h3 class="callout-title">Two rules for a useful AGENTS.md</h3>
 <div class="callout-content">
 <ul><li>
-<strong>Keep it short.</strong> It is loaded on every turn, so
-length costs tokens and dilutes attention. Write only what the model
-cannot infer from the code.</li>
+<strong>Keep it short.</strong> It is loaded on every turn, so every
+line costs tokens. Write only what the model cannot infer from the
+code.</li>
 <li>
 <strong>Describe concepts, not file paths.</strong> “The
 reconstructed tracks are in the
-<code>ReconstructedChargedParticles</code> collection” ages well; a path
-like <code>src/old/lambda_v2.py</code> does not — paths move, and the
-model then searches confidently in the wrong place.</li>
+<code>ReconstructedChargedParticles</code> collection” stays true; a
+path like <code>src/old/lambda_v2.py</code> goes stale, and the model
+then searches in the wrong place.</li>
 </ul></div>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="one-source-of-truth-bridge-files">One source of truth: bridge files<a class="anchor" aria-label="anchor" href="#one-source-of-truth-bridge-files"></a></h2>
-<hr class="half-width"><p>Not every tool reads <code>AGENTS.md</code>. Most modern ones do —
-opencode, Codex, Gemini CLI, Zed — but some look for their own filename
-and silently ignore it: GitHub Copilot reads
+<hr class="half-width"><p>opencode, Codex, Gemini CLI, and Zed read <code>AGENTS.md</code>.
+Some tools read only their own file: GitHub Copilot reads
 <code>copilot-instructions.md</code>, Cursor reads
-<code>.cursorrules</code>. A project with only an <code>AGENTS.md</code>
-runs such a tool with no context and no warning.</p>
-<p>Don’t copy your rules into a second file; two copies drift within a
-week. <strong>Keep the standard in the center and let each tool read
-from it</strong>: the tool-specific file becomes a one-line
-<em>bridge</em> pointing at <code>AGENTS.md</code>.</p>
-<p><code>.github/copilot-instructions.md</code> (GitHub Copilot) — and
-<code>.cursorrules</code> (Cursor) — are one line:</p>
+<code>.cursorrules</code>. Without it they run with no context and no
+warning.</p>
+<p>Do not copy your rules into a second file; the copies will diverge.
+Make the tool-specific file a one-line <em>bridge</em> to
+<code>AGENTS.md</code>. <code>.github/copilot-instructions.md</code>
+(Copilot) and <code>.cursorrules</code> (Cursor) contain:</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a>Follow the project rules in AGENTS.md.</span></code></pre>
 </div>
-<p>Now every assistant reads the same source of truth. Copy the
-ready-made bridge: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md" class="external-link"><code>copilot-instructions.md</code></a>.</p>
+<p>The bridge file is in the repository: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md" class="external-link"><code>copilot-instructions.md</code></a>.</p>
 </section><section><h2 class="section-heading" id="skill-md-a-named-procedure">SKILL.md — a named procedure<a class="anchor" aria-label="anchor" href="#skill-md-a-named-procedure"></a></h2>
 <hr class="half-width"><p>A <strong>skill</strong> is a directory containing a
 <code>SKILL.md</code> that describes a repeatable procedure:</p>
@@ -542,15 +534,13 @@ ready-made bridge: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a>  <span class="ex">lambda-fit/</span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a>    <span class="ex">SKILL.md</span>              specification: applicability, inputs, steps, success criteria</span></code></pre>
 </div>
-<p>The procedure runs by driving the MCP tools (build the histogram with
-the uproot kernel, fit the Gaussian + polynomial in the same sandbox),
-so it needs no bundled scripts.</p>
-<p>The YAML frontmatter carries a <code>name</code> and a
-<code>description</code>. The <code>description</code> is the part that
-matters: the client matches your request against it to decide whether to
-load the skill. <strong>Only the name and description stay in
-context</strong> — the body is read in <em>only when</em> the
-description matches.</p>
+<p>The procedure only uses the MCP tools, so it needs no scripts of its
+own.</p>
+<p>The YAML frontmatter has a <code>name</code> and a
+<code>description</code>. The client matches your request against the
+<code>description</code> to decide whether to load the skill.
+<strong>Only the name and description stay in context</strong>; the body
+is read only when the description matches.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -611,16 +601,14 @@ description matches.</p>
 <p>opencode reads skills from
 <code>.opencode/skills/&lt;name&gt;/SKILL.md</code> in the project
 directory (or <code>~/.config/opencode/skills/</code> for all projects);
-Claude Code uses <code>.claude/skills/</code>. A soft link to the
-tutorial’s copy keeps it current:</p>
+Claude Code uses <code>.claude/skills/</code>. Download the lesson’s
+copy:</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> .opencode/skills</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a><span class="fu">ln</span> <span class="at">-s</span> ~/tutorial-mcp/files/skills/lambda-fit .opencode/skills/lambda-fit</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> <span class="at">--create-dirs</span> <span class="at">-o</span> .opencode/skills/lambda-fit/SKILL.md <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a>  https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills/lambda-fit/SKILL.md</span></code></pre>
 </div>
-<p>(<code>~/tutorial-mcp</code> is where <a href="index.html#setup">Setup</a>
-cloned this lesson’s repository.)</p>
 <p>Loading is the model’s decision, based on the skill’s
 <code>description</code>. A small model may answer without loading it,
 so every prompt in this lesson names the skill: “Using the lambda-fit
@@ -630,50 +618,8 @@ from <code>AGENTS.md</code> instead.</p>
 </div>
 </div>
 <p>Get both example files in place: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md" class="external-link"><code>files/skills/AGENTS.md</code></a>
-(copy it to your analysis directory) and <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md" class="external-link"><code>files/skills/lambda-fit/SKILL.md</code></a>
-(link it as above).</p>
-</section><section><h2 class="section-heading" id="when-to-use-which">When to use which<a class="anchor" aria-label="anchor" href="#when-to-use-which"></a></h2>
-<hr class="half-width"><table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Question</th>
-<th>Mechanism</th>
-</tr></thead><tbody><tr><td>“What is this project, and how do we work here?”</td>
-<td>
-<code>AGENTS.md</code> (always loaded)</td>
-</tr><tr><td>“How do I perform <em>this</em> specific task?”</td>
-<td>a <code>SKILL.md</code> (loaded on demand)</td>
-</tr><tr><td>“What must every result satisfy?”</td>
-<td>success criteria — in both, but enforced by the skill</td>
-</tr></tbody></table><p><code>AGENTS.md</code> sets standing context; the skill executes a
-procedure within it.</p>
-<div id="why-this-is-efficient-context-economy" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="why-this-is-efficient-context-economy" class="callout-inner">
-<h3 class="callout-title">Why this is efficient: context economy</h3>
-<div class="callout-content">
-<p>The context window is finite, and everything in it costs tokens on
-every turn.</p>
-<ul><li>
-<strong><code>AGENTS.md</code> is loaded in full, every
-turn.</strong> Keep it short and high-signal — every line is paid for on
-every request.</li>
-<li>
-<strong>A skill loads progressively.</strong> Only its
-<code>name</code> and one-line <code>description</code> stay in context;
-the body is read <em>only when</em> a request matches. You can install
-dozens of detailed skills, and none occupies the window until
-needed.</li>
-</ul><p>Put small, always-relevant facts in <code>AGENTS.md</code>; put
-detailed, occasional procedures in skills.</p>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="why-the-success-criteria-matter">Why the success criteria matter<a class="anchor" aria-label="anchor" href="#why-the-success-criteria-matter"></a></h2>
-<hr class="half-width"><p>Explicit acceptance tests in the skill — peak position, width, <span class="math inline">\(\chi^2/\text{ndf}\)</span> — turn “the assistant
-said it worked” into “the result passed stated, checkable conditions.”
-Recording the tool calls and dataset makes the run reproducible and
-auditable.</p>
+(download it to your analysis directory) and <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md" class="external-link"><code>files/skills/lambda-fit/SKILL.md</code></a>
+(download it as above).</p>
 </section><section><h2 class="section-heading" id="your-project-layout">Your project layout<a class="anchor" aria-label="anchor" href="#your-project-layout"></a></h2>
 <hr class="half-width"><p>A project that behaves the same under any assistant:</p>
 <div class="codewrapper sourceCode" id="cb7">
@@ -684,27 +630,11 @@ auditable.</p>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1" aria-label="code-block-7-3"></a><span class="ex">├──</span> .github/</span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1" aria-label="code-block-7-4"></a><span class="ex">│</span>   └── copilot-instructions.md      <span class="co"># points to AGENTS.md   (bridge for Copilot)</span></span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1" aria-label="code-block-7-5"></a><span class="ex">├──</span> .cursorrules                     <span class="co"># points to AGENTS.md   (bridge for Cursor)</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1" aria-label="code-block-7-6"></a><span class="ex">├──</span> opencode.jsonc                   <span class="co"># MCP server connections — `eic-mcp config opencode` (Episode 3)</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1" aria-label="code-block-7-6"></a><span class="ex">├──</span> opencode.jsonc                   <span class="co"># MCP server connections: `eic-mcp config opencode` (Episode 3)</span></span>
 <span id="cb7-7"><a href="#cb7-7" tabindex="-1" aria-label="code-block-7-7"></a><span class="ex">└──</span> .opencode/</span>
 <span id="cb7-8"><a href="#cb7-8" tabindex="-1" aria-label="code-block-7-8"></a>    <span class="ex">└──</span> skills/</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1" aria-label="code-block-7-9"></a>        <span class="ex">└──</span> lambda-fit/              <span class="co"># soft link to the tutorial's copy (see callout above;</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1" aria-label="code-block-7-9"></a>        <span class="ex">└──</span> lambda-fit/              <span class="co"># downloaded from the lesson (see callout above;</span></span>
 <span id="cb7-10"><a href="#cb7-10" tabindex="-1" aria-label="code-block-7-10"></a>            <span class="ex">└──</span> SKILL.md             <span class="co">#  `.claude/skills/` for Claude Code)</span></span></code></pre>
-</div>
-<div id="the-golden-rule" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="the-golden-rule" class="callout-inner">
-<h3 class="callout-title">The golden rule</h3>
-<div class="callout-content">
-<p>Write each instruction once, in the shared open format —
-<code>AGENTS.md</code> for context, <code>SKILL.md</code> for
-procedures, <code>opencode.jsonc</code> for tool connections — then
-point any tool-specific file at it. Never keep duplicate rule files.
-<em>Standards in the center, tools at the edges.</em></p>
-</div>
-</div>
 </div>
 <div id="exercise-a-summary-skill-10-min" class="callout challenge">
 <div class="callout-square">
@@ -753,7 +683,7 @@ on a file from Episode 3.</p>
 <span id="cb8-21"><a href="#cb8-21" tabindex="-1" aria-label="code-block-8-21"></a>rather than guessing.</span></code></pre>
 </div>
 <p>Save it as <code>.opencode/skills/edm4eic-summary/SKILL.md</code> and
-name it in the prompt (“Using the edm4eic-summary skill, …”) — a small
+name it in the prompt (“Using the edm4eic-summary skill, …”); a small
 model may not load it from the description alone.</p>
 </div>
 </div>
@@ -790,9 +720,9 @@ pairs.</p>
 <span id="cb9-4"><a href="#cb9-4" tabindex="-1" aria-label="code-block-9-4"></a>proton-pion candidate pairs entering the histogram, so the run can be</span>
 <span id="cb9-5"><a href="#cb9-5" tabindex="-1" aria-label="code-block-9-5"></a>reproduced.</span></code></pre>
 </div>
-<p>The pair count comes for free: have the kernel return it next to the
-histogram (e.g. <code>{"counts": ..., "n_pairs": int(len(m))}</code>)
-and sum it over files.</p>
+<p>The kernel can return the pair count next to the histogram
+(e.g. <code>{"counts": ..., "n_pairs": int(len(m))}</code>) and sum it
+over files.</p>
 </div>
 </div>
 </div>
@@ -806,15 +736,11 @@ skill end to end and scales it from one file to the full sample.</p>
 <span class="callout-header">Key Points</span>
 <div class="callout-inner">
 <div class="callout-content">
-<ul><li>AGENTS.md is always-loaded project context; a SKILL.md is a named
-procedure loaded on demand.</li>
-<li>Keep one source of truth (AGENTS.md) and point tool-specific files
-(copilot-instructions.md, .cursorrules) at it — never maintain
-duplicates.</li>
-<li>A skill’s frontmatter <code>description</code> is what the model
-matches against to decide when to load it.</li>
-<li>Encode inputs, steps, success criteria, and provenance so a result
-can be reproduced and audited.</li>
+<ul><li>
+<code>AGENTS.md</code> holds project context; a
+<code>SKILL.md</code> holds a procedure the assistant loads when
+needed.</li>
+<li>Put success criteria in the skill so you can check the result.</li>
 </ul></div>
 </div>
 </div>
@@ -882,8 +808,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/04-skills.html",
   "identifier": "https://eic.github.io/tutorial-mcp/04-skills.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-07-16",
-  "datePublished": "2026-09-29"
+  "dateModified": "2026-09-30",
+  "datePublished": "2026-09-30"
 }
 
   </script><script>

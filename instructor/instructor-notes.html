@@ -128,9 +128,6 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 <hr>
-<li><a class="dropdown-item" href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li>
-<li><a class="dropdown-item" href="analysis-approaches.html">Alternative Analysis Approaches</a></li>
-<li><a class="dropdown-item" href="discuss.html">Discussion</a></li>
 <li><a class="dropdown-item" href="reference.html">Reference</a></li>
           </ul>
 </li>
@@ -334,9 +331,6 @@
                         <a href="../instructor/images.html">Extract All Images</a>
                       </li>
                       <hr>
-<li><a class="dropdown-item" href="about-the-physics.html">Physics reference: Λ⁰ → p π⁻</a></li>
-<li><a class="dropdown-item" href="analysis-approaches.html">Alternative Analysis Approaches</a></li>
-<li><a class="dropdown-item" href="discuss.html">Discussion</a></li>
 <li><a class="dropdown-item" href="reference.html">Reference</a></li>
                     </ul>
 </div>
@@ -374,17 +368,15 @@
 <p>This lesson is aimed at <strong>graduate students and
 researchers</strong> new to AI tooling. It assumes command-line comfort
 and introductory particle-physics background (four-momentum, invariant
-mass, histograms, fitting). It teaches a portable method — the agentic
-harness — applied to a real ePIC measurement (Λ⁰ → p π⁻), and is
-deliberately <strong>tool-agnostic</strong>: learners pick one assistant
-(opencode, Copilot, or Cursor) and everything else works through
-MCP.</p>
+mass, histograms, fitting). It teaches the agentic harness, applied to a
+real ePIC measurement (Λ⁰ → p π⁻). It is <strong>tool-agnostic</strong>:
+the lesson uses opencode, but any MCP client works.</p>
 </section><section><h2 class="section-heading" id="what-is-built-vs--outlined">What is built vs. outlined<a class="anchor" aria-label="anchor" href="#what-is-built-vs--outlined"></a>
 </h2>
 <hr class="half-width">
 <ul>
 <li>
-<strong>Episodes 1–3 are the hands-on core</strong> — the agentic
+<strong>Episodes 1–3 are the hands-on core</strong>: the agentic
 harness, the physics, and the MCP tool server (run, register, inspect,
 histogram).</li>
 <li>
@@ -402,28 +394,24 @@ the corun-ai ecosystem.</li>
 </h2>
 <hr class="half-width">
 <ul>
-<li>Make sure learners have <strong>eic-shell</strong> working and
-<strong>opencode</strong> installed with a free model connected (Setup
-page). Only the tool servers run inside eic-shell.</li>
+<li>Make sure learners have an up-to-date <strong>eic-shell</strong>
+(<code>./eic-shell --upgrade</code>); it contains the servers and
+<code>opencode</code>. The upgrade downloads gigabytes, so ask for it
+ahead of time.</li>
 <li>No JLab account or data download is needed: the <code>rucio</code>
 server signs in automatically with the shared read-only
 <code>eicread</code> account, and the assistant reads files over
 <code>root://</code> in place.</li>
-<li>Have learners run <code>eic-mcp up</code> once ahead of time — the
-first run bootstraps the three servers automatically, which takes a few
-minutes; every later start is seconds.</li>
 <li>The Episode 3 exercise pins a campaign (currently
-<code>26.04.1</code>). Campaigns retire — run the campaign-listing
-prompt from Episode 3 beforehand and bump the version in the exercise if
+<code>26.04.1</code>). Campaigns retire: run the campaign-listing prompt
+from Episode 3 beforehand and bump the version in the exercise if
 production has moved on.</li>
 </ul></section><section><h2 class="section-heading" id="timing-and-pitfalls">Timing and pitfalls<a class="anchor" aria-label="anchor" href="#timing-and-pitfalls"></a>
 </h2>
 <hr class="half-width">
 <ul>
 <li>Total ≈ 2 h 45 m teaching + 1.5 h exercises (a full day with
-breaks). Episode 3 is the longest; budget time for the first
-<code>eic-mcp up</code> (one-time bootstrap) and connecting opencode to
-a model.</li>
+breaks). Episode 3 is the longest.</li>
 <li>
 <strong>Common snag:</strong> the assistant stays in “one-shot” mode
 and only prints code. Have learners confirm <strong>Agent/edit
@@ -435,17 +423,13 @@ nothing, check <code>eic-mcp status</code> and that
 <code>eic-mcp config opencode</code>) is in the directory where
 <code>opencode</code> was launched.</li>
 <li>
-<strong>Statistics:</strong> peak clarity scales with how many
-<code>root://</code> files the assistant processes — a few files show a
-modest excess; tens of files give a clean fit. Set expectations
-accordingly.</li>
+<strong>Statistics:</strong> the peak gets clearer with more
+<code>root://</code> files: a few files show a small excess; tens of
+files give a clean fit. Set expectations accordingly.</li>
 <li>
-<strong>macOS learners:</strong> two symptoms of a missed Setup step
-— <code>/mcp</code> finds nothing on the Mac (no
-<code>-p 127.0.0.1:9101-9104</code> in <code>./eic-shell</code>), or the
-servers re-bootstrap every session (<code>eic-mcp status</code> must
-show a state dir under their eic-shell folder, not
-<code>/root</code>).</li>
+<strong>macOS learners:</strong> the container home is wiped when
+eic-shell exits, so keep work in the eic-shell folder. A client on the
+Mac itself needs the port edit from the Setup page.</li>
 <li>
 <strong>Free-tier throttling:</strong> at busy hours the free hosted
 models can take minutes per agent turn (the MCP tool context makes each
@@ -453,14 +437,15 @@ request large). If the session drags, switch the class to another free
 model in the opencode picker, or keep one paid key as backup.</li>
 <li>
 <strong>Store outage:</strong> if rucio queries work but all
-xrootd/uproot file access times out, the XRootD store is likely down —
-verify with
+xrootd/uproot file access times out, the XRootD store is likely down.
+Check with
 <code>xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO</code>
 before the session, and have a fallback ready (Episodes 1–2 material, or
 a locally cached file). BNL disk serves campaigns 25.12.0 onward (the
 <code>eic-mcp</code> default); the JLab store
-(<code>root://dtn-eic.jlab.org</code>, <code>/volatile/eic/EPIC</code>)
-has campaigns up to 25.10.x.</li>
+(<code>root://dtn2304.jlab.org:8443</code>,
+<code>/jlab-osdf-ro/eic/EPIC/volatile</code>) has campaigns up to
+25.10.x.</li>
 </ul></section><section><h2 class="section-heading" id="verifying-your-own-setup">Verifying your own setup<a class="anchor" aria-label="anchor" href="#verifying-your-own-setup"></a>
 </h2>
 <hr class="half-width">
@@ -473,9 +458,8 @@ the same peak in uproot, RDataFrame, TTreeReader, and PODIO.</p>
 </h2>
 <hr class="half-width">
 <p>The Setup page’s assistant table dates quickly. Pricing and free
-tiers change often — check current vendor docs before teaching, and
-update the table. The <em>MCP</em> portability message is the stable
-part.</p>
+tiers change often; check the vendor docs before teaching and update the
+table.</p>
 <!--
 Place links that you need to refer to multiple times across pages here. Delete
 any links that you are not going to use.
@@ -536,8 +520,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/instructor-notes.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/instructor-notes.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-09-29",
-  "datePublished": "2026-09-29"
+  "dateModified": "2026-09-30",
+  "datePublished": "2026-09-30"
 }
 
   </script><script>
