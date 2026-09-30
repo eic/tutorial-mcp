@@ -86,7 +86,8 @@ running and put the client config in the directory where you start the client.
   ```bash
   cd ~/eic
   grep -q 9101 eic-shell || sed -i '' 's|^docker run |docker run -p 127.0.0.1:9101-9103:9101-9103 |' eic-shell
-  curl -fsSLO https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/opencode.jsonc   # in your work directory
+  cd lambda                   # or the directory where you will launch opencode
+  curl -fsSLO https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/opencode.jsonc
   ```
 
 :::::::::::::::::::::::::::::::::::::::::::::
