@@ -131,6 +131,21 @@ In the session, `/mcp` lists the connected servers and their tools.
 Other clients use the same URLs: `eic-mcp config claude` (or `copilot`, `vscode`, `cursor`,
 `gemini`, `codex`) writes the file where that client reads it.
 
+::::::::::::::: callout
+
+## On a shared cluster node
+
+Skip `eic-mcp up` and `eic-mcp config`: ports on a shared node are open to every user there.
+Inside eic-shell, let the client start its own servers instead:
+
+```bash
+$ R=https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/cluster
+$ curl -fsSL -o opencode.jsonc $R/opencode.jsonc && opencode    # opencode
+$ curl -fsSL -o .mcp.json $R/claude.json && claude              # Claude Code
+```
+
+:::::::::::::::
+
 ## Finding the data with MCP
 
 You do not download a dataset. The other two MCP servers let the assistant find and verify the
