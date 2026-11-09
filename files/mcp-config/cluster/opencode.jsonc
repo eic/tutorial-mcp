@@ -1,0 +1,25 @@
+{
+  // opencode config for a shared cluster node. opencode starts its own servers over stdio
+  // inside eic-shell, so there is no `eic-mcp up` and no ports other users can reach.
+  // Save as opencode.jsonc in the directory where you launch opencode, inside eic-shell.
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "uproot": { "type": "local", "command": ["uproot-mcp-server"] },
+    "xrootd": {
+      "type": "local",
+      "command": ["xrootd-mcp-server"],
+      "environment": { "XROOTD_SERVER": "root://epicxrd1.sdcc.bnl.gov:1095", "XROOTD_BASE_DIR": "/eic/EPIC" }
+    },
+    "rucio": {
+      "type": "local",
+      "command": ["rucio-eic-mcp"],
+      "environment": {
+        "RUCIO_URL": "https://rucio-server.jlab.org:443",
+        "RUCIO_AUTH_TYPE": "userpass",
+        "RUCIO_USERNAME": "eicread",
+        "RUCIO_PASSWORD": "eicread",
+        "RUCIO_ACCOUNT": "eicread"
+      }
+    }
+  }
+}
