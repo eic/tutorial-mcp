@@ -895,7 +895,7 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-03-mcp-servers"><p>Content from <a href="03-mcp-servers.html">Tool servers and the Model Context Protocol (MCP)</a></p>
 <hr>
-<p>Last updated on 2026-09-30 |
+<p>Last updated on 2026-11-09 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/03-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 65 minutes</p>
@@ -1055,6 +1055,27 @@ their tools.</p>
 (or <code>copilot</code>, <code>vscode</code>, <code>cursor</code>,
 <code>gemini</code>, <code>codex</code>) writes the file where that
 client reads it.</p>
+<div id="on-a-shared-cluster-node" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="on-a-shared-cluster-node" class="callout-inner">
+<h3 class="callout-title">On a shared cluster node</h3>
+<div class="callout-content">
+<p>Skip <code>eic-mcp up</code> and <code>eic-mcp config</code>: ports
+on a shared node are open to every user there. Inside eic-shell, let the
+client start its own servers instead:</p>
+<div class="codewrapper sourceCode" id="cb4">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="ex">$</span> R=https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/cluster</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a><span class="ex">$</span> curl <span class="at">-fsSL</span> <span class="at">-o</span> opencode.jsonc <span class="va">$R</span>/opencode.jsonc <span class="kw">&amp;&amp;</span> <span class="ex">opencode</span>    <span class="co"># opencode</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a><span class="ex">$</span> curl <span class="at">-fsSL</span> <span class="at">-o</span> .mcp.json <span class="va">$R</span>/claude.json <span class="kw">&amp;&amp;</span> <span class="ex">claude</span>              <span class="co"># Claude Code</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
 </section><section><h2 class="section-heading" id="finding-the-data-with-mcp">Finding the data with MCP<a class="anchor" aria-label="anchor" href="#finding-the-data-with-mcp"></a>
 </h2>
 <hr class="half-width">
@@ -1609,7 +1630,7 @@ on a file from Episode 3.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1662,7 +1683,7 @@ pairs.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>Replace the skill’s Provenance section with:</p>
 <div class="codewrapper sourceCode" id="cb9">
@@ -2287,8 +2308,8 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/instructor/aio.html",
   "identifier": "https://eic.github.io/tutorial-mcp/instructor/aio.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-11-03",
-  "datePublished": "2026-11-03"
+  "dateModified": "2026-11-09",
+  "datePublished": "2026-11-09"
 }
 
   </script><script>
