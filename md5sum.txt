@@ -11,6 +11,6 @@
 "episodes/05-end-to-end-agents.md" "09fb30ab2284aa0f53c7db1ac62e136e" "site/built/05-end-to-end-agents.md" "2026-11-10"
 "episodes/06-eic-mcp-servers.md" "ce3440f981311ec718a4343f7b856e2b" "site/built/06-eic-mcp-servers.md" "2026-11-10"
 "instructors/instructor-notes.md" "a6f910fa82eb03f61b65aa76b0dfe2c0" "site/built/instructor-notes.md" "2026-11-10"
-"learners/setup.md" "5a720b0135d4bc6b4d5e914642a5c25f" "site/built/setup.md" "2026-11-10"
+"learners/setup.md" "0de5040b8f3e19072ca5fde99a0ecff9" "site/built/setup.md" "2026-11-10"
 "learners/reference.md" "26dd313d3ac5afa4382768512d505dc8" "site/built/reference.md" "2026-11-10"
 "profiles/learner-profiles.md" "7b06d2479ccdc25eeb739180c7865bb6" "site/built/learner-profiles.md" "2026-07-10"
