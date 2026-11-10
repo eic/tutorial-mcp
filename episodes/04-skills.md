@@ -193,13 +193,29 @@ curl -fsSLO $R/AGENTS.md
 curl -fsSL --create-dirs -o .opencode/skills/lambda-fit/SKILL.md $R/lambda-fit/SKILL.md
 ```
 
-Loading is the model's decision, based on the skill's `description`. A small model may answer
-without loading it, so every prompt in this lesson names the skill: "Using the lambda-fit skill".
-Clients without a skill mechanism can reference the procedure from `AGENTS.md` instead.
+Restart opencode so it reads them. Loading a skill is the model's decision, based on the skill's
+`description`. A small model may answer without loading it, so every prompt in this lesson names
+the skill: "Using the lambda-fit skill".
+
+::::::::::::::::::::::::::::::::::::::::::::: challenge
+
+## Exercise: the bare question again (≈ 5 min)
+
+In a new session, with `AGENTS.md` in place, repeat the question from Episode 3 and count the tool
+calls:
+
+```{.ai-prompt}
+How many events are in the first file of the campaign 26.04.1 BeAGLE eCu ep 10x115 reconstructed-DIS dataset?
+```
+
+::::::::::::::: solution
+
+Same answer, 1,223. In the test run: 3 tool calls (`list_dids`, `list_files`,
+`validate_dataset_schema`) and 20 s, against 16 calls and 102 s without the file.
+
+:::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::::::::::
-
-Get both example files in place: [`files/skills/AGENTS.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md) (download it to your analysis directory) and [`files/skills/lambda-fit/SKILL.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md) (download it as above).
 
 ## Your project layout
 
@@ -207,52 +223,52 @@ A project that behaves the same under any assistant:
 
 ```bash
 lambda-analysis/
-├── AGENTS.md                        # source of truth: context + conventions (write this)
-├── .github/
-│   └── copilot-instructions.md      # points to AGENTS.md   (bridge for Copilot)
-├── .cursorrules                     # points to AGENTS.md   (bridge for Cursor)
-├── opencode.jsonc                   # MCP server connections: `eic-mcp config opencode` (Episode 3)
+├── AGENTS.md                        
+├── opencode.jsonc                   
 └── .opencode/
     └── skills/
-        └── lambda-fit/              # downloaded from the lesson (see callout above;
-            └── SKILL.md             #  `.claude/skills/` for Claude Code)
+        └── lambda-fit/              
+            └── SKILL.md            
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
-## Exercise: a summary skill (≈ 10 min)
+## Exercise: a species-count skill (≈ 10 min)
 
-Write a minimal `SKILL.md` for "summarize the contents of any EDM4eic file", place it where your
-client loads skills, and try it on a file from Episode 3.
+Write a minimal `SKILL.md` for "count the reconstructed charged particles per PDG code in an
+EDM4eic file", place it where your client loads skills, restart the client, and try it on a file
+from Episode 3.
 
 ::::::::::::::: solution
 
 ```markdown
 ---
-name: edm4eic-summary
+name: species-count
 description: >
-  Summarize the contents of an EDM4eic .root file. Use when asked what a
-  reconstruction file contains, which trees or collections it holds, or
-  how many events it has.
+  Count reconstructed charged particles per PDG code in an EDM4eic .root file.
+  Use when asked which particle species a reconstruction file contains.
 ---
 
-# EDM4eic file summary
+# Species count
 
 ## Steps
-1. get_tree_info on the `events` tree: entry count and collection names.
-   (Skip get_file_structure — on EDM4eic files it returns megabytes.)
-2. get_tree_info on `runs` and `podio_metadata` for provenance.
-3. Return a compact summary: each tree with its entry count, and the
-   top-level collections grouped by kind (truth, tracking, calorimetry,
-   PID, reconstructed).
+1. validate_dataset_schema on the file: tree 'events', branch
+   ReconstructedChargedParticles.PDG. Note the event count.
+2. execute_kernel with that branch and this kernel, unchanged:
+
+       def kernel(events):
+           pdg = ak.to_numpy(ak.flatten(events["ReconstructedChargedParticles.PDG"]))
+           unique = np.unique(pdg, return_counts=True)
+           return {"pdg": unique[0].tolist(), "count": unique[1].tolist()}
+
+3. Return a table: PDG code, species name, count, fraction.
 
 ## Success criteria
-Every tree named with its entry count; if a tree is missing, say so
-rather than guessing.
+The fractions sum to 1. Code 0 is reported as "no PID", not dropped.
 ```
 
-Save it as `.opencode/skills/edm4eic-summary/SKILL.md` and name it in the prompt
-("Using the edm4eic-summary skill, …"); a small model may not load it from the description alone.
+Save it as `.opencode/skills/species-count/SKILL.md` and name it in the prompt
+("Using the species-count skill, …").
 
 :::::::::::::::
 
@@ -260,7 +276,7 @@ Save it as `.opencode/skills/edm4eic-summary/SKILL.md` and name it in the prompt
 
 ::::::::::::::::::::::::::::::::::::::::::::: challenge
 
-## Exercise: richer provenance (≈ 5 min)
+## Optional exercise: richer provenance
 
 Extend the provenance section of `lambda-fit` so a run also records the number of input files and
 the total number of candidate pairs.
@@ -271,14 +287,12 @@ Replace the skill's Provenance section with:
 
 ```markdown
 ## Provenance
-List the tool calls and their parameters, the dataset used (campaign and
-file list), the number of input files processed, and the total number of
-proton-pion candidate pairs entering the histogram, so the run can be
-reproduced.
+List the dataset DID, the files used, the number of input files processed,
+the total number of proton-pion candidate pairs entering the histogram, and
+the tool calls with their arguments, so the run can be reproduced.
 ```
 
-The kernel can return the pair count next to the histogram
-(e.g. `{"counts": ..., "n_pairs": int(len(m))}`) and sum it over files.
+The kernel can return the number of pairs before histogramming as one more dictionary entry.
 
 :::::::::::::::
 

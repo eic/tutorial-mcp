@@ -64,7 +64,19 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 Continue in the directory from Episodes 3 and 4: servers running (`eic-mcp status`),
 `AGENTS.md` and the lambda-fit skill installed, and `/mcp` in opencode listing `uproot`, `xrootd`,
 and `rucio`.
-    C --> D["report μ, σ, S, χ²/ndf<br/>+ plot + provenance"]:::out
+
+## The composed pipeline
+
+The skill (Episode 4) gives the steps, the uproot server (Episode 3) reads the data, and the agent loop (Episode 1) runs and checks it.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
+flowchart LR
+    accTitle: {End-to-end agent run}
+    accDescr: {End-to-end agent run}
+    A["resolve input<br/>root:// file or file list"]:::data --> B["build m(p,π) histogram<br/>uproot MCP"]:::tool
+    B --> C["fit Gaussian + poly-2<br/>uproot MCP"]:::tool
+    C --> D["report μ, σ, S, χ²/ndf<br/>+ provenance"]:::out
     classDef data fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
@@ -72,26 +84,15 @@ and `rucio`.
 
 ## One file, end to end
 
-With the three servers running and the lambda-fit skill available, one request runs the whole chain. Point it at one of the dataset's `root://` files. The assistant uses `rucio` tools to find a DIS dataset and `list_file_replicas` for the URLs, `xrootd` to confirm the file is there, then reads it in place:
+One request runs the whole chain on the first file of the dataset:
 
 ```{.ai-prompt}
 Using the lambda-fit skill, measure the Lambda0 peak in this file:
-root://epicxrd1.sdcc.bnl.gov:1095//... (one root:// file of the campaign 26.04.1
-BeAGLE eCu ep 10x115 dataset from Episode 3's exercise).
-Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
-fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot, or report insufficient
-statistics if the fit window is too sparse.
+root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC/RECO/26.04.1/epic_craterlake/DIS/BeAGLE1.03.02-1.0/eCu/ep/10x115/q2_1to1000/BeAGLE1.03.02-1.0_DIS_eCu_ep_10x115_q2_1to1000_ab.0000.eicrecon.edm4eic.root
 ```
 
-The assistant builds the histogram with the uproot server, then fits it. If your model stops after the histogram (small models do), paste the fit as its own request:
-
-```{.ai-prompt}
-Fit the histogram you just built with execute_kernel: a Gaussian plus a 2nd-order polynomial
-over [1.08, 1.16] GeV. Report mu, sigma, the signal yield S, and chi2/ndf, checked against
-the lambda-fit skill's success criteria.
-```
-
-One file gives only ~8 candidates in the fit window, so the correct answer is *insufficient statistics*: the skill says to stop instead of fitting, and a model that quotes $\mu$ anyway has ignored it. The peak at $\mu \approx 1.1157$ GeV comes from the larger sample below.
+One file gives only about 10 candidates in the fit window, so the correct answer is *insufficient
+statistics*: the skill says to stop, and a model that quotes $\mu$ anyway has ignored it.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
@@ -106,24 +107,25 @@ A smaller model may call different tools than the skill says and still get the s
 The same kernel can run over many files and return one merged histogram:
 
 ```{.ai-prompt}
-Using the lambda-fit skill, run the same proton-pion mass kernel across the first 10 files of the
-campaign 26.04.1 BeAGLE eCu ep 10x115 dataset with execute_kernel_dataset (tree 'events'),
-merge the histograms, then fit the result and report mu, sigma, the yield, and chi2/ndf
-for both Lambda and anti-Lambda.
+Using the lambda-fit skill, measure the Lambda0 and anti-Lambda0 peaks in the first 10 files of
+the dataset epic:/RECO/26.04.1/epic_craterlake/DIS/BeAGLE1.03.02-1.0/eCu/ep/10x115/q2_1to1000.
 ```
 
-Ten files take about a minute (paste the fit prompt above if it stops). For more files, run
-background jobs in batches and let the assistant wait for them:
+Ten files take about a minute and a half. For 30 files the skill makes three such calls:
 
 ```{.ai-prompt}
-Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
-campaign 26.04.1 BeAGLE eCu ep 10x115 dataset. Submit it with submit_kernel_dataset
-(tree 'events') in batches of about 20 files, poll get_job_status until every job finishes,
-fetch the histograms with get_job_result and merge them, then fit and report mu, sigma,
-the yield, and chi2/ndf for both Lambda and anti-Lambda.
+Using the lambda-fit skill, repeat the measurement with the first 30 files of the same dataset.
 ```
 
-Thirty files are enough for a visible peak. The reference spectrum below uses ~100 files:
+Thirty files take about ten minutes. A reference fit:
+
+```output
+Lambda      -> p pi-:    mu = 1116.25 +/- 0.37 MeV   sigma = 3.1 +/- 0.5 MeV   S =  97 +/- 19   chi2/ndf = 1.06
+anti-Lambda -> pbar pi+: mu = 1115.50 +/- 0.25 MeV   sigma = 2.2 +/- 0.2 MeV   S = 102 +/- 15   chi2/ndf = 0.71
+```
+
+The histogram is the same in every run (321 and 294 entries in the window). The assistant writes
+its own fit, so $\mu$, $\sigma$, and $S$ vary between runs within these uncertainties.
 
 ![Fitted Λ⁰ and Λ̄ invariant-mass spectra (reference fit)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
 
