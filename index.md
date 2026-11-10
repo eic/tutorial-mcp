@@ -22,16 +22,6 @@ The lesson develops three ideas and applies them end to end:
 The lesson uses [opencode](https://opencode.ai), but the parts you build (MCP tool servers, a
 skill) work with any assistant.
 
-::::::::::::::::::::::::::::::::::::::::::::: callout
-
-## What you will produce
-
-A workflow in which an assistant opens a real ePIC reconstruction file, queries its schema through
-a verifiable tool interface, builds the Λ⁰ invariant-mass spectrum, and fits it, driven by
-natural-language requests, with results and provenance you can independently check.
-
-:::::::::::::::::::::::::::::::::::::::::::::
-
 ::::::::::::::::::::::::::::::::::::::::::::: prereq
 
 ## Prerequisites
