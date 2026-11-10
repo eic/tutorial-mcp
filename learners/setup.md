@@ -37,12 +37,9 @@ opencode
 ```
 
 In opencode, `/mcp` should list `uproot`, `xrootd`, and `rucio` as connected. The free hosted
-models need no login. The servers stop when you leave eic-shell: keep that shell open, and after a
-restart run `eic-mcp up` again. If `eic-mcp` or `opencode` is not found, exit eic-shell, return to the folder
-containing the launcher, run `./eic-shell --upgrade`, and start eic-shell again.
+models need no login. The servers stop when you leave eic-shell: keep that shell open.
 
-On macOS, eic-shell is a Docker container: the servers stop when you leave it, and its home
-(`/root`) is wiped, so opencode forgets its settings. Keep your work in the eic-shell folder.
+On macOS the container's home (`/root`) is wiped on exit: keep your work in the eic-shell folder.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
@@ -66,23 +63,23 @@ read/write your files and run commands, not just emit text — works, and MCP wo
 
 | Tool | Interface | Free access |
 | --- | --- | --- |
-| [opencode](https://opencode.ai) | terminal | open source (MIT); free hosted models (no key), an API key, or a local model |
-| [GitHub Copilot](https://github.com/features/copilot) | [VS Code](https://code.visualstudio.com/), CLI | free tier; free Pro for verified students/educators/OSS maintainers |
-| [Antigravity](https://antigravity.google/) | terminal (`agy`), IDE | replaces Gemini CLI for personal Google accounts; free preview |
-| [Codex](https://developers.openai.com/codex) | terminal, IDE | included with paid ChatGPT plans |
-| [Claude Code](https://claude.com/claude-code) | terminal, IDE | included with Claude plans |
+| [opencode](https://opencode.ai) | terminal | free hosted models, an API key, or a local model |
+| [GitHub Copilot](https://github.com/features/copilot) | [VS Code](https://code.visualstudio.com/), CLI | free tier; free Pro for students and educators |
+| [Antigravity](https://antigravity.google/) | terminal (`agy`), IDE | free preview; replaces Gemini CLI |
+| [Codex](https://developers.openai.com/codex) | terminal, IDE | paid ChatGPT plans |
+| [Claude Code](https://claude.com/claude-code) | terminal, IDE | Claude plans |
 | [Cursor](https://cursor.com/) | dedicated editor | free tier |
-| [Cline](https://cline.bot/) | VS Code extensions | open source; needs an API key |
+| [Cline](https://cline.bot/) | VS Code extensions | needs an API key |
 
 eic-shell also has `claude` and `copilot`: run `eic-mcp config claude` (or `copilot`), then start
-it. The first login prints a code to paste in a browser, so it works over SSH.
+it.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Assistant outside eic-shell
 
-The servers must run in eic-shell, but the client can run on your machine. Keep `eic-mcp up`
-running and put the client config in the directory where you start the client.
+The servers must run in eic-shell, but the client can run on your machine, started in the
+directory that holds its config file.
 
 * **Linux, WSL:** apptainer shares the host network and your home directory. Run
   `eic-mcp config <client>` inside eic-shell, in the directory where you will start the client.
@@ -90,12 +87,11 @@ running and put the client config in the directory where you start the client.
   download the client config on the Mac (`eic-mcp` does not run on the Mac itself):
 
   ```bash
-  cd ~/eic
   DOCKER_OPTIONS="$(./eic-shell -- eic-mcp docker-args)" ./eic-shell
   ```
 
   ```bash
-  cd ~/eic/lambda             # on the Mac: the directory where you will launch opencode
+           # on Mac: the directory where you will launch opencode
   curl -fsSLO https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/opencode.jsonc
   ```
 
