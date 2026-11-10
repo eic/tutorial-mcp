@@ -1,6 +1,6 @@
 ---
 title: "Catalog: MCP servers and AI infrastructure in the EIC ecosystem"
-teaching: 15
+teaching: 5
 exercises: 0
 ---
 
@@ -48,12 +48,14 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
 - Which other MCP servers does EIC provide?
-- How can you use them without any setup?
+- Where are shared skills kept?
+- How can you use the tools without any setup?
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
+- Find a shared skill in `eic/skills` before writing your own.
 - Ask the DISpatcher bot a question about data, software, or production.
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -84,6 +86,7 @@ flowchart TB
     end
     subgraph CODE["code knowledge"]
         direction LR
+        DO["eic-docs-mcp"]:::code
         LX["LXR-mcp · BNL-hosted"]:::code
         GH["GitHub-mcp · standard"]:::code
     end
@@ -100,6 +103,7 @@ flowchart TB
     click XR "https://github.com/eic/xrootd-mcp-server" _blank
     click RU "https://github.com/eic/rucio-eic-mcp-server" _blank
     click ZE "https://github.com/eic/zenodo-mcp-server" _blank
+    click DO "https://github.com/eic/eic-docs-mcp" _blank
     click LX "https://eic-code-browser.sdcc.bnl.gov/lxr/source" _blank
     click GH "https://github.com/github/github-mcp-server" _blank
     click PB "https://chat.epic-eic.org/main/channels/dispatcher" _blank
@@ -155,11 +159,30 @@ flowchart TB
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
+## eic-docs-mcp: search the documentation  ·  *available*
+
+[`eic/eic-docs-mcp`](https://github.com/eic/eic-docs-mcp) gives full-text search over the
+[eic.github.io](https://eic.github.io) pages and the software tutorials, including this one.
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: callout
+
 ## LXR-mcp: source cross-reference  ·  *available (BNL-hosted)*
 
 Searches the ePIC source code through the [LXR browser](https://eic-code-browser.sdcc.bnl.gov/lxr/source), which is updated nightly. It runs only on the BNL-hosted services.
 
 :::::::::::::::::::::::::::::::::::::::::::::
+
+## Shared skills: eic/skills
+
+The `AGENTS.md` and `SKILL.md` you used in [Episode 4](04-skills.md) live in one analysis
+directory. [`eic/skills`](https://github.com/eic/skills) ([site](https://eic.github.io/skills/)) is
+the collaboration's shared repository of such definitions: skills, agents, and four packs that
+bundle them (onboarding, simulation, reconstruction, analysis), with setup guides for Copilot CLI,
+Claude, Cursor, Codex, and VS Code. Look there before writing a skill, and contribute the ones
+that work: a skill that encodes how to find a dataset or check a campaign saves every user the
+tool calls you counted in Episode 3.
 
 ## No setup: the DISpatcher bot
 
@@ -181,6 +204,7 @@ The [EIC software portal](https://eic.github.io/) also has an AI search box ("As
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
 - EIC provides more MCP servers than the three used here.
+- Shared skills and agent definitions are in `eic/skills`.
 - The DISpatcher bot in Mattermost gives you these tools without any setup.
 
 :::::::::::::::::::::::::::::::::::::::::::::

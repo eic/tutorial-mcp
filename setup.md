@@ -12,6 +12,7 @@ and download no data: `rucio` is already signed in to the shared read-only `eicr
 
 * [ ] **eic-shell** is up to date (`./eic-shell --upgrade`).
 * [ ] Inside eic-shell, **`eic-mcp up`** starts three servers and **`opencode`** opens.
+* [ ] The assistant can list the campaigns on the data store.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -36,7 +37,8 @@ opencode
 ```
 
 In opencode, `/mcp` should list `uproot`, `xrootd`, and `rucio` as connected. The free hosted
-models need no login. If `eic-mcp` or `opencode` is not found, exit eic-shell, return to the folder
+models need no login. The servers stop when you leave eic-shell: keep that shell open, and after a
+restart run `eic-mcp up` again. If `eic-mcp` or `opencode` is not found, exit eic-shell, return to the folder
 containing the launcher, run `./eic-shell --upgrade`, and start eic-shell again.
 
 On macOS, eic-shell is a Docker container: the servers stop when you leave it, and its home
@@ -46,9 +48,12 @@ On macOS, eic-shell is a Docker container: the servers stop when you leave it, a
 
 ## Check it works
 
-In an empty directory, ask: *"Create hello.py that prints the PDG Λ⁰ baryon mass in GeV, then run
-it."* The assistant should write the file and run it, printing `1.115683`. If it only shows the
-code, switch it to agent (build) mode.
+Ask: *"Create hello.py that prints the PDG Λ⁰ baryon mass in GeV, then run it."* The assistant
+should write the file and run it, printing `1.115683`. If it only shows the code, switch it to
+agent (build) mode.
+
+Then ask: *"Use the xrootd tools to list /eic/EPIC/RECO."* The answer should be a list of campaign
+versions (`26.04.1`, …). This checks the servers and the data store.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -61,13 +66,13 @@ read/write your files and run commands, not just emit text — works, and MCP wo
 
 | Tool | Interface | Free access |
 | --- | --- | --- |
-| [opencode](https://opencode.ai) | terminal | open source (MIT); free hosted models (no key), bring your own key, or a local model |
+| [opencode](https://opencode.ai) | terminal | open source (MIT); free hosted models (no key), an API key, or a local model |
 | [GitHub Copilot](https://github.com/features/copilot) | [VS Code](https://code.visualstudio.com/), CLI | free tier; free Pro for verified students/educators/OSS maintainers |
-| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | terminal | open source; free tier with a personal Google account |
-| [Codex](https://developers.openai.com/codex) | terminal, IDE | included with ChatGPT plans |
+| [Antigravity](https://antigravity.google/) | terminal (`agy`), IDE | replaces Gemini CLI for personal Google accounts; free preview |
+| [Codex](https://developers.openai.com/codex) | terminal, IDE | included with paid ChatGPT plans |
 | [Claude Code](https://claude.com/claude-code) | terminal, IDE | included with Claude plans |
 | [Cursor](https://cursor.com/) | dedicated editor | free tier |
-| [Cline](https://cline.bot/) / [Continue](https://continue.dev/) | VS Code extensions | open source; bring your own key |
+| [Cline](https://cline.bot/) | VS Code extensions | open source; bring your own key |
 
 eic-shell also has `claude` and `copilot`: run `eic-mcp config claude` (or `copilot`), then start
 it. The first login prints a code to paste in a browser, so it works over SSH.
@@ -79,7 +84,8 @@ it. The first login prints a code to paste in a browser, so it works over SSH.
 The servers must run in eic-shell, but the client can run on your machine. Keep `eic-mcp up`
 running and put the client config in the directory where you start the client.
 
-* **Linux, WSL:** apptainer shares the host network. Run `eic-mcp config <client>` there.
+* **Linux, WSL:** apptainer shares the host network and your home directory. Run
+  `eic-mcp config <client>` inside eic-shell, in the directory where you will start the client.
 * **macOS:** publish the ports once, restart `./eic-shell`, and download the example config
   (`eic-mcp` does not run on the Mac itself):
 
