@@ -72,7 +72,7 @@ read/write your files and run commands, not just emit text — works, and MCP wo
 | [Codex](https://developers.openai.com/codex) | terminal, IDE | included with paid ChatGPT plans |
 | [Claude Code](https://claude.com/claude-code) | terminal, IDE | included with Claude plans |
 | [Cursor](https://cursor.com/) | dedicated editor | free tier |
-| [Cline](https://cline.bot/) | VS Code extensions | open source; bring your own key |
+| [Cline](https://cline.bot/) | VS Code extensions | open source; needs an API key |
 
 eic-shell also has `claude` and `copilot`: run `eic-mcp config claude` (or `copilot`), then start
 it. The first login prints a code to paste in a browser, so it works over SSH.
@@ -86,13 +86,16 @@ running and put the client config in the directory where you start the client.
 
 * **Linux, WSL:** apptainer shares the host network and your home directory. Run
   `eic-mcp config <client>` inside eic-shell, in the directory where you will start the client.
-* **macOS:** publish the ports once, restart `./eic-shell`, and download the example config
-  (`eic-mcp` does not run on the Mac itself):
+* **macOS:** start eic-shell with the server ports published, run `eic-mcp up` in it, and
+  download the client config on the Mac (`eic-mcp` does not run on the Mac itself):
 
   ```bash
   cd ~/eic
-  grep -q 9101 eic-shell || sed -i '' 's|^docker run |docker run -p 127.0.0.1:9101-9103:9101-9103 |' eic-shell
-  cd lambda                   # or the directory where you will launch opencode
+  DOCKER_OPTIONS="$(./eic-shell -- eic-mcp docker-args)" ./eic-shell
+  ```
+
+  ```bash
+  cd ~/eic/lambda             # on the Mac: the directory where you will launch opencode
   curl -fsSLO https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/opencode.jsonc
   ```
 
