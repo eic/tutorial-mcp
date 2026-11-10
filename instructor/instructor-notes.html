@@ -411,9 +411,8 @@ histogram).</li>
 <code>SKILL.md</code>, with full example files shipped under
 <code>files/skills/</code>.</li>
 <li>
-<strong>Episode 5</strong> is the end-to-end run (single file → full
-sample via <code>execute_kernel_dataset</code>, signal extraction, audit
-checklist), with a per-client setup section.</li>
+<strong>Episode 5</strong> is the end-to-end run (single file → 10
+and 30 files, signal extraction, audit exercise).</li>
 <li>
 <strong>Episode 6</strong> is a catalog of the EIC MCP servers and
 the corun-ai ecosystem.</li>
@@ -437,8 +436,8 @@ production has moved on.</li>
 </h2>
 <hr class="half-width">
 <ul>
-<li>Total ≈ 2 h 45 m teaching + 1.5 h exercises (a full day with
-breaks). Episode 3 is the longest.</li>
+<li>Total ≈ 1 h teaching + 1 h 5 m exercises (a 2-hour slot). Episode 3
+is the longest.</li>
 <li>
 <strong>Common snag:</strong> the assistant stays in “one-shot” mode
 and only prints code. Have learners confirm <strong>Agent/edit
@@ -450,9 +449,9 @@ nothing, check <code>eic-mcp status</code> and that
 <code>eic-mcp config opencode</code>) is in the directory where
 <code>opencode</code> was launched.</li>
 <li>
-<strong>Statistics:</strong> the peak gets clearer with more
-<code>root://</code> files: a few files show a small excess; tens of
-files give a clean fit. Set expectations accordingly.</li>
+<strong>Statistics:</strong> one file is below the skill’s minimum;
+10 files are a quick check; 30 files show the peak; the reference figure
+uses ~100.</li>
 <li>
 <strong>macOS learners:</strong> the container home is wiped when
 eic-shell exits, so keep work in the eic-shell folder. A client on the
@@ -461,7 +460,7 @@ Mac itself needs the port edit from the Setup page.</li>
 <strong>Free-tier throttling:</strong> at busy hours the free hosted
 models can take minutes per agent turn (the MCP tool context makes each
 request large). If the session drags, switch the class to another free
-model in the opencode picker, or keep one paid key as backup.</li>
+model in the opencode picker, or keep one paid API key as backup.</li>
 <li>
 <strong>Store outage:</strong> if rucio queries work but all
 xrootd/uproot file access times out, the XRootD store is likely down.

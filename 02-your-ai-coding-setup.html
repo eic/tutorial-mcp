@@ -123,7 +123,7 @@
     <a id="search-button-nav" class="btn btn-primary" href="aio.html" role="button" aria-label="Search the All In One page">Search the All In One page</a>
   </div><!--/div.container-fluid -->
 </nav><aside class="col-md-12 lesson-progress"><div class="progress incubator">
-    <div class="progress-bar incubator" role="progressbar" style="width: 21%" aria-valuenow="21" aria-valuemin="0" aria-valuemax="100" aria-label="Lesson Progress">21%</div>
+    <div class="progress-bar incubator" role="progressbar" style="width: 16%" aria-valuenow="16" aria-valuemin="0" aria-valuemax="100" aria-label="Lesson Progress">16%</div>
   </div>
 </aside><div class="container">
       <div class="row">
@@ -227,7 +227,7 @@
 
     <div id="flush-collapsecurrent" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushcurrent">
       <div class="accordion-body">
-        <ul><li><a href="#the-decay">The decay</a></li>
+        <ul><li><a href="#the-observable">The observable</a></li>
 <li><a href="#the-data-model">The data model</a></li>
         </ul></div><!--/div.accordion-body-->
     </div><!--/div.accordion-collapse-->
@@ -343,7 +343,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>The measurement: Λ⁰ → p π⁻</h1>
-        <p>Last updated on 2026-09-30 |
+        <p>Last updated on 2026-11-10 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/02-your-ai-coding-setup.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -355,27 +355,7 @@
 
         
 
-
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
-/* Mermaid: force diagram label text dark so it stays readable on the
-   light node fills in BOTH light and dark mode. The Carpentries dark
-   theme sets `p`/`li` color and darkens `pre` backgrounds, which would
-   otherwise turn mermaid's label text light (invisible on light nodes)
-   and the diagram surface dark. We override both, with !important to
-   beat the theme rules and mermaid's own inline styles. */
-.mermaid { background: transparent !important; }
-/* Hide the Workbench "Diagram source code" spoiler under each diagram */
-.mermaid-img-wrapper details { display: none !important; }
-.mermaid .nodeLabel, .mermaid .edgeLabel, .mermaid .label,
-.mermaid .cluster-label, .mermaid text, .mermaid tspan,
-.mermaid span, .mermaid p, .mermaid foreignObject div {
-  color: #10204a !important;
-  fill: #10204a !important;
-}
-.mermaid .edgeLabel, .mermaid .edgeLabel p, .mermaid .edgeLabel rect {
-  background-color: #e2e8f0 !important;
-}
-</style><div class="overview card">
+<div class="overview card">
 <h2 class="card-header">Overview</h2>
 <div class="row g-0">
 <div class="col-md-4">
@@ -392,84 +372,29 @@ background?</li>
 <div class="card-body">
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
-<ul><li>Compute m(p, π) by hand from the four momentum branches and the PDG
-masses.</li>
-<li>Sketch the expected spectrum (peak position, width scale, background
-shape) before looking at data.</li>
+<ul><li>Write m(p, π) in terms of the four branches and the PDG masses.</li>
+<li>State the expected peak position, width scale, and background shape
+before looking at data.</li>
 </ul></div>
 </div>
 </div>
 </div>
 </div>
-<p>The <a href="index.html#setup">Setup</a> page covers the servers and the
-assistant. This episode describes the physics you reconstruct starting
-in <a href="03-mcp-servers.html">Episode 3</a>.</p>
-<section><h2 class="section-heading" id="the-decay">The decay<a class="anchor" aria-label="anchor" href="#the-decay"></a></h2>
-<hr class="half-width"><p>The Λ⁰ is the lightest strange baryon (uds, spin-parity ½⁺). It
-decays only weakly (a strangeness-changing ΔS = 1 transition), so it is
-long-lived: cτ ≈ 7.9 cm. Its dominant hadronic mode is</p>
-<pre><code>Λ⁰ → p + π⁻      (branching fraction ≈ 63.9%)</code></pre>
-<p>The centimeter-scale flight distance makes the decay a
-<strong>V0</strong>: two oppositely charged tracks from a vertex
-displaced from the primary interaction point.</p>
-<pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
-flowchart LR
-    accTitle: {Lambda to proton pion V0 decay}
-    accDescr: {Lambda to proton pion V0 decay}
-    PV["primary vertex&lt;br/&gt;e + A collision"]:::vtx -. "Λ⁰: neutral, cτ ≈ 7.9 cm" .-&gt; DV["displaced&lt;br/&gt;decay vertex"]:::vtx
-    DV --&gt; P["proton&lt;br/&gt;PDG 2212"]:::pos
-    DV --&gt; PI["pion&lt;br/&gt;PDG -211"]:::neg
-    classDef vtx fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
-    classDef pos fill:#ffe3e3,stroke:#e03131,stroke-width:1.5px,color:#5c0a0a;
-    classDef neg fill:#e7f5ff,stroke:#1971c2,stroke-width:1.5px,color:#0a3d62;</code></pre>
-<div class="section level3">
-<h3 id="the-observable">The observable<a class="anchor" aria-label="anchor" href="#the-observable"></a></h3>
-<p>The Λ⁰ is neutral and not detected directly; we reconstruct it from
-its charged daughters. For a candidate proton <span class="math inline">\(p_1 = (E_1, \vec{p}_1)\)</span> and candidate pion
-<span class="math inline">\(p_2 = (E_2, \vec{p}_2)\)</span>, the pair’s
-<strong>invariant mass</strong> is Lorentz invariant:</p>
-<p><span class="math display">\[E_i = \sqrt{|\vec{p}_i|^2 +
-m_i^2}\]</span></p>
-<p>with <span class="math inline">\(m_i\)</span> the assigned proton or
-pion mass, and</p>
-<p><span class="math display">\[m(p, \pi) = \sqrt{(E_1 + E_2)^2 -
-|\vec{p}_1 + \vec{p}_2|^2}\]</span></p>
-<p>Assign the proton mass to one track and the pion mass to the other
-(using reconstructed particle ID). For true Λ⁰ decays this equals the
-parent mass; candidates accumulate in a <strong>peak at 1.115683
-GeV</strong>.</p>
-<div id="width-resolution-not-lifetime" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="width-resolution-not-lifetime" class="callout-inner">
-<h3 class="callout-title">Width: resolution, not lifetime</h3>
-<div class="callout-content">
-<p>The Λ⁰ natural width (<span class="math inline">\(\Gamma = \hbar/\tau
-\approx 2.5 \times 10^{-6}\)</span> eV) is far below any detector
-effect. The observed peak width, a few MeV, measures the
-<strong>detector momentum and angular resolution</strong>, not the
-particle.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a></h3>
-<p>Most proton–pion pairs do not come from a Λ⁰ at all. These random
-(“combinatorial”) pairs do not peak; they form a smooth distribution
-under the signal. The analysis extracts a yield by fitting a Gaussian
-peak on top of a low-order polynomial background (<a href="05-end-to-end-agents.html">Episode 5</a>). The charge-conjugate
-mode Λ̄ → p̄ π⁺ is reconstructed identically with the antiparticles.</p>
-<div id="reference-values-pdg" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="reference-values-pdg" class="callout-inner">
-<h3 class="callout-title">Reference values (PDG)</h3>
-<div class="callout-content">
+<section><h2 class="section-heading" id="the-observable">The observable<a class="anchor" aria-label="anchor" href="#the-observable"></a></h2>
+<hr class="half-width"><p>The Λ⁰ decays weakly to p π⁻ (branching fraction ≈ 63.9%, cτ ≈ 7.9
+cm). It is neutral, so we reconstruct it from its charged daughters.
+Assign the proton mass to one track and the pion mass to the other,
+using the reconstructed particle ID:</p>
+<p><span class="math display">\[E_i = \sqrt{|\vec{p}_i|^2 + m_i^2},
+\qquad
+m(p, \pi) = \sqrt{(E_1 + E_2)^2 - |\vec{p}_1 +
+\vec{p}_2|^2}\]</span></p>
+<p>True Λ⁰ decays accumulate in a <strong>peak at 1.115683 GeV</strong>.
+Its width, a few MeV, is the detector resolution; the natural width is
+negligible. Random proton–pion pairs form a smooth <strong>combinatorial
+background</strong> under the peak, so the yield comes from a fit: a
+Gaussian on a second-order polynomial (<a href="05-end-to-end-agents.html">Episode 5</a>). The charge-conjugate
+mode Λ̄ → p̄ π⁺ is reconstructed the same way.</p>
 <table class="table"><thead><tr><th>Quantity</th>
 <th>Value</th>
 </tr></thead><tbody><tr><td>m(Λ⁰)</td>
@@ -478,30 +403,18 @@ mode Λ̄ → p̄ π⁺ is reconstructed identically with the antiparticles.</p>
 <td>0.9382720813 GeV</td>
 </tr><tr><td>m(π±)</td>
 <td>0.13957061 GeV</td>
-</tr><tr><td>cτ(Λ⁰)</td>
-<td>7.89 cm</td>
-</tr><tr><td>BR(Λ⁰ → p π⁻)</td>
-<td>63.9 %</td>
-</tr></tbody></table><p>Energies and momenta are in GeV (natural units, <em>c</em> = 1).</p>
-</div>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="the-data-model">The data model<a class="anchor" aria-label="anchor" href="#the-data-model"></a></h2>
-<hr class="half-width"><p>ePIC reconstruction output uses <strong>EDM4eic</strong>, an EIC
-extension of EDM4hep generated with <a href="reference.html">PODIO</a>.
-A file contains an <code>events</code> tree; each entry is one event,
-each branch a <strong>collection</strong>. We need one collection, the
-reconstructed charged tracks, and four members:</p>
+</tr></tbody></table></section><section><h2 class="section-heading" id="the-data-model">The data model<a class="anchor" aria-label="anchor" href="#the-data-model"></a></h2>
+<hr class="half-width"><p>ePIC reconstruction output uses <strong>EDM4eic</strong>. A file
+contains an <code>events</code> tree; each entry is one event, each
+branch a <strong>collection</strong>. We need one collection and four
+members:</p>
 <pre><code>events  (tree; one entry per event)
     ReconstructedChargedParticles.PDG          reconstructed particle-ID hypothesis
     ReconstructedChargedParticles.momentum.x   p_x  [GeV]
     ReconstructedChargedParticles.momentum.y   p_y  [GeV]
     ReconstructedChargedParticles.momentum.z   p_z  [GeV]</code></pre>
-<p><code>PDG</code> is the Particle Data Group code the reconstruction
-assigns each track. Select protons (<code>2212</code>) and π⁻
-(<code>-211</code>) for Λ⁰, antiprotons (<code>-2212</code>) and π⁺
-(<code>211</code>) for Λ̄.</p>
+<p>Select protons (<code>2212</code>) and π⁻ (<code>-211</code>) for Λ⁰,
+antiprotons (<code>-2212</code>) and π⁺ (<code>211</code>) for Λ̄.</p>
 <p>You do not download a file. In <a href="03-mcp-servers.html">Episode
 3</a> the assistant uses the <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><strong>rucio</strong></a>
 tools to find a DIS dataset and <a href="https://github.com/eic/xrootd-mcp-server" class="external-link"><strong>xrootd</strong></a>
@@ -587,7 +500,7 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/02-your-ai-coding-setup.html",
   "identifier": "https://eic.github.io/tutorial-mcp/02-your-ai-coding-setup.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-09-30",
+  "dateModified": "2026-11-10",
   "datePublished": "2026-11-10"
 }
 

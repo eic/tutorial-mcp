@@ -390,10 +390,10 @@
         
 <section id="aio-01-why-genai-for-physics"><p>Content from <a href="01-why-genai-for-physics.html">Generative AI as an agentic research tool</a></p>
 <hr>
-<p>Last updated on 2026-09-30 |
+<p>Last updated on 2026-11-10 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/01-why-genai-for-physics.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
-<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 55 minutes</p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 20 minutes</p>
 <div class="text-end">
           <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
         </div>
@@ -448,9 +448,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <ul>
 <li>How does an agentic assistant differ from a chat model?</li>
 <li>What are the parts of an LLM “harness”?</li>
-<li>What loops sit around the agent loop, and what does each add?</li>
 <li>How do we get trustworthy results from a stochastic model?</li>
-<li>Why build on an open protocol, not one product?</li>
 </ul>
 </div>
 </div>
@@ -464,10 +462,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 enters the context at each step.</li>
 <li>Draft acceptance criteria precise enough that a grader — human or
 agent — can apply them.</li>
-<li>Place a given automation (a format-on-edit hook, a nightly report, a
-prompt tweak) at the right loop level.</li>
-<li>Choose between a tool, a skill, and a subagent when adding a new
-capability.</li>
+<li>Tell a tool from a skill.</li>
 </ul>
 </div>
 </div>
@@ -496,32 +491,18 @@ structure that lets it act. The model proposes an action, an external
 context, and the model is called again, until a stopping condition is
 met. The model then works from the actual state of your files and the
 output of real computations, not only from its training.</p>
-<div id="scope" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="scope" class="callout-inner">
-<h3 class="callout-title">Scope</h3>
-<div class="callout-content">
-<p>Here, “generative AI” means an LLM-based coding assistant used in
-this agentic mode. Machine learning for reconstruction or particle
-identification is not covered. The subject is writing and running
-analyses.</p>
-</div>
-</div>
-</div>
-<p>This loop is the first of four. Each one wraps the one before it, and
-this episode goes through them in order.</p>
-</section><section><h2 class="section-heading" id="level-1-the-agent-loop">Level 1 — the agent loop<a class="anchor" aria-label="anchor" href="#level-1-the-agent-loop"></a>
+<p>In this lesson “generative AI” means an LLM-based coding assistant
+used in this agentic mode. Machine learning for reconstruction or
+particle identification is not covered.</p>
+</section><section><h2 class="section-heading" id="the-agent-loop">The agent loop<a class="anchor" aria-label="anchor" href="#the-agent-loop"></a>
 </h2>
 <hr class="half-width">
-<p>The basic cycle: the model calls a tool, looks at what came back, and
-decides whether it is done.</p>
+<p>The model calls a tool, looks at what came back, and decides whether
+it is done.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
-    accTitle: {Level 1 the agent loop}
-    accDescr: {Level 1 the agent loop}
+    accTitle: {The agent loop}
+    accDescr: {The agent loop}
     Q["task"]:::user --&gt; M["model"]:::core
     M --&gt;|"tool call"| T["tools&lt;br/&gt;read files · run code · query "]:::tool
     T --&gt;|"result appended to context"| D{"task&lt;br/&gt;complete?"}:::core
@@ -565,25 +546,20 @@ flowchart TB
     H(["harness core&lt;br/&gt;model + context + tools + loop"]):::core
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;</code></pre>
-<ul>
-<li><p><strong>MCP servers</strong>: tools in a standard form that works
-with any assistant. This is how the assistant gets physics tools (<a href="03-mcp-servers.html">Episode 3</a>).</p></li>
-<li><p><strong>Subagents</strong>: separate assistants started for a
-sub-task, so a large task can be split up.</p></li>
-<li><p><strong>Skills</strong>: versioned <em>procedures</em> (a
-<code>SKILL.md</code> plus scripts) loaded when a request matches (<a href="04-skills.html">Episode 4</a>). A tool is a capability; a skill is
-a recipe.</p></li>
-<li><p><strong>Hooks</strong>: scripts the harness runs at fixed
-moments, e.g. reformat code after every edit or log each tool
-call.</p></li>
-<li><p><strong>Monitors</strong>: watch background work, e.g. a long
-batch job, and call the assistant again when it finishes.</p></li>
-</ul>
+<p>This lesson uses two ways to extend a harness: * <strong>MCP
+servers</strong>: tools in a standard form that works with any
+assistant. This is how the assistant gets physics tools (<a href="03-mcp-servers.html">Episode 3</a>). * <strong>Skills</strong>:
+versioned <em>procedures</em> (a <code>SKILL.md</code>) loaded when a
+request matches (<a href="04-skills.html">Episode 4</a>). A tool is a
+capability; a skill is a recipe.</p>
+<p>Assistants also offer subagents (a separate assistant for a
+sub-task), hooks (scripts run at fixed moments, e.g. after every edit),
+and monitors (watch a background job).</p>
 </div>
-</section><section><h2 class="section-heading" id="level-2-the-verification-loop">Level 2 — the verification loop<a class="anchor" aria-label="anchor" href="#level-2-the-verification-loop"></a>
+</section><section><h2 class="section-heading" id="the-verification-loop">The verification loop<a class="anchor" aria-label="anchor" href="#the-verification-loop"></a>
 </h2>
 <hr class="half-width">
-<p>A level-1 agent stops when it decides the task is complete. An LLM is
+<p>An agent stops when it decides the task is complete. An LLM is
 stochastic: the same prompt can give different outputs, and a confident
 answer is not evidence of a correct one. A second loop around the first
 handles this. A <strong>grader</strong> checks the agent’s result
@@ -591,9 +567,9 @@ against explicit acceptance criteria, and a failure goes back to the
 agent as feedback for another attempt.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
-    accTitle: {Level 2 the verification loop}
-    accDescr: {Level 2 the verification loop}
-    A["agent loop  ①"]:::core --&gt;|"draft result"| G["grader&lt;br/&gt;explicit success criteria"]:::tool
+    accTitle: {The verification loop}
+    accDescr: {The verification loop}
+    A["agent loop"]:::core --&gt;|"draft result"| G["grader&lt;br/&gt;explicit success criteria"]:::tool
     G --&gt; P{"pass?"}:::core
     P --&gt;|"no — feedback into context"| A
     P --&gt;|"yes"| R["accepted result"]:::out
@@ -602,65 +578,63 @@ flowchart TD
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;</code></pre>
 <p>Treat every model output as a <strong>hypothesis</strong> and accept
 it only after checking it against something external: the data, a fit
-statistic, a known physical value, or an independent implementation. For
-the <span class="math inline">\(\Lambda^0\)</span> measurement the
-criteria are physical and checkable: <span class="math inline">\(|\mu -
-1.115683\,\mathrm{GeV}| &lt; 5\,\mathrm{MeV}\)</span>, <span class="math inline">\(\sigma\)</span> consistent with detector
-resolution, <span class="math inline">\(\chi^2/\mathrm{ndf}\)</span> of
-order 1. In <a href="04-skills.html">Episode 4</a> you write this grader
-into the lambda-fit skill’s <strong>success criteria</strong>. An agent
-that passes reports the numbers; one that fails must report the failure
-instead of a result.</p>
-<p>Grading costs time and tokens, but in physics analysis correctness
-matters more than speed. Prefer tools that return small quantities you
-can inspect (counts, bin edges, fit parameters), and keep a record of
-what was run.</p>
-</section><section><h2 class="section-heading" id="level-3-the-operation-loop">Level 3 — the operation loop<a class="anchor" aria-label="anchor" href="#level-3-the-operation-loop"></a>
-</h2>
-<hr class="half-width">
-<p>With verification in place, the agent no longer needs you to start
-it. In a third loop an event (a schedule, a finished production job, a
-new pull request) starts the agent, its verified output updates
-something (a report, a documentation page, an alert), and the system
-goes back to waiting.</p>
-<pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
-flowchart LR
-    accTitle: {Level 3 the operation loop}
-    accDescr: {Level 3 the operation loop}
-    E["event&lt;br/&gt;schedule · finished job · new PR"]:::pkg --&gt; A["agent + verification&lt;br/&gt;① + ②"]:::core
-    A --&gt; U["system update&lt;br/&gt;report · doc page · alert"]:::out
-    U -.-&gt;|"wait for the next event"| E
-    classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
-    classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
-    classDef pkg fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;</code></pre>
-<p><a href="06-eic-mcp-servers.html">Episode 6</a> shows collaboration
-examples: documentation regenerated on a schedule, and reviews triggered
-per pull request.</p>
-</section><section><h2 class="section-heading" id="level-4-the-improvement-loop">Level 4 — the improvement loop<a class="anchor" aria-label="anchor" href="#level-4-the-improvement-loop"></a>
-</h2>
-<hr class="half-width">
-<p>The last loop goes around everything. From time to time, look at what
-the agent actually did (transcripts, failed fits, wrong tool choices)
-and change the <strong>harness</strong> accordingly: clarify
-<code>AGENTS.md</code>, tighten a skill’s success criteria, add a
-missing tool. You do a small version of this whenever a prompt goes
-wrong and you fix the instructions instead of retyping the request.</p>
-<div id="where-a-human-belongs-in-each-loop" class="callout">
+statistic, a known physical value, or an independent implementation.
+Prefer tools that return small quantities you can inspect (counts, bin
+edges, fit parameters), and keep a record of what was run.</p>
+<div id="exercise-acceptance-criteria-5-min" class="callout challenge">
 <div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
+<i class="callout-icon" data-feather="zap"></i>
 </div>
-<span class="callout-header">Callout</span>
-<div id="where-a-human-belongs-in-each-loop" class="callout-inner">
-<h3 class="callout-title">Where a human belongs in each loop</h3>
+<span class="callout-header">Challenge</span>
+<div id="exercise-acceptance-criteria-5-min" class="callout-inner">
+<h3 class="callout-title">Exercise: acceptance criteria (≈ 5 min)</h3>
 <div class="callout-content">
-<p>Each level has a point where a person should decide: approving a
-sensitive tool call (1), signing off a graded result (2), reviewing what
-runs unattended (3), and choosing which harness changes to keep (4).</p>
+<p>An assistant reports “the Λ⁰ peak was fitted successfully”. Write
+three or four checks the fit must pass before you accept it. Each must
+be a comparison a script could evaluate.</p>
 </div>
 </div>
 </div>
-<p>The <a href="02-your-ai-coding-setup.html">next episode</a> describes
-the physics measurement.</p>
+<div id="accordionSolution1" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
+  <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
+</button>
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div class="accordion-body">
+<ul>
+<li>
+<span class="math inline">\(|\mu - 1.115683\,\mathrm{GeV}| &lt;
+5\,\mathrm{MeV}\)</span>.</li>
+<li>
+<span class="math inline">\(\sigma\)</span> of a few MeV, the
+detector resolution.</li>
+<li>
+<span class="math inline">\(\chi^2/\mathrm{ndf}\)</span> of order
+1.</li>
+<li>Enough entries in the fit window for the fit to mean anything.</li>
+</ul>
+<p>“The fit looks good” is not a criterion. In <a href="04-skills.html">Episode 4</a> these checks go into the lambda-fit
+skill; an agent that fails them must report the failure instead of a
+result.</p>
+</div>
+</div>
+</div>
+</div>
+</section><section><h2 class="section-heading" id="outer-loops">Outer loops<a class="anchor" aria-label="anchor" href="#outer-loops"></a>
+</h2>
+<hr class="half-width">
+<p>Two more loops can wrap these. In an <strong>operation loop</strong>
+an event (a schedule, a finished production job, a new pull request)
+starts the agent and its verified output updates a report or a
+documentation page; <a href="06-eic-mcp-servers.html">Episode 6</a>
+shows ePIC examples. In an <strong>improvement loop</strong> you read
+what the agent actually did and change the harness: clarify
+<code>AGENTS.md</code>, tighten a skill’s success criteria, add a
+missing tool.</p>
+<p>A person decides at each level: approving a sensitive tool call,
+signing off a graded result, reviewing what runs unattended, and
+choosing which harness changes to keep.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -671,13 +645,14 @@ the physics measurement.</p>
 <ul>
 <li>An agentic assistant runs tools and reads their output; a chat model
 only returns text.</li>
-<li>Treat every result as a hypothesis and check it against clear
+<li>Treat every result as a hypothesis and check it against explicit
 criteria before you accept it.</li>
+<li>A tool is a capability; a skill is a recipe.</li>
 </ul>
 </div>
 </div>
 </div>
-<p><small>The four-level loop schematics are adapted from <a href="https://www.langchain.com/blog/the-art-of-loop-engineering" class="external-link"><em>The
+<p><small>The loop schematics are adapted from <a href="https://www.langchain.com/blog/the-art-of-loop-engineering" class="external-link"><em>The
 Art of Loop Engineering</em></a>.</small></p>
 <!--
 Place links that you need to refer to multiple times across pages here. Delete
@@ -685,34 +660,13 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-02-your-ai-coding-setup"><p>Content from <a href="02-your-ai-coding-setup.html">The measurement: Λ⁰ → p π⁻</a></p>
 <hr>
-<p>Last updated on 2026-09-30 |
+<p>Last updated on 2026-11-10 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/02-your-ai-coding-setup.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
-<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 20 minutes</p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 5 minutes</p>
 <div class="text-end">
           <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
         </div>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<style>
-/* Mermaid: force diagram label text dark so it stays readable on the
-   light node fills in BOTH light and dark mode. The Carpentries dark
-   theme sets `p`/`li` color and darkens `pre` backgrounds, which would
-   otherwise turn mermaid's label text light (invisible on light nodes)
-   and the diagram surface dark. We override both, with !important to
-   beat the theme rules and mermaid's own inline styles. */
-.mermaid { background: transparent !important; }
-/* Hide the Workbench "Diagram source code" spoiler under each diagram */
-.mermaid-img-wrapper details { display: none !important; }
-.mermaid .nodeLabel, .mermaid .edgeLabel, .mermaid .label,
-.mermaid .cluster-label, .mermaid text, .mermaid tspan,
-.mermaid span, .mermaid p, .mermaid foreignObject div {
-  color: #10204a !important;
-  fill: #10204a !important;
-}
-.mermaid .edgeLabel, .mermaid .edgeLabel p, .mermaid .edgeLabel rect {
-  background-color: #e2e8f0 !important;
-}
-</style>
 <div class="overview card">
 <h2 class="card-header">Overview</h2>
 <div class="row g-0">
@@ -733,89 +687,32 @@ background?</li>
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
 <ul>
-<li>Compute m(p, π) by hand from the four momentum branches and the PDG
-masses.</li>
-<li>Sketch the expected spectrum (peak position, width scale, background
-shape) before looking at data.</li>
+<li>Write m(p, π) in terms of the four branches and the PDG masses.</li>
+<li>State the expected peak position, width scale, and background shape
+before looking at data.</li>
 </ul>
 </div>
 </div>
 </div>
 </div>
 </div>
-<p>The <a href="index.html#setup">Setup</a> page covers the servers and the
-assistant. This episode describes the physics you reconstruct starting
-in <a href="03-mcp-servers.html">Episode 3</a>.</p>
-<section><h2 class="section-heading" id="the-decay">The decay<a class="anchor" aria-label="anchor" href="#the-decay"></a>
+<section><h2 class="section-heading" id="the-observable">The observable<a class="anchor" aria-label="anchor" href="#the-observable"></a>
 </h2>
 <hr class="half-width">
-<p>The Λ⁰ is the lightest strange baryon (uds, spin-parity ½⁺). It
-decays only weakly (a strangeness-changing ΔS = 1 transition), so it is
-long-lived: cτ ≈ 7.9 cm. Its dominant hadronic mode is</p>
-<pre><code>Λ⁰ → p + π⁻      (branching fraction ≈ 63.9%)</code></pre>
-<p>The centimeter-scale flight distance makes the decay a
-<strong>V0</strong>: two oppositely charged tracks from a vertex
-displaced from the primary interaction point.</p>
-<pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
-flowchart LR
-    accTitle: {Lambda to proton pion V0 decay}
-    accDescr: {Lambda to proton pion V0 decay}
-    PV["primary vertex&lt;br/&gt;e + A collision"]:::vtx -. "Λ⁰: neutral, cτ ≈ 7.9 cm" .-&gt; DV["displaced&lt;br/&gt;decay vertex"]:::vtx
-    DV --&gt; P["proton&lt;br/&gt;PDG 2212"]:::pos
-    DV --&gt; PI["pion&lt;br/&gt;PDG -211"]:::neg
-    classDef vtx fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
-    classDef pos fill:#ffe3e3,stroke:#e03131,stroke-width:1.5px,color:#5c0a0a;
-    classDef neg fill:#e7f5ff,stroke:#1971c2,stroke-width:1.5px,color:#0a3d62;</code></pre>
-<div class="section level3">
-<h3 id="the-observable">The observable<a class="anchor" aria-label="anchor" href="#the-observable"></a>
-</h3>
-<p>The Λ⁰ is neutral and not detected directly; we reconstruct it from
-its charged daughters. For a candidate proton <span class="math inline">\(p_1 = (E_1, \vec{p}_1)\)</span> and candidate pion
-<span class="math inline">\(p_2 = (E_2, \vec{p}_2)\)</span>, the pair’s
-<strong>invariant mass</strong> is Lorentz invariant:</p>
-<p><span class="math display">\[E_i = \sqrt{|\vec{p}_i|^2 +
-m_i^2}\]</span></p>
-<p>with <span class="math inline">\(m_i\)</span> the assigned proton or
-pion mass, and</p>
-<p><span class="math display">\[m(p, \pi) = \sqrt{(E_1 + E_2)^2 -
-|\vec{p}_1 + \vec{p}_2|^2}\]</span></p>
-<p>Assign the proton mass to one track and the pion mass to the other
-(using reconstructed particle ID). For true Λ⁰ decays this equals the
-parent mass; candidates accumulate in a <strong>peak at 1.115683
-GeV</strong>.</p>
-<div id="width-resolution-not-lifetime" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="width-resolution-not-lifetime" class="callout-inner">
-<h3 class="callout-title">Width: resolution, not lifetime</h3>
-<div class="callout-content">
-<p>The Λ⁰ natural width (<span class="math inline">\(\Gamma = \hbar/\tau
-\approx 2.5 \times 10^{-6}\)</span> eV) is far below any detector
-effect. The observed peak width, a few MeV, measures the
-<strong>detector momentum and angular resolution</strong>, not the
-particle.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
-</h3>
-<p>Most proton–pion pairs do not come from a Λ⁰ at all. These random
-(“combinatorial”) pairs do not peak; they form a smooth distribution
-under the signal. The analysis extracts a yield by fitting a Gaussian
-peak on top of a low-order polynomial background (<a href="05-end-to-end-agents.html">Episode 5</a>). The charge-conjugate
-mode Λ̄ → p̄ π⁺ is reconstructed identically with the antiparticles.</p>
-<div id="reference-values-pdg" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="reference-values-pdg" class="callout-inner">
-<h3 class="callout-title">Reference values (PDG)</h3>
-<div class="callout-content">
+<p>The Λ⁰ decays weakly to p π⁻ (branching fraction ≈ 63.9%, cτ ≈ 7.9
+cm). It is neutral, so we reconstruct it from its charged daughters.
+Assign the proton mass to one track and the pion mass to the other,
+using the reconstructed particle ID:</p>
+<p><span class="math display">\[E_i = \sqrt{|\vec{p}_i|^2 + m_i^2},
+\qquad
+m(p, \pi) = \sqrt{(E_1 + E_2)^2 - |\vec{p}_1 +
+\vec{p}_2|^2}\]</span></p>
+<p>True Λ⁰ decays accumulate in a <strong>peak at 1.115683 GeV</strong>.
+Its width, a few MeV, is the detector resolution; the natural width is
+negligible. Random proton–pion pairs form a smooth <strong>combinatorial
+background</strong> under the peak, so the yield comes from a fit: a
+Gaussian on a second-order polynomial (<a href="05-end-to-end-agents.html">Episode 5</a>). The charge-conjugate
+mode Λ̄ → p̄ π⁺ is reconstructed the same way.</p>
 <table class="table">
 <thead><tr>
 <th>Quantity</th>
@@ -834,38 +731,21 @@ mode Λ̄ → p̄ π⁺ is reconstructed identically with the antiparticles.</p>
 <td>m(π±)</td>
 <td>0.13957061 GeV</td>
 </tr>
-<tr>
-<td>cτ(Λ⁰)</td>
-<td>7.89 cm</td>
-</tr>
-<tr>
-<td>BR(Λ⁰ → p π⁻)</td>
-<td>63.9 %</td>
-</tr>
 </tbody>
-</table>
-<p>Energies and momenta are in GeV (natural units, <em>c</em> = 1).</p>
-</div>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="the-data-model">The data model<a class="anchor" aria-label="anchor" href="#the-data-model"></a>
+</table></section><section><h2 class="section-heading" id="the-data-model">The data model<a class="anchor" aria-label="anchor" href="#the-data-model"></a>
 </h2>
 <hr class="half-width">
-<p>ePIC reconstruction output uses <strong>EDM4eic</strong>, an EIC
-extension of EDM4hep generated with <a href="reference.html">PODIO</a>.
-A file contains an <code>events</code> tree; each entry is one event,
-each branch a <strong>collection</strong>. We need one collection, the
-reconstructed charged tracks, and four members:</p>
+<p>ePIC reconstruction output uses <strong>EDM4eic</strong>. A file
+contains an <code>events</code> tree; each entry is one event, each
+branch a <strong>collection</strong>. We need one collection and four
+members:</p>
 <pre><code>events  (tree; one entry per event)
     ReconstructedChargedParticles.PDG          reconstructed particle-ID hypothesis
     ReconstructedChargedParticles.momentum.x   p_x  [GeV]
     ReconstructedChargedParticles.momentum.y   p_y  [GeV]
     ReconstructedChargedParticles.momentum.z   p_z  [GeV]</code></pre>
-<p><code>PDG</code> is the Particle Data Group code the reconstruction
-assigns each track. Select protons (<code>2212</code>) and π⁻
-(<code>-211</code>) for Λ⁰, antiprotons (<code>-2212</code>) and π⁺
-(<code>211</code>) for Λ̄.</p>
+<p>Select protons (<code>2212</code>) and π⁻ (<code>-211</code>) for Λ⁰,
+antiprotons (<code>-2212</code>) and π⁺ (<code>211</code>) for Λ̄.</p>
 <p>You do not download a file. In <a href="03-mcp-servers.html">Episode
 3</a> the assistant uses the <a href="https://github.com/eic/rucio-eic-mcp-server" class="external-link"><strong>rucio</strong></a>
 tools to find a DIS dataset and <a href="https://github.com/eic/xrootd-mcp-server" class="external-link"><strong>xrootd</strong></a>
@@ -895,10 +775,10 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-03-mcp-servers"><p>Content from <a href="03-mcp-servers.html">Tool servers and the Model Context Protocol (MCP)</a></p>
 <hr>
-<p>Last updated on 2026-11-09 |
+<p>Last updated on 2026-11-10 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/03-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
-<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 65 minutes</p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 40 minutes</p>
 <div class="text-end">
           <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
         </div>
@@ -985,8 +865,6 @@ what.</li>
 Context Protocol (MCP)</strong> defines a standard interface for them:
 write a tool once as a <strong>server</strong>, and any
 <strong>client</strong> (assistant) that supports MCP can use it.</p>
-<p>The lesson’s servers run inside eic-shell, and the assistant talks to
-them over a local web address.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {EIC MCP data tools}
@@ -996,93 +874,8 @@ flowchart LR
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef data fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;</code></pre>
-</section><section><h2 class="section-heading" id="the-uproot-tool-server">The uproot tool server<a class="anchor" aria-label="anchor" href="#the-uproot-tool-server"></a>
-</h2>
-<hr class="half-width">
-<p>The ePIC <a href="https://github.com/eic/uproot-mcp-server" class="external-link">uproot
-tool server</a> reads ROOT/EDM4eic files with <a href="reference.html">uproot</a>. It can list a file’s contents, compute
-statistics and histograms, and run short NumPy calculations over one
-file or a whole dataset. It returns small summaries (counts, bin edges,
-statistics) that you can check, not raw data. The calculations run in a
-sandbox that cannot install software or write files.</p>
-</section><section><h2 class="section-heading" id="start-the-servers">Start the servers<a class="anchor" aria-label="anchor" href="#start-the-servers"></a>
-</h2>
-<hr class="half-width">
-<p>Start the servers inside eic-shell (see <a href="index.html#setup">Setup</a>):</p>
-<div class="codewrapper sourceCode" id="cb2">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="ex">$</span> eic-mcp up</span></code></pre>
-</div>
-<p>This starts the uproot, xrootd, and rucio servers.
-<code>eic-mcp status</code> shows which are running, and
-<code>eic-mcp logs uproot</code> shows a server’s log.</p>
-<div id="if-rucio-answers-but-xrootduproot-time-out" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="if-rucio-answers-but-xrootduproot-time-out" class="callout-inner">
-<h3 class="callout-title">If rucio answers but xrootd/uproot time
-out</h3>
-<div class="callout-content">
-<p>If dataset queries work but file access hangs, the XRootD store may
-be down; check with
-<code>xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO</code>.</p>
-<p>The default store (BNL) has campaigns from 25.12.0. For older ones
-(up to 25.10.x) use JLab:
-<code>XROOTD_SERVER=root://dtn2304.jlab.org:8443 XROOTD_BASE_DIR=/jlab-osdf-ro/eic/EPIC/volatile eic-mcp restart</code>.</p>
-<p>If every uproot call times out after one large call, the server is
-busy, not broken: it handles one request at a time. Wait, or run
-<code>EIC_MCP_SERVERS=uproot eic-mcp restart</code>.</p>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="connect-the-assistant">Connect the assistant<a class="anchor" aria-label="anchor" href="#connect-the-assistant"></a>
-</h2>
-<hr class="half-width">
-<p>Write opencode’s config file in the directory where you start
-opencode, then start it:</p>
-<div class="codewrapper sourceCode" id="cb3">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-mcp config opencode</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="ex">$</span> opencode</span></code></pre>
-</div>
-<p>In the session, <code>/mcp</code> lists the connected servers and
-their tools.</p>
-<p>Other clients use the same URLs: <code>eic-mcp config claude</code>
-(or <code>copilot</code>, <code>vscode</code>, <code>cursor</code>,
-<code>gemini</code>, <code>codex</code>) writes the file where that
-client reads it.</p>
-<div id="on-a-shared-cluster-node" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="on-a-shared-cluster-node" class="callout-inner">
-<h3 class="callout-title">On a shared cluster node</h3>
-<div class="callout-content">
-<p>Skip <code>eic-mcp up</code> and <code>eic-mcp config</code>: ports
-on a shared node are open to every user there. Inside eic-shell, let the
-client start its own servers instead:</p>
-<div class="codewrapper sourceCode" id="cb4">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="ex">$</span> R=https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/cluster</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a><span class="ex">$</span> curl <span class="at">-fsSL</span> <span class="at">-o</span> opencode.jsonc <span class="va">$R</span>/opencode.jsonc <span class="kw">&amp;&amp;</span> <span class="ex">opencode</span>    <span class="co"># opencode</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a><span class="ex">$</span> curl <span class="at">-fsSL</span> <span class="at">-o</span> .mcp.json <span class="va">$R</span>/claude.json <span class="kw">&amp;&amp;</span> <span class="ex">claude</span>              <span class="co"># Claude Code</span></span></code></pre>
-</div>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="finding-the-data-with-mcp">Finding the data with MCP<a class="anchor" aria-label="anchor" href="#finding-the-data-with-mcp"></a>
-</h2>
-<hr class="half-width">
-<p>You do not download a dataset. The other two MCP servers let the
-assistant find and verify the files, in place of running
-<code>rucio</code> and <code>xrdfs</code> by hand, and
-<code>uproot-mcp</code> then reads them directly from the store.</p>
+<p>This lesson uses three servers. They run inside eic-shell, and the
+assistant talks to them over a local web address.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart LR
     accTitle: {EIC MCP data tools}
@@ -1099,9 +892,32 @@ and gives their <code>root://</code> locations.</li>
 <li>
 <strong><a href="https://github.com/eic/xrootd-mcp-server" class="external-link"><code>xrootd-mcp</code></a></strong>
 browses the data store and checks that the files exist.</li>
-</ul>
-<p><code>uproot-mcp</code> then reads a <code>root://</code> file
-<strong>in place</strong>.</p>
+<li>
+<strong><a href="https://github.com/eic/uproot-mcp-server" class="external-link"><code>uproot-mcp</code></a></strong>
+reads a <code>root://</code> file <strong>in place</strong>. It can list
+a file’s contents, compute statistics and histograms, and run short
+NumPy calculations over one file or a whole dataset. It returns small
+summaries (counts, bin edges, statistics) that you can check, not raw
+data. The calculations run in a sandbox that cannot install software or
+write files.</li>
+</ul></section><section><h2 class="section-heading" id="start-the-servers-and-connect">Start the servers and connect<a class="anchor" aria-label="anchor" href="#start-the-servers-and-connect"></a>
+</h2>
+<hr class="half-width">
+<p>You did this once on the <a href="index.html#setup">Setup</a> page. Inside
+eic-shell, in your analysis directory:</p>
+<div class="codewrapper sourceCode" id="cb3">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">$</span> eic-mcp up                <span class="co"># start uproot, xrootd, rucio</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="ex">$</span> eic-mcp status            <span class="co"># which are running; `eic-mcp logs uproot` shows a server's log</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a><span class="ex">$</span> eic-mcp config opencode   <span class="co"># write opencode.jsonc in this directory</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1" aria-label="code-block-3-4"></a><span class="ex">$</span> opencode</span></code></pre>
+</div>
+<p>In the session, <code>/mcp</code> lists the connected servers and
+their tools. Other clients use the same URLs:
+<code>eic-mcp config claude</code> (or <code>copilot</code>,
+<code>vscode</code>, <code>cursor</code>, <code>codex</code>) writes the
+file where that client reads it.</p>
 </section><section><h2 class="section-heading" id="list-the-available-campaigns">List the available campaigns<a class="anchor" aria-label="anchor" href="#list-the-available-campaigns"></a>
 </h2>
 <hr class="half-width">
@@ -1124,7 +940,7 @@ results can miss the newest campaigns.</p>
 <h3 class="callout-title">Exercise: locate a dataset (≈ 10 min)</h3>
 <div class="callout-content">
 <p>Ask your assistant:</p>
-<pre class="ai-prompt"><code>Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu ep 10x115 GeV sample in campaign 26.04.1, list its files, then use the xrootd tools to confirm those files exist on the store and report the total number of events.</code></pre>
+<pre class="ai-prompt"><code>Use the rucio tools to find the ePIC reconstructed-DIS dataset for the BeAGLE eCu ep 10x115 GeV sample in campaign 26.04.1. Report its DID and its number of files, give me the root:// URLs of its first three files, and confirm with the xrootd tools that those three exist.</code></pre>
 </div>
 </div>
 </div>
@@ -1133,13 +949,14 @@ results can miss the newest campaigns.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
-<p>The assistant finds the dataset with rucio (374 files), gets their
-<code>root://</code> locations, and checks them with xrootd. rucio does
-not store event counts, and reading all 374 files would take an hour, so
-a good answer checks a few files (≈ 1,220 events each) and
-extrapolates.</p>
+<p>The dataset is
+<code>epic:/RECO/26.04.1/epic_craterlake/DIS/BeAGLE1.03.02-1.0/eCu/ep/10x115/q2_1to1000</code>,
+with 374 files. A file’s URL is
+<code>root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC</code> followed by its
+rucio name (<code>/RECO/…</code>); <code>list_file_replicas</code>
+returns the same URL.</p>
 </div>
 </div>
 </div>
@@ -1147,18 +964,16 @@ extrapolates.</p>
 </section><section><h2 class="section-heading" id="inspect-the-dataset">Inspect the dataset<a class="anchor" aria-label="anchor" href="#inspect-the-dataset"></a>
 </h2>
 <hr class="half-width">
-<p>You describe what you want in plain language and the assistant makes
-the tool calls. Take one of the <code>root://</code> URLs from the
-previous exercise (written below as
-<code>root://epicxrd1.sdcc.bnl.gov:1095//…</code>) and analyze it in
-place.</p>
-<div id="exercise-enumerate-the-schema-10-min" class="callout challenge">
+<p>Take one of the <code>root://</code> URLs from the previous exercise
+(written below as <code>root://epicxrd1.sdcc.bnl.gov:1095//…</code>) and
+analyze it in place.</p>
+<div id="exercise-check-the-schema-5-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
 </div>
 <span class="callout-header">Challenge</span>
-<div id="exercise-enumerate-the-schema-10-min" class="callout-inner">
-<h3 class="callout-title">Exercise: enumerate the schema (≈ 10 min)</h3>
+<div id="exercise-check-the-schema-5-min" class="callout-inner">
+<h3 class="callout-title">Exercise: check the schema (≈ 5 min)</h3>
 <div class="callout-content">
 <p>Issue the request:</p>
 <pre class="ai-prompt"><code>Using the uproot tools, report the structure of the events tree in root://epicxrd1.sdcc.bnl.gov:1095//&lt;your-discovered-file&gt;.root and list the members of the ReconstructedChargedParticles collection.</code></pre>
@@ -1170,7 +985,7 @@ place.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <p>The assistant reads the structure of the <code>events</code> tree and
 reports something like:</p>
@@ -1193,17 +1008,17 @@ cannot invent branch names.</p>
 </div>
 </div>
 </div>
-<div id="exercise-identify-the-species-present-10-min" class="callout challenge">
+<div id="exercise-identify-the-species-present-5-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
 </div>
 <span class="callout-header">Challenge</span>
-<div id="exercise-identify-the-species-present-10-min" class="callout-inner">
-<h3 class="callout-title">Exercise: identify the species present (≈ 10
+<div id="exercise-identify-the-species-present-5-min" class="callout-inner">
+<h3 class="callout-title">Exercise: identify the species present (≈ 5
 min)</h3>
 <div class="callout-content">
 <p>Issue the request:</p>
-<pre class="ai-prompt"><code>Histogram ReconstructedChargedParticles.PDG with one bin per integer code, so I can see the reconstructed particle species in the file.</code></pre>
+<pre class="ai-prompt"><code>Using the uproot tool execute_kernel on the same file, count the ReconstructedChargedParticles per PDG code (np.unique with return_counts; no import, np and ak are predefined) and show a table of species, count and fraction.</code></pre>
 </div>
 </div>
 </div>
@@ -1212,7 +1027,7 @@ min)</h3>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>The assistant makes a histogram with one bin per PDG code. A
 reconstructed-DIS file gives, for example:</p>
@@ -1230,13 +1045,40 @@ reconstructed-DIS file gives, for example:</p>
  -2212   pbar       693
   2212   p          684      &lt;- protons are rare</code></pre>
 </div>
-<figure><img src="../fig/pdg_species.svg" alt="Bar histogram of reconstructed charged-particle PDG codes in the file, with pions dominating and protons rare" class="figure mx-auto d-block"><div class="figcaption">Reconstructed charged-particle species in the
-file</div>
+<figure><img src="../fig/pdg_species.svg" alt="Bar histogram of reconstructed charged-particle PDG codes, with pions dominating and protons rare" class="figure mx-auto d-block"><div class="figcaption">Reconstructed charged-particle species</div>
 </figure><p>Pions dominate; <strong>protons are rare</strong> (≈ 2%), so the Λ⁰
 signal will be small. A sizeable fraction of tracks have <strong>no
 PID</strong> (code 0) or a wrong one. This misidentification adds to the
 combinatorial background, which is why we fit the peak instead of
 counting it.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="exercise-a-bare-question-5-min" class="callout challenge">
+<div class="callout-square">
+<i class="callout-icon" data-feather="zap"></i>
+</div>
+<span class="callout-header">Challenge</span>
+<div id="exercise-a-bare-question-5-min" class="callout-inner">
+<h3 class="callout-title">Exercise: a bare question (≈ 5 min)</h3>
+<div class="callout-content">
+<p>The prompts above name the tool and the branches. Now ask without any
+of that, in a new session, and count the tool calls:</p>
+<pre class="ai-prompt"><code>How many events are in the first file of the campaign 26.04.1 BeAGLE eCu ep 10x115 reconstructed-DIS dataset?</code></pre>
+</div>
+</div>
+</div>
+<div id="accordionSolution4" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
+  <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
+</button>
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div class="accordion-body">
+<p>1,223. In a test run with a small model this took 16 tool calls and
+102 s: it never asked the catalog, walked the store directory by
+directory, and two calls failed. Note your own count; <a href="04-skills.html">Episode 4</a> repeats the question.</p>
 </div>
 </div>
 </div>
@@ -1259,8 +1101,22 @@ explicit success criteria.</p>
 <p>The same Λ⁰ peak can be obtained without MCP, with ROOT RDataFrame,
 TTreeReader, plain uproot, or the PODIO Frame API; scripts are in <a href="https://github.com/eic/tutorial-mcp/tree/main/extras" class="external-link"><code>extras/</code></a>.</p>
 <p>The assistant can now query the data through tools whose output you
-can check. The next episode writes this procedure down as a reusable,
-versioned <strong>skill</strong>.</p>
+can check, but it has to be told how each time. The next episode writes
+that down once, in <code>AGENTS.md</code> and a
+<strong>skill</strong>.</p>
+</section><section><h2 class="section-heading" id="if-something-fails">If something fails<a class="anchor" aria-label="anchor" href="#if-something-fails"></a>
+</h2>
+<hr class="half-width">
+<p><strong>Shared cluster node:</strong> ports there are open to every
+user. Skip <code>eic-mcp up</code> and <code>eic-mcp config</code>;
+inside eic-shell, let the client start its own servers:</p>
+<div class="codewrapper sourceCode" id="cb11">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1" aria-label="code-block-11-1"></a><span class="ex">$</span> R=https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/cluster</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1" aria-label="code-block-11-2"></a><span class="ex">$</span> curl <span class="at">-fsSL</span> <span class="at">-o</span> opencode.jsonc <span class="va">$R</span>/opencode.jsonc <span class="kw">&amp;&amp;</span> <span class="ex">opencode</span>    <span class="co"># opencode</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1" aria-label="code-block-11-3"></a><span class="ex">$</span> curl <span class="at">-fsSL</span> <span class="at">-o</span> .mcp.json <span class="va">$R</span>/claude.json <span class="kw">&amp;&amp;</span> <span class="ex">claude</span>              <span class="co"># Claude Code</span></span></code></pre>
+</div>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -1284,10 +1140,10 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-04-skills"><p>Content from <a href="04-skills.html">Persisting instructions: AGENTS.md and SKILL.md</a></p>
 <hr>
-<p>Last updated on 2026-09-30 |
+<p>Last updated on 2026-11-10 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/04-skills.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
-<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 50 minutes</p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 25 minutes</p>
 <div class="text-end">
           <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
         </div>
@@ -1342,7 +1198,6 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <ul>
 <li>How do you give an assistant durable project context?</li>
 <li>AGENTS.md or SKILL.md: when to use each?</li>
-<li>How do you make every tool read the same rules?</li>
 <li>What’s in a usable SKILL.md for the Λ⁰ fit?</li>
 </ul>
 </div>
@@ -1353,10 +1208,9 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
 <ul>
-<li>Write an AGENTS.md for always-on project context.</li>
-<li>Bridge it so one AGENTS.md drives any tool.</li>
-<li>Write a SKILL.md that runs the Λ⁰ fit on demand.</li>
-<li>Encode success criteria + provenance for auditable output.</li>
+<li>Say what belongs in AGENTS.md and what in a SKILL.md.</li>
+<li>Install the lesson’s AGENTS.md and lambda-fit skill.</li>
+<li>Write a small SKILL.md with success criteria.</li>
 </ul>
 </div>
 </div>
@@ -1396,232 +1250,139 @@ work here?”; a <code>SKILL.md</code> answers “how do I carry out
 </section><section><h2 class="section-heading" id="agents-md-project-context">AGENTS.md: project context<a class="anchor" aria-label="anchor" href="#agents-md-project-context"></a>
 </h2>
 <hr class="half-width">
-<p><code>AGENTS.md</code> is plain Markdown at your project root
-(subdirectories may override it for files beneath them). opencode,
-Codex, Gemini CLI, Zed, and others read it automatically; a tool that
-looks for a different filename reads the same content through a one-line
-bridge (next section).</p>
-<p>It is loaded on every turn, so keep it short and factual:</p>
+<p><code>AGENTS.md</code> is plain Markdown at your project root.
+opencode, Codex, Copilot CLI, Cursor, Antigravity, and others read it
+automatically. The lesson’s file:</p>
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="fu"># AGENTS.md — Lambda analysis project</span></span>
+<pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" tabindex="-1" aria-label="code-block-2-1"></a><span class="fu"># AGENTS.md — Lambda analysis in ePIC data</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1" aria-label="code-block-2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1" aria-label="code-block-2-3"></a><span class="fu">## What this project does</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1" aria-label="code-block-2-4"></a>Reconstruct Lambda0 -&gt; p pi- in ePIC EDM4eic data and fit the invariant-mass</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1" aria-label="code-block-2-5"></a>peak near 1.115683 GeV.</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1" aria-label="code-block-2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1" aria-label="code-block-2-7"></a><span class="fu">## Environment</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1" aria-label="code-block-2-8"></a><span class="ss">- </span>Everything runs inside eic-shell; the MCP servers are started with <span class="in">`eic-mcp up`</span>.</span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1" aria-label="code-block-2-9"></a><span class="ss">- </span>Data lives on the grid: find a DIS dataset with the <span class="in">`rucio`</span> tools and read its</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1" aria-label="code-block-2-10"></a>  root:// files in place with <span class="in">`uproot`</span>. Do not download.</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1" aria-label="code-block-2-3"></a><span class="fu">## Data access</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1" aria-label="code-block-2-4"></a><span class="ss">- </span>Find datasets with the <span class="in">`rucio`</span> MCP tools; keep <span class="in">`limit`</span> at 50 or less.</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1" aria-label="code-block-2-5"></a><span class="ss">- </span>A file's URL is root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC followed by its</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1" aria-label="code-block-2-6"></a>  rucio name (/RECO/...). The <span class="in">`xrootd`</span> tools take the path /eic/EPIC/RECO/...</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1" aria-label="code-block-2-7"></a><span class="ss">- </span>Read files only through the <span class="in">`uproot`</span> MCP tools. No downloads, no local</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1" aria-label="code-block-2-8"></a>  ROOT/uproot, no software installs.</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1" aria-label="code-block-2-9"></a><span class="ss">- </span>Never call get_tree_info on an EDM4eic file (it returns 1.5 MB). Check</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1" aria-label="code-block-2-10"></a>  branches with validate_dataset_schema.</span>
 <span id="cb2-11"><a href="#cb2-11" tabindex="-1" aria-label="code-block-2-11"></a></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1" aria-label="code-block-2-12"></a><span class="fu">## Tools</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1" aria-label="code-block-2-13"></a><span class="ss">- </span>Use the <span class="in">`rucio`</span> MCP server (list_dids, list_files, list_file_replicas) to locate</span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1" aria-label="code-block-2-14"></a>  a dataset and resolve its root:// URLs.</span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1" aria-label="code-block-2-15"></a><span class="ss">- </span>Use the <span class="in">`xrootd`</span> MCP server (check_file_exists, get_file_info) to verify a file.</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1" aria-label="code-block-2-16"></a><span class="ss">- </span>Use the <span class="in">`uproot`</span> MCP server (get_tree_info, histogram_branch, execute_kernel,</span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1" aria-label="code-block-2-17"></a>  execute_kernel_dataset) for all ROOT file access. Prefer get_tree_info over</span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1" aria-label="code-block-2-18"></a>  get_file_structure: on an EDM4eic file the latter returns megabytes.</span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1" aria-label="code-block-2-19"></a><span class="ss">- </span>Do NOT write bespoke file I/O; the servers already handle it.</span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1" aria-label="code-block-2-20"></a></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1" aria-label="code-block-2-21"></a><span class="fu">## When a tool fails</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1" aria-label="code-block-2-12"></a><span class="fu">## Data model</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1" aria-label="code-block-2-13"></a><span class="ss">- </span>Tree <span class="in">`events`</span>, collection ReconstructedChargedParticles:</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1" aria-label="code-block-2-14"></a>  .PDG, .momentum.x, .momentum.y, .momentum.z (GeV).</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1" aria-label="code-block-2-15"></a><span class="ss">- </span>m(p) = 0.9382720813, m(pi) = 0.13957061, m(Lambda) = 1.115683 GeV.</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1" aria-label="code-block-2-16"></a></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1" aria-label="code-block-2-17"></a><span class="fu">## Kernels (uproot sandbox)</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1" aria-label="code-block-2-18"></a><span class="ss">- </span>np and ak are predefined. No <span class="in">`import`</span>, no tuple unpacking in for-loops,</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1" aria-label="code-block-2-19"></a>  np.sum(x) not x.sum().</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1" aria-label="code-block-2-20"></a><span class="ss">- </span>Test a kernel on one file with execute_kernel before a dataset call: the</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1" aria-label="code-block-2-21"></a>  dataset tools do not show the error.</span>
 <span id="cb2-22"><a href="#cb2-22" tabindex="-1" aria-label="code-block-2-22"></a></span>
-<span id="cb2-23"><a href="#cb2-23" tabindex="-1" aria-label="code-block-2-23"></a><span class="ss">- </span>Never install software (no <span class="in">`pip install`</span>, above all not <span class="in">`--break-system-packages`</span>)</span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1" aria-label="code-block-2-24"></a>  and never re-implement the analysis with local uproot/ROOT.</span>
-<span id="cb2-25"><a href="#cb2-25" tabindex="-1" aria-label="code-block-2-25"></a><span class="ss">- </span>A timed-out call means the server is BUSY, not broken: it is single-threaded and</span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1" aria-label="code-block-2-26"></a>  still working on the previous request. Wait, retry once, and if it still fails,</span>
-<span id="cb2-27"><a href="#cb2-27" tabindex="-1" aria-label="code-block-2-27"></a>  stop and report which tool failed with which arguments.</span>
-<span id="cb2-28"><a href="#cb2-28" tabindex="-1" aria-label="code-block-2-28"></a><span class="ss">- </span>Never reuse a cached earlier tool result as if it were fresh. A number that did</span>
-<span id="cb2-29"><a href="#cb2-29" tabindex="-1" aria-label="code-block-2-29"></a>  not come from the MCP servers is not reproducible, so it is not an answer.</span>
-<span id="cb2-30"><a href="#cb2-30" tabindex="-1" aria-label="code-block-2-30"></a></span>
-<span id="cb2-31"><a href="#cb2-31" tabindex="-1" aria-label="code-block-2-31"></a><span class="fu">## Data model</span></span>
-<span id="cb2-32"><a href="#cb2-32" tabindex="-1" aria-label="code-block-2-32"></a><span class="ss">- </span>Tree: events.  Collection: ReconstructedChargedParticles.</span>
-<span id="cb2-33"><a href="#cb2-33" tabindex="-1" aria-label="code-block-2-33"></a><span class="ss">- </span>Members: .PDG, .momentum.x, .momentum.y, .momentum.z   (momenta in GeV).</span>
-<span id="cb2-34"><a href="#cb2-34" tabindex="-1" aria-label="code-block-2-34"></a><span class="ss">- </span>PDG codes: proton 2212, pi- -211, antiproton -2212, pi+ 211.</span>
-<span id="cb2-35"><a href="#cb2-35" tabindex="-1" aria-label="code-block-2-35"></a></span>
-<span id="cb2-36"><a href="#cb2-36" tabindex="-1" aria-label="code-block-2-36"></a><span class="fu">## Physics constants (PDG)</span></span>
-<span id="cb2-37"><a href="#cb2-37" tabindex="-1" aria-label="code-block-2-37"></a><span class="ss">- </span>m(proton) = 0.9382720813 GeV, m(pi) = 0.13957061 GeV, m(Lambda) = 1.115683 GeV.</span>
-<span id="cb2-38"><a href="#cb2-38" tabindex="-1" aria-label="code-block-2-38"></a></span>
-<span id="cb2-39"><a href="#cb2-39" tabindex="-1" aria-label="code-block-2-39"></a><span class="fu">## Conventions</span></span>
-<span id="cb2-40"><a href="#cb2-40" tabindex="-1" aria-label="code-block-2-40"></a><span class="ss">- </span>Invariant mass over <span class="co">[</span><span class="ot">1.05, 1.25</span><span class="co">]</span> GeV, 200 bins.</span>
-<span id="cb2-41"><a href="#cb2-41" tabindex="-1" aria-label="code-block-2-41"></a><span class="ss">- </span>Fit a Gaussian + 2nd-order polynomial over <span class="co">[</span><span class="ot">1.08, 1.16</span><span class="co">]</span> GeV.</span>
-<span id="cb2-42"><a href="#cb2-42" tabindex="-1" aria-label="code-block-2-42"></a><span class="ss">- </span>Write results as JSON; save plots under output/.</span>
-<span id="cb2-43"><a href="#cb2-43" tabindex="-1" aria-label="code-block-2-43"></a></span>
-<span id="cb2-44"><a href="#cb2-44" tabindex="-1" aria-label="code-block-2-44"></a><span class="fu">## Definition of done</span></span>
-<span id="cb2-45"><a href="#cb2-45" tabindex="-1" aria-label="code-block-2-45"></a><span class="ss">- </span>Fitted peak within a few MeV of 1.115683 GeV and chi2/ndf of order 1.</span>
-<span id="cb2-46"><a href="#cb2-46" tabindex="-1" aria-label="code-block-2-46"></a><span class="ss">- </span>Always run the fit and check these before reporting a result.</span></code></pre>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1" aria-label="code-block-2-23"></a><span class="fu">## When a tool fails</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1" aria-label="code-block-2-24"></a><span class="ss">- </span>A timeout means the server is busy. Wait, retry once, then stop and report.</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1" aria-label="code-block-2-25"></a></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1" aria-label="code-block-2-26"></a><span class="fu">## Definition of done</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1" aria-label="code-block-2-27"></a><span class="ss">- </span>Every number comes from a tool call in this session and is reported with the</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1" aria-label="code-block-2-28"></a>  dataset DID and the file list.</span></code></pre>
 </div>
-<p>It records the schema, the tool policy (use the server, not
-hand-written I/O), the conventions, and a definition of done.</p>
-<div id="two-rules-for-a-useful-agents.md" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="two-rules-for-a-useful-agents.md" class="callout-inner">
-<h3 class="callout-title">Two rules for a useful AGENTS.md</h3>
-<div class="callout-content">
+<p>Every line is something the model cannot find out by itself and got
+wrong in Episode 3: where the files are served from, which call floods
+the context, what the sandbox rejects. Two rules:</p>
 <ul>
 <li>
 <strong>Keep it short.</strong> It is loaded on every turn, so every
-line costs tokens. Write only what the model cannot infer from the
-code.</li>
+line costs tokens.</li>
 <li>
-<strong>Describe concepts, not file paths.</strong> “The
-reconstructed tracks are in the
-<code>ReconstructedChargedParticles</code> collection” stays true; a
-path like <code>src/old/lambda_v2.py</code> goes stale, and the model
-then searches in the wrong place.</li>
+<strong>Write what went wrong.</strong> When the assistant makes a
+mistake twice, add one line.</li>
 </ul>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="one-source-of-truth-bridge-files">One source of truth: bridge files<a class="anchor" aria-label="anchor" href="#one-source-of-truth-bridge-files"></a>
-</h2>
-<hr class="half-width">
-<p>opencode, Codex, Gemini CLI, and Zed read <code>AGENTS.md</code>.
-Some tools read only their own file: GitHub Copilot reads
-<code>copilot-instructions.md</code>, Cursor reads
-<code>.cursorrules</code>. Without it they run with no context and no
-warning.</p>
-<p>Do not copy your rules into a second file; the copies will diverge.
-Make the tool-specific file a one-line <em>bridge</em> to
-<code>AGENTS.md</code>. <code>.github/copilot-instructions.md</code>
-(Copilot) and <code>.cursorrules</code> (Cursor) contain:</p>
-<div class="codewrapper sourceCode" id="cb3">
-<h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a>Follow the project rules in AGENTS.md.</span></code></pre>
-</div>
-<p>The bridge file is in the repository: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md" class="external-link"><code>copilot-instructions.md</code></a>.</p>
+<p>Claude Code reads <code>CLAUDE.md</code> instead; make that file one
+line, <code>@AGENTS.md</code>. Do not copy the rules into a second file:
+the copies will diverge.</p>
 </section><section><h2 class="section-heading" id="skill-md-a-named-procedure">SKILL.md — a named procedure<a class="anchor" aria-label="anchor" href="#skill-md-a-named-procedure"></a>
 </h2>
 <hr class="half-width">
 <p>A <strong>skill</strong> is a directory containing a
 <code>SKILL.md</code> that describes a repeatable procedure:</p>
-<div class="codewrapper sourceCode" id="cb4">
+<div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="ex">skills/</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a>  <span class="ex">lambda-fit/</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a>    <span class="ex">SKILL.md</span>              specification: applicability, inputs, steps, success criteria</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="ex">skills/</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a>  <span class="ex">lambda-fit/</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1" aria-label="code-block-3-3"></a>    <span class="ex">SKILL.md</span>              specification: applicability, inputs, steps, success criteria</span></code></pre>
 </div>
-<p>The procedure only uses the MCP tools, so it needs no scripts of its
-own.</p>
-<p>The YAML frontmatter has a <code>name</code> and a
-<code>description</code>. The client matches your request against the
-<code>description</code> to decide whether to load the skill.
-<strong>Only the name and description stay in context</strong>; the body
-is read only when the description matches.</p>
-<div class="codewrapper sourceCode" id="cb5">
+<p>Its YAML frontmatter has a <code>name</code> and a
+<code>description</code>; <strong>only these stay in context</strong>,
+and the body is read when a request matches the description. The
+lesson’s skill:</p>
+<div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="co">---</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="an">name:</span><span class="co"> lambda-fit</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="an">description:</span><span class="co"> &gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1" aria-label="code-block-5-4"></a><span class="co">  Reconstruct and fit the Lambda0 -&gt; p pi- invariant-mass peak in ePIC EDM4eic</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1" aria-label="code-block-5-5"></a><span class="co">  data. Use when asked to measure the Lambda yield, mass, or width, or to</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1" aria-label="code-block-5-6"></a><span class="co">  reproduce the Lambda peak from a .root file or a file list.</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1" aria-label="code-block-5-7"></a><span class="co">---</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1" aria-label="code-block-5-8"></a></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1" aria-label="code-block-5-9"></a><span class="fu"># Lambda invariant-mass fit</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1" aria-label="code-block-5-10"></a></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1" aria-label="code-block-5-11"></a><span class="fu">## When to use</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1" aria-label="code-block-5-12"></a>Any request to find, fit, or quantify the Lambda0 (or its antiparticle) in ePIC</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1" aria-label="code-block-5-13"></a>reconstructed data via the proton-pion invariant mass.</span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1" aria-label="code-block-5-14"></a></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1" aria-label="code-block-5-15"></a><span class="fu">## Inputs</span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1" aria-label="code-block-5-16"></a><span class="ss">- </span>file: one EDM4eic .root URL (a root:// file from a DIS dataset), or</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1" aria-label="code-block-5-17"></a><span class="ss">- </span>file_list: the dataset's root:// files for the full sample</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1" aria-label="code-block-5-18"></a>  (resolve both with the rucio tools: list_dids, list_files, list_file_replicas).</span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1" aria-label="code-block-5-19"></a></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1" aria-label="code-block-5-20"></a><span class="fu">## Steps</span></span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1" aria-label="code-block-5-21"></a><span class="ss">1. </span>Confirm the uproot MCP server is connected: get_tree_info on the input.</span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1" aria-label="code-block-5-22"></a><span class="ss">2. </span>Build the proton-pion invariant-mass histogram with execute_kernel (one file)</span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1" aria-label="code-block-5-23"></a>   or execute_kernel_dataset (many files), tree_name 'events' and the</span>
-<span id="cb5-24"><a href="#cb5-24" tabindex="-1" aria-label="code-block-5-24"></a>   ReconstructedChargedParticles momentum/PDG branches. For a large sample, cap</span>
-<span id="cb5-25"><a href="#cb5-25" tabindex="-1" aria-label="code-block-5-25"></a>   the file count first; for more than ~10 files use submit_kernel_dataset and</span>
-<span id="cb5-26"><a href="#cb5-26" tabindex="-1" aria-label="code-block-5-26"></a>   poll, in batches of ~20 files per job (one big job can hit an upstream idle</span>
-<span id="cb5-27"><a href="#cb5-27" tabindex="-1" aria-label="code-block-5-27"></a>   timeout), so no single tool call outlives the client's timeout. Write any</span>
-<span id="cb5-28"><a href="#cb5-28" tabindex="-1" aria-label="code-block-5-28"></a>   reduce/merge code as plain NumPy array operations (the sandbox rejects tuple</span>
-<span id="cb5-29"><a href="#cb5-29" tabindex="-1" aria-label="code-block-5-29"></a>   unpacking in loops).</span>
-<span id="cb5-30"><a href="#cb5-30" tabindex="-1" aria-label="code-block-5-30"></a><span class="ss">3. </span>Fit the histogram with a second execute_kernel call (Gaussian + 2nd-order</span>
-<span id="cb5-31"><a href="#cb5-31" tabindex="-1" aria-label="code-block-5-31"></a>   polynomial over <span class="co">[</span><span class="ot">1.08, 1.16</span><span class="co">]</span> GeV; NumPy/awkward only, no imports).</span>
-<span id="cb5-32"><a href="#cb5-32" tabindex="-1" aria-label="code-block-5-32"></a><span class="ss">4. </span>Report mu, sigma, signal yield S, and chi2/ndf.</span>
-<span id="cb5-33"><a href="#cb5-33" tabindex="-1" aria-label="code-block-5-33"></a></span>
-<span id="cb5-34"><a href="#cb5-34" tabindex="-1" aria-label="code-block-5-34"></a><span class="fu">## Success criteria (check before reporting success)</span></span>
-<span id="cb5-35"><a href="#cb5-35" tabindex="-1" aria-label="code-block-5-35"></a><span class="ss">- </span>At least ~50 entries in the fit window. With fewer, report insufficient</span>
-<span id="cb5-36"><a href="#cb5-36" tabindex="-1" aria-label="code-block-5-36"></a>  statistics and stop — a low-stats fit lets the polynomial absorb the peak and</span>
-<span id="cb5-37"><a href="#cb5-37" tabindex="-1" aria-label="code-block-5-37"></a>  can pass the checks below by accident.</span>
-<span id="cb5-38"><a href="#cb5-38" tabindex="-1" aria-label="code-block-5-38"></a><span class="ss">- </span><span class="pp">|</span>mu - 1.115683 GeV<span class="pp">|</span> &lt; 0.005 GeV.</span>
-<span id="cb5-39"><a href="#cb5-39" tabindex="-1" aria-label="code-block-5-39"></a><span class="ss">- </span>sigma in ~<span class="co">[</span><span class="ot">0.001, 0.005</span><span class="co">]</span> GeV (this is detector resolution, not natural width).</span>
-<span id="cb5-40"><a href="#cb5-40" tabindex="-1" aria-label="code-block-5-40"></a><span class="ss">- </span>chi2/ndf of order 1.</span>
-<span id="cb5-41"><a href="#cb5-41" tabindex="-1" aria-label="code-block-5-41"></a>If any check fails, report the failure and the fit diagnostics, not a result.</span>
-<span id="cb5-42"><a href="#cb5-42" tabindex="-1" aria-label="code-block-5-42"></a></span>
-<span id="cb5-43"><a href="#cb5-43" tabindex="-1" aria-label="code-block-5-43"></a><span class="fu">## Provenance</span></span>
-<span id="cb5-44"><a href="#cb5-44" tabindex="-1" aria-label="code-block-5-44"></a>List the tool calls and their parameters, and the dataset used (campaign and</span>
-<span id="cb5-45"><a href="#cb5-45" tabindex="-1" aria-label="code-block-5-45"></a>file list), so the run can be reproduced.</span></code></pre>
+<pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a><span class="an">name:</span><span class="co"> lambda-fit</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1" aria-label="code-block-4-3"></a><span class="an">description:</span><span class="co"> &gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1" aria-label="code-block-4-4"></a><span class="co">  Reconstruct and fit the Lambda0 -&gt; p pi- invariant-mass peak in ePIC EDM4eic</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1" aria-label="code-block-4-5"></a><span class="co">  data. Use when asked to measure the Lambda yield, mass, or width, or to</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1" aria-label="code-block-4-6"></a><span class="co">  reproduce the Lambda peak from a .root file or a file list.</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1" aria-label="code-block-4-7"></a><span class="co">---</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1" aria-label="code-block-4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1" aria-label="code-block-4-9"></a><span class="fu"># Lambda invariant-mass fit</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1" aria-label="code-block-4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1" aria-label="code-block-4-11"></a><span class="fu">## Steps</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1" aria-label="code-block-4-12"></a><span class="ss">1. </span>Check the input files with validate_dataset_schema.</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1" aria-label="code-block-4-13"></a><span class="ss">2. </span>Histogram m(p pi-) and m(pbar pi+) over <span class="co">[</span><span class="ot">1.08, 1.16</span><span class="co">]</span> GeV in 80 bins, and</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1" aria-label="code-block-4-14"></a>   return the counts and their sum. One file: execute_kernel. Many files:</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1" aria-label="code-block-4-15"></a>   execute_kernel_dataset with reduce_code, at most 10 files per call.</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1" aria-label="code-block-4-16"></a><span class="ss">3. </span>Fit each histogram in one more execute_kernel call: Gaussian + 2nd-order</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1" aria-label="code-block-4-17"></a>   polynomial. Scan mu and sigma on a grid and solve the other four parameters</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1" aria-label="code-block-4-18"></a>   by weighted linear least squares.</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1" aria-label="code-block-4-19"></a><span class="ss">4. </span>Report mu, sigma, the yield S = A sqrt(2 pi) sigma / bin width, and</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1" aria-label="code-block-4-20"></a>   chi2/ndf, with uncertainties.</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1" aria-label="code-block-4-21"></a></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1" aria-label="code-block-4-22"></a><span class="fu">## Success criteria (check before reporting success)</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1" aria-label="code-block-4-23"></a><span class="ss">- </span>The entries in the fitted histogram equal the sum returned in step 2. If</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1" aria-label="code-block-4-24"></a>  not, counts were lost in copying: redo the fit.</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1" aria-label="code-block-4-25"></a><span class="ss">- </span>At least 50 entries. With fewer, report insufficient statistics and stop.</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1" aria-label="code-block-4-26"></a><span class="ss">- </span><span class="pp">|</span>mu - 1.115683 GeV<span class="pp">|</span> &lt; 0.005 GeV.</span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1" aria-label="code-block-4-27"></a><span class="ss">- </span>sigma in <span class="co">[</span><span class="ot">0.001, 0.005</span><span class="co">]</span> GeV (detector resolution).</span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1" aria-label="code-block-4-28"></a><span class="ss">- </span>chi2/ndf between 0.5 and 1.5.</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1" aria-label="code-block-4-29"></a>If any check fails, report the failure and the fit numbers, not a result.</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1" aria-label="code-block-4-30"></a></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1" aria-label="code-block-4-31"></a><span class="fu">## Provenance</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1" aria-label="code-block-4-32"></a>List the dataset DID, the files used, and the tool calls with their arguments.</span></code></pre>
 </div>
-<div id="how-clients-load-a-skill" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="how-clients-load-a-skill" class="callout-inner">
-<h3 class="callout-title">How clients load a skill</h3>
-<div class="callout-content">
-<p>opencode reads skills from
-<code>.opencode/skills/&lt;name&gt;/SKILL.md</code> in the project
-directory (or <code>~/.config/opencode/skills/</code> for all projects);
-Claude Code uses <code>.claude/skills/</code>. Download the lesson’s
-copy:</p>
-<div class="codewrapper sourceCode" id="cb6">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1" aria-label="code-block-6-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> <span class="at">--create-dirs</span> <span class="at">-o</span> .opencode/skills/lambda-fit/SKILL.md <span class="dt">\</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1" aria-label="code-block-6-2"></a>  https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills/lambda-fit/SKILL.md</span></code></pre>
-</div>
-<p>Loading is the model’s decision, based on the skill’s
-<code>description</code>. A small model may answer without loading it,
-so every prompt in this lesson names the skill: “Using the lambda-fit
-skill”. Clients without a skill mechanism can reference the procedure
-from <code>AGENTS.md</code> instead.</p>
-</div>
-</div>
-</div>
-<p>Get both example files in place: <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/AGENTS.md" class="external-link"><code>files/skills/AGENTS.md</code></a>
-(download it to your analysis directory) and <a href="https://github.com/eic/tutorial-mcp/blob/main/files/skills/lambda-fit/SKILL.md" class="external-link"><code>files/skills/lambda-fit/SKILL.md</code></a>
-(download it as above).</p>
-</section><section><h2 class="section-heading" id="your-project-layout">Your project layout<a class="anchor" aria-label="anchor" href="#your-project-layout"></a>
+<p>The skill says what to do and how to judge the result, not how to
+code it; the assistant writes the kernels.</p>
+</section><section><h2 class="section-heading" id="install-both-files">Install both files<a class="anchor" aria-label="anchor" href="#install-both-files"></a>
 </h2>
 <hr class="half-width">
-<p>A project that behaves the same under any assistant:</p>
-<div class="codewrapper sourceCode" id="cb7">
+<p>opencode reads skills from
+<code>.opencode/skills/&lt;name&gt;/SKILL.md</code> in the project
+directory; Claude Code uses <code>.claude/skills/</code>. In your
+analysis directory:</p>
+<div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1" aria-label="code-block-7-1"></a><span class="ex">lambda-analysis/</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1" aria-label="code-block-7-2"></a><span class="ex">├──</span> AGENTS.md                        <span class="co"># source of truth: context + conventions (write this)</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1" aria-label="code-block-7-3"></a><span class="ex">├──</span> .github/</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1" aria-label="code-block-7-4"></a><span class="ex">│</span>   └── copilot-instructions.md      <span class="co"># points to AGENTS.md   (bridge for Copilot)</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1" aria-label="code-block-7-5"></a><span class="ex">├──</span> .cursorrules                     <span class="co"># points to AGENTS.md   (bridge for Cursor)</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1" aria-label="code-block-7-6"></a><span class="ex">├──</span> opencode.jsonc                   <span class="co"># MCP server connections: `eic-mcp config opencode` (Episode 3)</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1" aria-label="code-block-7-7"></a><span class="ex">└──</span> .opencode/</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1" aria-label="code-block-7-8"></a>    <span class="ex">└──</span> skills/</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1" aria-label="code-block-7-9"></a>        <span class="ex">└──</span> lambda-fit/              <span class="co"># downloaded from the lesson (see callout above;</span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1" aria-label="code-block-7-10"></a>            <span class="ex">└──</span> SKILL.md             <span class="co">#  `.claude/skills/` for Claude Code)</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1" aria-label="code-block-5-1"></a><span class="va">R</span><span class="op">=</span>https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1" aria-label="code-block-5-2"></a><span class="ex">curl</span> <span class="at">-fsSLO</span> <span class="va">$R</span>/AGENTS.md</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1" aria-label="code-block-5-3"></a><span class="ex">curl</span> <span class="at">-fsSL</span> <span class="at">--create-dirs</span> <span class="at">-o</span> .opencode/skills/lambda-fit/SKILL.md <span class="va">$R</span>/lambda-fit/SKILL.md</span></code></pre>
 </div>
-<div id="exercise-a-summary-skill-10-min" class="callout challenge">
+<p>Restart opencode so it reads them. Loading a skill is the model’s
+decision, based on the skill’s <code>description</code>. A small model
+may answer without loading it, so every prompt in this lesson names the
+skill: “Using the lambda-fit skill”.</p>
+<div id="exercise-the-bare-question-again-5-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
 </div>
 <span class="callout-header">Challenge</span>
-<div id="exercise-a-summary-skill-10-min" class="callout-inner">
-<h3 class="callout-title">Exercise: a summary skill (≈ 10 min)</h3>
+<div id="exercise-the-bare-question-again-5-min" class="callout-inner">
+<h3 class="callout-title">Exercise: the bare question again (≈ 5
+min)</h3>
 <div class="callout-content">
-<p>Write a minimal <code>SKILL.md</code> for “summarize the contents of
-any EDM4eic file”, place it where your client loads skills, and try it
-on a file from Episode 3.</p>
+<p>In a new session, with <code>AGENTS.md</code> in place, repeat the
+question from Episode 3 and count the tool calls:</p>
+<pre class="ai-prompt"><code>How many events are in the first file of the campaign 26.04.1 BeAGLE eCu ep 10x115 reconstructed-DIS dataset?</code></pre>
 </div>
 </div>
 </div>
@@ -1632,49 +1393,42 @@ on a file from Episode 3.</p>
 </button>
 <div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
-<div class="codewrapper sourceCode" id="cb8">
-<h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+<p>Same answer, 1,223. In the test run: 3 tool calls
+(<code>list_dids</code>, <code>list_files</code>,
+<code>validate_dataset_schema</code>) and 20 s, against 16 calls and 102
+s without the file.</p>
+</div>
+</div>
+</div>
+</div>
+</section><section><h2 class="section-heading" id="your-project-layout">Your project layout<a class="anchor" aria-label="anchor" href="#your-project-layout"></a>
+</h2>
+<hr class="half-width">
+<p>A project that behaves the same under any assistant:</p>
+<div class="codewrapper sourceCode" id="cb7">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" tabindex="-1" aria-label="code-block-8-1"></a><span class="co">---</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1" aria-label="code-block-8-2"></a><span class="an">name:</span><span class="co"> edm4eic-summary</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1" aria-label="code-block-8-3"></a><span class="an">description:</span><span class="co"> &gt;</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1" aria-label="code-block-8-4"></a><span class="co">  Summarize the contents of an EDM4eic .root file. Use when asked what a</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1" aria-label="code-block-8-5"></a><span class="co">  reconstruction file contains, which trees or collections it holds, or</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1" aria-label="code-block-8-6"></a><span class="co">  how many events it has.</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1" aria-label="code-block-8-7"></a><span class="co">---</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1" aria-label="code-block-8-8"></a></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1" aria-label="code-block-8-9"></a><span class="fu"># EDM4eic file summary</span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1" aria-label="code-block-8-10"></a></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1" aria-label="code-block-8-11"></a><span class="fu">## Steps</span></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1" aria-label="code-block-8-12"></a><span class="ss">1. </span>get_tree_info on the <span class="in">`events`</span> tree: entry count and collection names.</span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1" aria-label="code-block-8-13"></a>   (Skip get_file_structure — on EDM4eic files it returns megabytes.)</span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1" aria-label="code-block-8-14"></a><span class="ss">2. </span>get_tree_info on <span class="in">`runs`</span> and <span class="in">`podio_metadata`</span> for provenance.</span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1" aria-label="code-block-8-15"></a><span class="ss">3. </span>Return a compact summary: each tree with its entry count, and the</span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1" aria-label="code-block-8-16"></a>   top-level collections grouped by kind (truth, tracking, calorimetry,</span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1" aria-label="code-block-8-17"></a>   PID, reconstructed).</span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1" aria-label="code-block-8-18"></a></span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1" aria-label="code-block-8-19"></a><span class="fu">## Success criteria</span></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1" aria-label="code-block-8-20"></a>Every tree named with its entry count; if a tree is missing, say so</span>
-<span id="cb8-21"><a href="#cb8-21" tabindex="-1" aria-label="code-block-8-21"></a>rather than guessing.</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1" aria-label="code-block-7-1"></a><span class="ex">lambda-analysis/</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1" aria-label="code-block-7-2"></a><span class="ex">├──</span> AGENTS.md                        </span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1" aria-label="code-block-7-3"></a><span class="ex">├──</span> opencode.jsonc                   </span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1" aria-label="code-block-7-4"></a><span class="ex">└──</span> .opencode/</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1" aria-label="code-block-7-5"></a>    <span class="ex">└──</span> skills/</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1" aria-label="code-block-7-6"></a>        <span class="ex">└──</span> lambda-fit/              </span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1" aria-label="code-block-7-7"></a>            <span class="ex">└──</span> SKILL.md            </span></code></pre>
 </div>
-<p>Save it as <code>.opencode/skills/edm4eic-summary/SKILL.md</code> and
-name it in the prompt (“Using the edm4eic-summary skill, …”); a small
-model may not load it from the description alone.</p>
-</div>
-</div>
-</div>
-</div>
-<div id="exercise-richer-provenance-5-min" class="callout challenge">
+<div id="exercise-a-species-count-skill-10-min" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
 </div>
 <span class="callout-header">Challenge</span>
-<div id="exercise-richer-provenance-5-min" class="callout-inner">
-<h3 class="callout-title">Exercise: richer provenance (≈ 5 min)</h3>
+<div id="exercise-a-species-count-skill-10-min" class="callout-inner">
+<h3 class="callout-title">Exercise: a species-count skill (≈ 10
+min)</h3>
 <div class="callout-content">
-<p>Extend the provenance section of <code>lambda-fit</code> so a run
-also records the number of input files and the total number of candidate
-pairs.</p>
+<p>Write a minimal <code>SKILL.md</code> for “count the reconstructed
+charged particles per PDG code in an EDM4eic file”, place it where your
+client loads skills, restart the client, and try it on a file from
+Episode 3.</p>
 </div>
 </div>
 </div>
@@ -1685,25 +1439,77 @@ pairs.</p>
 </button>
 <div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
+<div class="codewrapper sourceCode" id="cb8">
+<h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" tabindex="-1" aria-label="code-block-8-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1" aria-label="code-block-8-2"></a><span class="an">name:</span><span class="co"> species-count</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1" aria-label="code-block-8-3"></a><span class="an">description:</span><span class="co"> &gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1" aria-label="code-block-8-4"></a><span class="co">  Count reconstructed charged particles per PDG code in an EDM4eic .root file.</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1" aria-label="code-block-8-5"></a><span class="co">  Use when asked which particle species a reconstruction file contains.</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1" aria-label="code-block-8-6"></a><span class="co">---</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1" aria-label="code-block-8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1" aria-label="code-block-8-8"></a><span class="fu"># Species count</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1" aria-label="code-block-8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1" aria-label="code-block-8-10"></a><span class="fu">## Steps</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1" aria-label="code-block-8-11"></a><span class="ss">1. </span>validate_dataset_schema on the file: tree 'events', branch</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1" aria-label="code-block-8-12"></a>   ReconstructedChargedParticles.PDG. Note the event count.</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1" aria-label="code-block-8-13"></a><span class="ss">2. </span>execute_kernel with that branch and this kernel, unchanged:</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1" aria-label="code-block-8-14"></a></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1" aria-label="code-block-8-15"></a><span class="in">       def kernel(events):</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1" aria-label="code-block-8-16"></a><span class="in">           pdg = ak.to_numpy(ak.flatten(events["ReconstructedChargedParticles.PDG"]))</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1" aria-label="code-block-8-17"></a><span class="in">           unique = np.unique(pdg, return_counts=True)</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1" aria-label="code-block-8-18"></a><span class="in">           return {"pdg": unique[0].tolist(), "count": unique[1].tolist()}</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1" aria-label="code-block-8-19"></a></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1" aria-label="code-block-8-20"></a><span class="ss">3. </span>Return a table: PDG code, species name, count, fraction.</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1" aria-label="code-block-8-21"></a></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1" aria-label="code-block-8-22"></a><span class="fu">## Success criteria</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1" aria-label="code-block-8-23"></a>The fractions sum to 1. Code 0 is reported as "no PID", not dropped.</span></code></pre>
+</div>
+<p>Save it as <code>.opencode/skills/species-count/SKILL.md</code> and
+name it in the prompt (“Using the species-count skill, …”).</p>
+</div>
+</div>
+</div>
+</div>
+<div id="optional-exercise-richer-provenance" class="callout challenge">
+<div class="callout-square">
+<i class="callout-icon" data-feather="zap"></i>
+</div>
+<span class="callout-header">Challenge</span>
+<div id="optional-exercise-richer-provenance" class="callout-inner">
+<h3 class="callout-title">Optional exercise: richer provenance</h3>
+<div class="callout-content">
+<p>Extend the provenance section of <code>lambda-fit</code> so a run
+also records the number of input files and the total number of candidate
+pairs.</p>
+</div>
+</div>
+</div>
+<div id="accordionSolution3" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
+  <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
+</button>
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div class="accordion-body">
 <p>Replace the skill’s Provenance section with:</p>
 <div class="codewrapper sourceCode" id="cb9">
 <h3 class="code-label">MARKDOWN<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode markdown" tabindex="0"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" tabindex="-1" aria-label="code-block-9-1"></a><span class="fu">## Provenance</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1" aria-label="code-block-9-2"></a>List the tool calls and their parameters, the dataset used (campaign and</span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1" aria-label="code-block-9-3"></a>file list), the number of input files processed, and the total number of</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1" aria-label="code-block-9-4"></a>proton-pion candidate pairs entering the histogram, so the run can be</span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1" aria-label="code-block-9-5"></a>reproduced.</span></code></pre>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1" aria-label="code-block-9-2"></a>List the dataset DID, the files used, the number of input files processed,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1" aria-label="code-block-9-3"></a>the total number of proton-pion candidate pairs entering the histogram, and</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1" aria-label="code-block-9-4"></a>the tool calls with their arguments, so the run can be reproduced.</span></code></pre>
 </div>
-<p>The kernel can return the pair count next to the histogram
-(e.g. <code>{"counts": ..., "n_pairs": int(len(m))}</code>) and sum it
-over files.</p>
+<p>The kernel can return the number of pairs before histogramming as one
+more dictionary entry.</p>
 </div>
 </div>
 </div>
 </div>
 <p>The <a href="05-end-to-end-agents.html">next episode</a> runs this
-skill end to end and scales it from one file to the full sample.</p>
+skill end to end</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -1727,10 +1533,10 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-05-end-to-end-agents"><p>Content from <a href="05-end-to-end-agents.html">An end-to-end, reproducible Λ⁰ analysis</a></p>
 <hr>
-<p>Last updated on 2026-09-30 |
+<p>Last updated on 2026-11-10 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/05-end-to-end-agents.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
-<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 55 minutes</p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 30 minutes</p>
 <div class="text-end">
           <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
         </div>
@@ -1784,7 +1590,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <h3 class="card-title">Questions</h3>
 <ul>
 <li>How do assistant + server + skill compose into one analysis?</li>
-<li>How does the kernel scale from one file to the full sample?</li>
+<li>How does the kernel scale from one file to many?</li>
 <li>How is the yield extracted and made reproducible?</li>
 </ul>
 </div>
@@ -1805,25 +1611,11 @@ checklist.</li>
 </div>
 </div>
 </div>
-<section><h2 class="section-heading" id="run-it-in-your-client">Run it in your client<a class="anchor" aria-label="anchor" href="#run-it-in-your-client"></a>
-</h2>
-<hr class="half-width">
-<p>In eic-shell, in your analysis directory:</p>
-<div class="codewrapper sourceCode" id="cb1">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1" aria-label="code-block-1-1"></a><span class="ex">eic-mcp</span> up</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1" aria-label="code-block-1-2"></a><span class="ex">eic-mcp</span> config opencode</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1" aria-label="code-block-1-3"></a><span class="va">R</span><span class="op">=</span>https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1" aria-label="code-block-1-4"></a><span class="ex">curl</span> <span class="at">-fsSLO</span> <span class="va">$R</span>/AGENTS.md</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1" aria-label="code-block-1-5"></a><span class="ex">curl</span> <span class="at">-fsSL</span> <span class="at">--create-dirs</span> <span class="at">-o</span> .opencode/skills/lambda-fit/SKILL.md <span class="va">$R</span>/lambda-fit/SKILL.md</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1" aria-label="code-block-1-6"></a><span class="ex">opencode</span></span></code></pre>
-</div>
-<p>Check that <code>/mcp</code> lists <code>uproot</code>,
-<code>xrootd</code>, and <code>rucio</code>, then paste the prompts
-below. For Claude Code, use <code>eic-mcp config claude</code> and
-<code>.claude/skills/</code>.</p>
-</section><section><h2 class="section-heading" id="the-composed-pipeline">The composed pipeline<a class="anchor" aria-label="anchor" href="#the-composed-pipeline"></a>
+<p>Continue in the directory from Episodes 3 and 4: servers running
+(<code>eic-mcp status</code>), <code>AGENTS.md</code> and the lambda-fit
+skill installed, and <code>/mcp</code> in opencode listing
+<code>uproot</code>, <code>xrootd</code>, and <code>rucio</code>.</p>
+<section><h2 class="section-heading" id="the-composed-pipeline">The composed pipeline<a class="anchor" aria-label="anchor" href="#the-composed-pipeline"></a>
 </h2>
 <hr class="half-width">
 <p>The skill (Episode 4) gives the steps, the uproot server (Episode 3)
@@ -1833,37 +1625,22 @@ flowchart LR
     accTitle: {End-to-end agent run}
     accDescr: {End-to-end agent run}
     A["resolve input&lt;br/&gt;root:// file or file list"]:::data --&gt; B["build m(p,π) histogram&lt;br/&gt;uproot MCP"]:::tool
-    B --&gt; C["fit Gaussian + poly-2&lt;br/&gt;opencode prompt"]:::tool
-    C --&gt; D["report μ, σ, S, χ²/ndf&lt;br/&gt;+ plot + provenance"]:::out
+    B --&gt; C["fit Gaussian + poly-2&lt;br/&gt;uproot MCP"]:::tool
+    C --&gt; D["report μ, σ, S, χ²/ndf&lt;br/&gt;+ provenance"]:::out
     classDef data fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;</code></pre>
 </section><section><h2 class="section-heading" id="one-file-end-to-end">One file, end to end<a class="anchor" aria-label="anchor" href="#one-file-end-to-end"></a>
 </h2>
 <hr class="half-width">
-<p>With the three servers running and the lambda-fit skill available,
-one request runs the whole chain. Point it at one of the dataset’s
-<code>root://</code> files. The assistant uses <code>rucio</code> tools
-to find a DIS dataset and <code>list_file_replicas</code> for the URLs,
-<code>xrootd</code> to confirm the file is there, then reads it in
-place:</p>
+<p>One request runs the whole chain on the first file of the
+dataset:</p>
 <pre class="ai-prompt"><code>Using the lambda-fit skill, measure the Lambda0 peak in this file:
-root://epicxrd1.sdcc.bnl.gov:1095//... (one root:// file of the campaign 26.04.1
-BeAGLE eCu ep 10x115 dataset from Episode 3's exercise).
-Build the proton-pion invariant-mass histogram with the uproot MCP server (tree 'events'),
-fit it, and report mu, sigma, the yield, and chi2/ndf, with the plot, or report insufficient
-statistics if the fit window is too sparse.</code></pre>
-<p>The assistant builds the histogram with the uproot server, then fits
-it. If your model stops after the histogram (small models do), paste the
-fit as its own request:</p>
-<pre class="ai-prompt"><code>Fit the histogram you just built with execute_kernel: a Gaussian plus a 2nd-order polynomial
-over [1.08, 1.16] GeV. Report mu, sigma, the signal yield S, and chi2/ndf, checked against
-the lambda-fit skill's success criteria.</code></pre>
-<p>One file gives only ~8 candidates in the fit window, so the correct
-answer is <em>insufficient statistics</em>: the skill says to stop
-instead of fitting, and a model that quotes <span class="math inline">\(\mu\)</span> anyway has ignored it. The peak at
-<span class="math inline">\(\mu \approx 1.1157\)</span> GeV comes from
-the larger sample below.</p>
+root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC/RECO/26.04.1/epic_craterlake/DIS/BeAGLE1.03.02-1.0/eCu/ep/10x115/q2_1to1000/BeAGLE1.03.02-1.0_DIS_eCu_ep_10x115_q2_1to1000_ab.0000.eicrecon.edm4eic.root</code></pre>
+<p>One file gives only about 10 candidates in the fit window, so the
+correct answer is <em>insufficient statistics</em>: the skill says to
+stop, and a model that quotes <span class="math inline">\(\mu\)</span>
+anyway has ignored it.</p>
 <div id="smaller-models-take-shortcuts-check-the-result-not-the-route" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -1879,38 +1656,29 @@ result, not the route.</p>
 </div>
 </div>
 </div>
-</section><section><h2 class="section-heading" id="scaling-to-the-full-sample">Scaling to the full sample<a class="anchor" aria-label="anchor" href="#scaling-to-the-full-sample"></a>
+</section><section><h2 class="section-heading" id="scaling-up">Scaling up<a class="anchor" aria-label="anchor" href="#scaling-up"></a>
 </h2>
 <hr class="half-width">
-<p>The same calculation can run over many files and return one merged
+<p>The same kernel can run over many files and return one merged
 histogram:</p>
-<pre class="ai-prompt"><code>Using the lambda-fit skill, run the same proton-pion mass kernel across the first 8 files of the
-campaign 26.04.1 BeAGLE eCu ep 10x115 dataset with execute_kernel_dataset (tree 'events'),
-merge the histograms, then fit the result and report mu, sigma, the yield, and chi2/ndf
-for both Lambda and anti-Lambda, with the plot.</code></pre>
-<p>Eight files take about a minute (paste the fit prompt above if it
-stops). For more files, run background jobs in <strong>batches of ~20
-files</strong> and let the assistant wait for them:</p>
-<pre class="ai-prompt"><code>Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
-campaign 26.04.1 BeAGLE eCu ep 10x115 dataset. Submit it with submit_kernel_dataset
-(tree 'events') in batches of about 20 files, poll get_job_status until every job finishes,
-fetch the histograms with get_job_result and merge them, then fit and report mu, sigma,
-the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.</code></pre>
-<p>Over ~100 files this gives the reference spectrum below: a clear Λ⁰
-(and Λ̄) peak over the combinatorial background.</p>
-<figure><img src="../fig/lambda_fit.svg" alt="Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV" class="figure mx-auto d-block"><div class="figcaption">Fitted Λ⁰ and Λ̄ invariant-mass spectra
-(reference fit)</div>
-</figure><div class="codewrapper">
+<pre class="ai-prompt"><code>Using the lambda-fit skill, measure the Lambda0 and anti-Lambda0 peaks in the first 10 files of
+the dataset epic:/RECO/26.04.1/epic_craterlake/DIS/BeAGLE1.03.02-1.0/eCu/ep/10x115/q2_1to1000.</code></pre>
+<p>Ten files take about a minute and a half. For 30 files the skill
+makes three such calls:</p>
+<pre class="ai-prompt"><code>Using the lambda-fit skill, repeat the measurement with the first 30 files of the same dataset.</code></pre>
+<p>Thirty files take about ten minutes. A reference fit:</p>
+<div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>Lambda      -&gt; p pi-:   mu = 1116.30 +/- 0.32 MeV   sigma = 2.72 +/- 0.33 MeV   S = 123   chi2/ndf = 1.16
-anti-Lambda -&gt; pbar pi+: mu = 1116.06 +/- 0.33 MeV   sigma = 3.35 +/- 0.34 MeV   S = 160   chi2/ndf = 1.05</code></pre>
+<pre class="output" tabindex="0"><code>Lambda      -&gt; p pi-:    mu = 1116.25 +/- 0.37 MeV   sigma = 3.1 +/- 0.5 MeV   S =  97 +/- 19   chi2/ndf = 1.06
+anti-Lambda -&gt; pbar pi+: mu = 1115.50 +/- 0.25 MeV   sigma = 2.2 +/- 0.2 MeV   S = 102 +/- 15   chi2/ndf = 0.71</code></pre>
 </div>
-<p>The fitted <span class="math inline">\(\mu\)</span> sits ~0.6 MeV
-above the PDG value (1.115683 GeV), a calibration-level offset typical
-of reconstructed momenta; <span class="math inline">\(\sigma\)</span> is
-the detector mass resolution, not the (negligible) Λ⁰ natural width.</p>
-</section><section><h2 class="section-heading" id="extracting-the-yield">Extracting the yield<a class="anchor" aria-label="anchor" href="#extracting-the-yield"></a>
+<p>The histogram is the same in every run (321 and 294 entries in the
+window). The assistant writes its own fit, so <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(S\)</span> vary between runs within these
+uncertainties.</p>
+<figure><img src="../fig/lambda_fit.svg" alt="Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV" class="figure mx-auto d-block"><div class="figcaption">Fitted Λ⁰ and Λ̄ invariant-mass spectra
+(reference fit)</div>
+</figure></section><section><h2 class="section-heading" id="extracting-the-yield">Extracting the yield<a class="anchor" aria-label="anchor" href="#extracting-the-yield"></a>
 </h2>
 <hr class="half-width">
 <p>The fit model is a Gaussian signal on a second-order polynomial
@@ -1959,16 +1727,16 @@ result was reported.</li>
 </div>
 </div>
 </div>
-</section><section><h2 class="section-heading" id="exercises-specification">Exercises (specification)<a class="anchor" aria-label="anchor" href="#exercises-specification"></a>
+</section><section><h2 class="section-heading" id="the-whole-analysis-in-one-prompt">The whole analysis in one prompt<a class="anchor" aria-label="anchor" href="#the-whole-analysis-in-one-prompt"></a>
 </h2>
 <hr class="half-width">
-<ul>
-<li>Run the single-file chain through your assistant and report <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(S\)</span>, and <span class="math inline">\(\chi^2/\text{ndf}\)</span>.</li>
-<li>Process 8 files and compare the fit to the ~100-file result; comment
-on the statistical uncertainty.</li>
-<li>Complete the audit checklist for your run, attaching the recorded
-tool calls as provenance.</li>
-</ul>
+<p>Everything in Episodes 3 to 5 fits in one request, starting from
+nothing but the sample name:</p>
+<pre class="ai-prompt"><code>Using the lambda-fit skill, measure the Lambda0 and anti-Lambda0 peaks in the first 30 files of
+the campaign 26.04.1 BeAGLE eCu ep 10x115 reconstructed-DIS dataset.</code></pre>
+<p>The tools, the skill, and the criteria make this short prompt
+reproducible: the same request gives the same histogram on any MCP
+client.</p>
 <div id="try-a-different-beam" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -1993,8 +1761,7 @@ other MCP servers the EIC provides.</p>
 <div class="callout-inner">
 <div class="callout-content">
 <ul>
-<li>One prompt runs the whole Λ⁰ analysis, from one file up to the full
-dataset.</li>
+<li>One prompt runs the whole Λ⁰ analysis, from one file to many.</li>
 <li>Check the fit against the audit checklist before you trust it.</li>
 </ul>
 </div>
@@ -2006,10 +1773,10 @@ any links that you are not going to use.
  -->
 </section></section><section id="aio-06-eic-mcp-servers"><p>Content from <a href="06-eic-mcp-servers.html">Catalog: MCP servers and AI infrastructure in the EIC ecosystem</a></p>
 <hr>
-<p>Last updated on 2026-09-30 |
+<p>Last updated on 2026-11-10 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/06-eic-mcp-servers.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
-<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 15 minutes</p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 5 minutes</p>
 <div class="text-end">
           <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
         </div>
@@ -2063,7 +1830,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <h3 class="card-title">Questions</h3>
 <ul>
 <li>Which other MCP servers does EIC provide?</li>
-<li>How can you use them without any setup?</li>
+<li>Where are shared skills kept?</li>
+<li>How can you use the tools without any setup?</li>
 </ul>
 </div>
 </div>
@@ -2073,6 +1841,8 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
 <ul>
+<li>Find a shared skill in <code>eic/skills</code> before writing your
+own.</li>
 <li>Ask the DISpatcher bot a question about data, software, or
 production.</li>
 </ul>
@@ -2109,6 +1879,7 @@ flowchart TB
     end
     subgraph CODE["code knowledge"]
         direction LR
+        DO["eic-docs-mcp"]:::code
         LX["LXR-mcp · BNL-hosted"]:::code
         GH["GitHub-mcp · standard"]:::code
     end
@@ -2125,6 +1896,7 @@ flowchart TB
     click XR "https://github.com/eic/xrootd-mcp-server" _blank
     click RU "https://github.com/eic/rucio-eic-mcp-server" _blank
     click ZE "https://github.com/eic/zenodo-mcp-server" _blank
+    click DO "https://github.com/eic/eic-docs-mcp" _blank
     click LX "https://eic-code-browser.sdcc.bnl.gov/lxr/source" _blank
     click GH "https://github.com/github/github-mcp-server" _blank
     click PB "https://chat.epic-eic.org/main/channels/dispatcher" _blank</code></pre>
@@ -2204,6 +1976,22 @@ documents.</p>
 </section><section><h2 class="section-heading" id="code-knowledge">Code knowledge<a class="anchor" aria-label="anchor" href="#code-knowledge"></a>
 </h2>
 <hr class="half-width">
+<div id="eic-docs-mcp-search-the-documentation-available" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="eic-docs-mcp-search-the-documentation-available" class="callout-inner">
+<h3 class="callout-title">eic-docs-mcp: search the documentation ·
+<em>available</em>
+</h3>
+<div class="callout-content">
+<p><a href="https://github.com/eic/eic-docs-mcp" class="external-link"><code>eic/eic-docs-mcp</code></a>
+gives full-text search over the <a href="https://eic.github.io" class="external-link">eic.github.io</a> pages and the software
+tutorials, including this one.</p>
+</div>
+</div>
+</div>
 <div id="lxr-mcp-source-cross-reference-available-bnl-hosted" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -2219,6 +2007,16 @@ which is updated nightly. It runs only on the BNL-hosted services.</p>
 </div>
 </div>
 </div>
+</section><section><h2 class="section-heading" id="shared-skills-eicskills">Shared skills: eic/skills<a class="anchor" aria-label="anchor" href="#shared-skills-eicskills"></a>
+</h2>
+<hr class="half-width">
+<p>The <code>AGENTS.md</code> and <code>SKILL.md</code> you used in <a href="04-skills.html">Episode 4</a> live in one analysis directory. <a href="https://github.com/eic/skills" class="external-link"><code>eic/skills</code></a> (<a href="https://eic.github.io/skills/" class="external-link">site</a>) is the collaboration’s
+shared repository of such definitions: skills, agents, and four packs
+that bundle them (onboarding, simulation, reconstruction, analysis),
+with setup guides for Copilot CLI, Claude, Cursor, Codex, and VS Code.
+Look there before writing a skill, and contribute the ones that work: a
+skill that encodes how to find a dataset or check a campaign saves every
+user the tool calls you counted in Episode 3.</p>
 </section><section><h2 class="section-heading" id="no-setup-the-dispatcher-bot">No setup: the DISpatcher bot<a class="anchor" aria-label="anchor" href="#no-setup-the-dispatcher-bot"></a>
 </h2>
 <hr class="half-width">
@@ -2248,6 +2046,8 @@ account.</p>
 <div class="callout-content">
 <ul>
 <li>EIC provides more MCP servers than the three used here.</li>
+<li>Shared skills and agent definitions are in
+<code>eic/skills</code>.</li>
 <li>The DISpatcher bot in Mattermost gives you these tools without any
 setup.</li>
 </ul>

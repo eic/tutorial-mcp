@@ -220,10 +220,9 @@
       <div class="accordion-body">
         <ul><li><a href="#the-bottleneck-is-rarely-the-physics">The bottleneck is rarely the physics</a></li>
 <li><a href="#two-modes-of-use">Two modes of use</a></li>
-<li><a href="#level-1-the-agent-loop">Level 1 — the agent loop</a></li>
-<li><a href="#level-2-the-verification-loop">Level 2 — the verification loop</a></li>
-<li><a href="#level-3-the-operation-loop">Level 3 — the operation loop</a></li>
-<li><a href="#level-4-the-improvement-loop">Level 4 — the improvement loop</a></li>
+<li><a href="#the-agent-loop">The agent loop</a></li>
+<li><a href="#the-verification-loop">The verification loop</a></li>
+<li><a href="#outer-loops">Outer loops</a></li>
         </ul></div><!--/div.accordion-body-->
     </div><!--/div.accordion-collapse-->
 
@@ -347,7 +346,7 @@
       </div>
     </nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Generative AI as an agentic research tool</h1>
-        <p>Last updated on 2026-09-30 |
+        <p>Last updated on 2026-11-10 |
 
         <a href="https://github.com/eic/tutorial-mcp/edit/main/episodes/01-why-genai-for-physics.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -408,9 +407,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 <h3 class="card-title">Questions</h3>
 <ul><li>How does an agentic assistant differ from a chat model?</li>
 <li>What are the parts of an LLM “harness”?</li>
-<li>What loops sit around the agent loop, and what does each add?</li>
 <li>How do we get trustworthy results from a stochastic model?</li>
-<li>Why build on an open protocol, not one product?</li>
 </ul></div>
 </div>
 </div>
@@ -422,10 +419,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 enters the context at each step.</li>
 <li>Draft acceptance criteria precise enough that a grader — human or
 agent — can apply them.</li>
-<li>Place a given automation (a format-on-edit hook, a nightly report, a
-prompt tweak) at the right loop level.</li>
-<li>Choose between a tool, a skill, and a subagent when adding a new
-capability.</li>
+<li>Tell a tool from a skill.</li>
 </ul></div>
 </div>
 </div>
@@ -449,30 +443,16 @@ structure that lets it act. The model proposes an action, an external
 context, and the model is called again, until a stopping condition is
 met. The model then works from the actual state of your files and the
 output of real computations, not only from its training.</p>
-<div id="scope" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<span class="callout-header">Callout</span>
-<div id="scope" class="callout-inner">
-<h3 class="callout-title">Scope</h3>
-<div class="callout-content">
-<p>Here, “generative AI” means an LLM-based coding assistant used in
-this agentic mode. Machine learning for reconstruction or particle
-identification is not covered. The subject is writing and running
-analyses.</p>
-</div>
-</div>
-</div>
-<p>This loop is the first of four. Each one wraps the one before it, and
-this episode goes through them in order.</p>
-</section><section><h2 class="section-heading" id="level-1-the-agent-loop">Level 1 — the agent loop<a class="anchor" aria-label="anchor" href="#level-1-the-agent-loop"></a></h2>
-<hr class="half-width"><p>The basic cycle: the model calls a tool, looks at what came back, and
-decides whether it is done.</p>
+<p>In this lesson “generative AI” means an LLM-based coding assistant
+used in this agentic mode. Machine learning for reconstruction or
+particle identification is not covered.</p>
+</section><section><h2 class="section-heading" id="the-agent-loop">The agent loop<a class="anchor" aria-label="anchor" href="#the-agent-loop"></a></h2>
+<hr class="half-width"><p>The model calls a tool, looks at what came back, and decides whether
+it is done.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
-    accTitle: {Level 1 the agent loop}
-    accDescr: {Level 1 the agent loop}
+    accTitle: {The agent loop}
+    accDescr: {The agent loop}
     Q["task"]:::user --&gt; M["model"]:::core
     M --&gt;|"tool call"| T["tools&lt;br/&gt;read files · run code · query "]:::tool
     T --&gt;|"result appended to context"| D{"task&lt;br/&gt;complete?"}:::core
@@ -513,21 +493,18 @@ flowchart TB
     H(["harness core&lt;br/&gt;model + context + tools + loop"]):::core
     classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;</code></pre>
-<ul><li><p><strong>MCP servers</strong>: tools in a standard form that works
-with any assistant. This is how the assistant gets physics tools (<a href="03-mcp-servers.html">Episode 3</a>).</p></li>
-<li><p><strong>Subagents</strong>: separate assistants started for a
-sub-task, so a large task can be split up.</p></li>
-<li><p><strong>Skills</strong>: versioned <em>procedures</em> (a
-<code>SKILL.md</code> plus scripts) loaded when a request matches (<a href="04-skills.html">Episode 4</a>). A tool is a capability; a skill is
-a recipe.</p></li>
-<li><p><strong>Hooks</strong>: scripts the harness runs at fixed
-moments, e.g. reformat code after every edit or log each tool
-call.</p></li>
-<li><p><strong>Monitors</strong>: watch background work, e.g. a long
-batch job, and call the assistant again when it finishes.</p></li>
-</ul></div>
-</section><section><h2 class="section-heading" id="level-2-the-verification-loop">Level 2 — the verification loop<a class="anchor" aria-label="anchor" href="#level-2-the-verification-loop"></a></h2>
-<hr class="half-width"><p>A level-1 agent stops when it decides the task is complete. An LLM is
+<p>This lesson uses two ways to extend a harness: * <strong>MCP
+servers</strong>: tools in a standard form that works with any
+assistant. This is how the assistant gets physics tools (<a href="03-mcp-servers.html">Episode 3</a>). * <strong>Skills</strong>:
+versioned <em>procedures</em> (a <code>SKILL.md</code>) loaded when a
+request matches (<a href="04-skills.html">Episode 4</a>). A tool is a
+capability; a skill is a recipe.</p>
+<p>Assistants also offer subagents (a separate assistant for a
+sub-task), hooks (scripts run at fixed moments, e.g. after every edit),
+and monitors (watch a background job).</p>
+</div>
+</section><section><h2 class="section-heading" id="the-verification-loop">The verification loop<a class="anchor" aria-label="anchor" href="#the-verification-loop"></a></h2>
+<hr class="half-width"><p>An agent stops when it decides the task is complete. An LLM is
 stochastic: the same prompt can give different outputs, and a confident
 answer is not evidence of a correct one. A second loop around the first
 handles this. A <strong>grader</strong> checks the agent’s result
@@ -535,9 +512,9 @@ against explicit acceptance criteria, and a failure goes back to the
 agent as feedback for another attempt.</p>
 <pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
 flowchart TD
-    accTitle: {Level 2 the verification loop}
-    accDescr: {Level 2 the verification loop}
-    A["agent loop  ①"]:::core --&gt;|"draft result"| G["grader&lt;br/&gt;explicit success criteria"]:::tool
+    accTitle: {The verification loop}
+    accDescr: {The verification loop}
+    A["agent loop"]:::core --&gt;|"draft result"| G["grader&lt;br/&gt;explicit success criteria"]:::tool
     G --&gt; P{"pass?"}:::core
     P --&gt;|"no — feedback into context"| A
     P --&gt;|"yes"| R["accepted result"]:::out
@@ -546,61 +523,59 @@ flowchart TD
     classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;</code></pre>
 <p>Treat every model output as a <strong>hypothesis</strong> and accept
 it only after checking it against something external: the data, a fit
-statistic, a known physical value, or an independent implementation. For
-the <span class="math inline">\(\Lambda^0\)</span> measurement the
-criteria are physical and checkable: <span class="math inline">\(|\mu -
-1.115683\,\mathrm{GeV}| &lt; 5\,\mathrm{MeV}\)</span>, <span class="math inline">\(\sigma\)</span> consistent with detector
-resolution, <span class="math inline">\(\chi^2/\mathrm{ndf}\)</span> of
-order 1. In <a href="04-skills.html">Episode 4</a> you write this grader
-into the lambda-fit skill’s <strong>success criteria</strong>. An agent
-that passes reports the numbers; one that fails must report the failure
-instead of a result.</p>
-<p>Grading costs time and tokens, but in physics analysis correctness
-matters more than speed. Prefer tools that return small quantities you
-can inspect (counts, bin edges, fit parameters), and keep a record of
-what was run.</p>
-</section><section><h2 class="section-heading" id="level-3-the-operation-loop">Level 3 — the operation loop<a class="anchor" aria-label="anchor" href="#level-3-the-operation-loop"></a></h2>
-<hr class="half-width"><p>With verification in place, the agent no longer needs you to start
-it. In a third loop an event (a schedule, a finished production job, a
-new pull request) starts the agent, its verified output updates
-something (a report, a documentation page, an alert), and the system
-goes back to waiting.</p>
-<pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
-flowchart LR
-    accTitle: {Level 3 the operation loop}
-    accDescr: {Level 3 the operation loop}
-    E["event&lt;br/&gt;schedule · finished job · new PR"]:::pkg --&gt; A["agent + verification&lt;br/&gt;① + ②"]:::core
-    A --&gt; U["system update&lt;br/&gt;report · doc page · alert"]:::out
-    U -.-&gt;|"wait for the next event"| E
-    classDef core fill:#e7efff,stroke:#4c6ef5,stroke-width:1.5px,color:#10204a;
-    classDef out fill:#f3e8ff,stroke:#7048e8,stroke-width:1.5px,color:#2e1065;
-    classDef pkg fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;</code></pre>
-<p><a href="06-eic-mcp-servers.html">Episode 6</a> shows collaboration
-examples: documentation regenerated on a schedule, and reviews triggered
-per pull request.</p>
-</section><section><h2 class="section-heading" id="level-4-the-improvement-loop">Level 4 — the improvement loop<a class="anchor" aria-label="anchor" href="#level-4-the-improvement-loop"></a></h2>
-<hr class="half-width"><p>The last loop goes around everything. From time to time, look at what
-the agent actually did (transcripts, failed fits, wrong tool choices)
-and change the <strong>harness</strong> accordingly: clarify
-<code>AGENTS.md</code>, tighten a skill’s success criteria, add a
-missing tool. You do a small version of this whenever a prompt goes
-wrong and you fix the instructions instead of retyping the request.</p>
-<div id="where-a-human-belongs-in-each-loop" class="callout">
+statistic, a known physical value, or an independent implementation.
+Prefer tools that return small quantities you can inspect (counts, bin
+edges, fit parameters), and keep a record of what was run.</p>
+<div id="exercise-acceptance-criteria-5-min" class="callout challenge">
 <div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
+<i class="callout-icon" data-feather="zap"></i>
 </div>
-<span class="callout-header">Callout</span>
-<div id="where-a-human-belongs-in-each-loop" class="callout-inner">
-<h3 class="callout-title">Where a human belongs in each loop</h3>
+<span class="callout-header">Challenge</span>
+<div id="exercise-acceptance-criteria-5-min" class="callout-inner">
+<h3 class="callout-title">Exercise: acceptance criteria (≈ 5 min)</h3>
 <div class="callout-content">
-<p>Each level has a point where a person should decide: approving a
-sensitive tool call (1), signing off a graded result (2), reviewing what
-runs unattended (3), and choosing which harness changes to keep (4).</p>
+<p>An assistant reports “the Λ⁰ peak was fitted successfully”. Write
+three or four checks the fit must pass before you accept it. Each must
+be a comparison a script could evaluate.</p>
 </div>
 </div>
 </div>
-<p>The <a href="02-your-ai-coding-setup.html">next episode</a> describes
-the physics measurement.</p>
+<div id="accordionSolution1" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
+  <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
+</button>
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div class="accordion-body">
+<ul><li>
+<span class="math inline">\(|\mu - 1.115683\,\mathrm{GeV}| &lt;
+5\,\mathrm{MeV}\)</span>.</li>
+<li>
+<span class="math inline">\(\sigma\)</span> of a few MeV, the
+detector resolution.</li>
+<li>
+<span class="math inline">\(\chi^2/\mathrm{ndf}\)</span> of order
+1.</li>
+<li>Enough entries in the fit window for the fit to mean anything.</li>
+</ul><p>“The fit looks good” is not a criterion. In <a href="04-skills.html">Episode 4</a> these checks go into the lambda-fit
+skill; an agent that fails them must report the failure instead of a
+result.</p>
+</div>
+</div>
+</div>
+</div>
+</section><section><h2 class="section-heading" id="outer-loops">Outer loops<a class="anchor" aria-label="anchor" href="#outer-loops"></a></h2>
+<hr class="half-width"><p>Two more loops can wrap these. In an <strong>operation loop</strong>
+an event (a schedule, a finished production job, a new pull request)
+starts the agent and its verified output updates a report or a
+documentation page; <a href="06-eic-mcp-servers.html">Episode 6</a>
+shows ePIC examples. In an <strong>improvement loop</strong> you read
+what the agent actually did and change the harness: clarify
+<code>AGENTS.md</code>, tighten a skill’s success criteria, add a
+missing tool.</p>
+<p>A person decides at each level: approving a sensitive tool call,
+signing off a graded result, reviewing what runs unattended, and
+choosing which harness changes to keep.</p>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -610,12 +585,13 @@ the physics measurement.</p>
 <div class="callout-content">
 <ul><li>An agentic assistant runs tools and reads their output; a chat model
 only returns text.</li>
-<li>Treat every result as a hypothesis and check it against clear
+<li>Treat every result as a hypothesis and check it against explicit
 criteria before you accept it.</li>
+<li>A tool is a capability; a skill is a recipe.</li>
 </ul></div>
 </div>
 </div>
-<p><small>The four-level loop schematics are adapted from <a href="https://www.langchain.com/blog/the-art-of-loop-engineering" class="external-link"><em>The
+<p><small>The loop schematics are adapted from <a href="https://www.langchain.com/blog/the-art-of-loop-engineering" class="external-link"><em>The
 Art of Loop Engineering</em></a>.</small></p>
 <!--
 Place links that you need to refer to multiple times across pages here. Delete
@@ -681,7 +657,7 @@ any links that you are not going to use.
   "url": "https://eic.github.io/tutorial-mcp/01-why-genai-for-physics.html",
   "identifier": "https://eic.github.io/tutorial-mcp/01-why-genai-for-physics.html",
   "dateCreated": "2026-06-04",
-  "dateModified": "2026-09-30",
+  "dateModified": "2026-11-10",
   "datePublished": "2026-11-10"
 }
 

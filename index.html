@@ -417,6 +417,8 @@ date (<code>./eic-shell --upgrade</code>).</label></li>
 <li><label><input type="checkbox">Inside eic-shell,
 <strong><code>eic-mcp up</code></strong> starts three servers and
 <strong><code>opencode</code></strong> opens.</label></li>
+<li><label><input type="checkbox">The assistant can list the campaigns
+on the data store.</label></li>
 </ul></div>
 </div>
 </div>
@@ -442,10 +444,11 @@ with <code>./eic-shell</code>:</p>
 </div>
 <p>In opencode, <code>/mcp</code> should list <code>uproot</code>,
 <code>xrootd</code>, and <code>rucio</code> as connected. The free
-hosted models need no login. If <code>eic-mcp</code> or
-<code>opencode</code> is not found, exit eic-shell, return to the folder
-containing the launcher, run <code>./eic-shell --upgrade</code>, and
-start eic-shell again.</p>
+hosted models need no login. The servers stop when you leave eic-shell:
+keep that shell open, and after a restart run <code>eic-mcp up</code>
+again. If <code>eic-mcp</code> or <code>opencode</code> is not found,
+exit eic-shell, return to the folder containing the launcher, run
+<code>./eic-shell --upgrade</code>, and start eic-shell again.</p>
 <p>On macOS, eic-shell is a Docker container: the servers stop when you
 leave it, and its home (<code>/root</code>) is wiped, so opencode
 forgets its settings. Keep your work in the eic-shell folder.</p>
@@ -457,10 +460,13 @@ forgets its settings. Keep your work in the eic-shell folder.</p>
 <div id="check-it-works" class="callout-inner">
 <h3 class="callout-title">Check it works</h3>
 <div class="callout-content">
-<p>In an empty directory, ask: <em>“Create hello.py that prints the PDG
-Λ⁰ baryon mass in GeV, then run it.”</em> The assistant should write the
-file and run it, printing <code>1.115683</code>. If it only shows the
-code, switch it to agent (build) mode.</p>
+<p>Ask: <em>“Create hello.py that prints the PDG Λ⁰ baryon mass in GeV,
+then run it.”</em> The assistant should write the file and run it,
+printing <code>1.115683</code>. If it only shows the code, switch it to
+agent (build) mode.</p>
+<p>Then ask: <em>“Use the xrootd tools to list /eic/EPIC/RECO.”</em> The
+answer should be a list of campaign versions (<code>26.04.1</code>, …).
+This checks the servers and the data store.</p>
 </div>
 </div>
 </div>
@@ -474,30 +480,27 @@ any.</p>
 <th>Free access</th>
 </tr></thead><tbody><tr><td><a href="https://opencode.ai" class="external-link">opencode</a></td>
 <td>terminal</td>
-<td>open source (MIT); free hosted models (no key), bring your own key,
-or a local model</td>
+<td>open source (MIT); free hosted models (no key), an API key, or a
+local model</td>
 </tr><tr><td><a href="https://github.com/features/copilot" class="external-link">GitHub
 Copilot</a></td>
 <td>
 <a href="https://code.visualstudio.com/" class="external-link">VS Code</a>, CLI</td>
 <td>free tier; free Pro for verified students/educators/OSS
 maintainers</td>
-</tr><tr><td><a href="https://github.com/google-gemini/gemini-cli" class="external-link">Gemini
-CLI</a></td>
-<td>terminal</td>
-<td>open source; free tier with a personal Google account</td>
+</tr><tr><td><a href="https://antigravity.google/" class="external-link">Antigravity</a></td>
+<td>terminal (<code>agy</code>), IDE</td>
+<td>replaces Gemini CLI for personal Google accounts; free preview</td>
 </tr><tr><td><a href="https://developers.openai.com/codex" class="external-link">Codex</a></td>
 <td>terminal, IDE</td>
-<td>included with ChatGPT plans</td>
+<td>included with paid ChatGPT plans</td>
 </tr><tr><td><a href="https://claude.com/claude-code" class="external-link">Claude Code</a></td>
 <td>terminal, IDE</td>
 <td>included with Claude plans</td>
 </tr><tr><td><a href="https://cursor.com/" class="external-link">Cursor</a></td>
 <td>dedicated editor</td>
 <td>free tier</td>
-</tr><tr><td>
-<a href="https://cline.bot/" class="external-link">Cline</a> / <a href="https://continue.dev/" class="external-link">Continue</a>
-</td>
+</tr><tr><td><a href="https://cline.bot/" class="external-link">Cline</a></td>
 <td>VS Code extensions</td>
 <td>open source; bring your own key</td>
 </tr></tbody></table><p>eic-shell also has <code>claude</code> and <code>copilot</code>: run
@@ -515,8 +518,10 @@ over SSH.</p>
 <p>The servers must run in eic-shell, but the client can run on your
 machine. Keep <code>eic-mcp up</code> running and put the client config
 in the directory where you start the client.</p>
-<ul><li><p><strong>Linux, WSL:</strong> apptainer shares the host network.
-Run <code>eic-mcp config &lt;client&gt;</code> there.</p></li>
+<ul><li><p><strong>Linux, WSL:</strong> apptainer shares the host network
+and your home directory. Run <code>eic-mcp config &lt;client&gt;</code>
+inside eic-shell, in the directory where you will start the
+client.</p></li>
 <li>
 <p><strong>macOS:</strong> publish the ports once, restart
 <code>./eic-shell</code>, and download the example config
