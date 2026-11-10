@@ -222,7 +222,7 @@ Same answer, 1,223. In the test run: 3 tool calls (`list_dids`, `list_files`,
 A project that behaves the same under any assistant:
 
 ```bash
-lambda-analysis/
+lambda/
 ├── AGENTS.md                        
 ├── opencode.jsonc                   
 └── .opencode/
