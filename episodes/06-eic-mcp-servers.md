@@ -188,12 +188,13 @@ tool calls you counted in Episode 3.
 
 **DISpatcher** is a Mattermost bot ([chat.epic-eic.org → `dispatcher`](https://chat.epic-eic.org/main/channels/dispatcher)) that anyone in ePIC can use, in the channel or by DM. It has the data tools from this lesson plus tools for production jobs, physics samples, software, and documents.
 
-Post this in the `dispatcher` channel or DM the bot. Your own assistant has no PCS tool and would
-have to invent the answer:
+Post this in the `dispatcher` channel or DM the bot:
 
 ```{.ai-prompt}
-Summarize the physics tags in the PCS: which processes are covered, and which tags are still draft?
+Which production campaigns contain the BeAGLE eCu ep 10x115 DIS sample, and is it in the newest campaign? For campaign 26.04.1, which generator version and settings produced it, and how many events were produced? Say which tool each part of the answer came from.
 ```
+
+Compare its event count with yours from [Episode 3](03-mcp-servers.md)
 
 The [EIC software portal](https://eic.github.io/) also has an AI search box ("Ask anything about EIC…").
 
