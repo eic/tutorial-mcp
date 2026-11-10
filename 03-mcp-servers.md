@@ -169,7 +169,7 @@ Take one of the `root://` URLs from the previous exercise (written below as
 Issue the request:
 
 ```{.ai-prompt}
-Using the uproot tools, report the structure of the events tree in root://epicxrd1.sdcc.bnl.gov:1095//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
+Using the uproot tools, report the schema of the events in dataset in root://epicxrd1.sdcc.bnl.gov:1095//<your-discovered-file>.root and list the members of the ReconstructedChargedParticles collection.
 ```
 
 ::::::::::::::: solution
