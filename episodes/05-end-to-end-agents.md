@@ -1,7 +1,7 @@
 ---
 title: "An end-to-end, reproducible Λ⁰ analysis"
-teaching: 25
-exercises: 30
+teaching: 10
+exercises: 20
 ---
 
 <style>
@@ -48,7 +48,7 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 ::::::::::::::::::::::::::::::::::::::::::::: questions
 
 - How do assistant + server + skill compose into one analysis?
-- How does the kernel scale from one file to the full sample?
+- How does the kernel scale from one file to many?
 - How is the yield extracted and made reproducible?
 
 :::::::::::::::::::::::::::::::::::::::::::::
@@ -61,33 +61,9 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## Run it in your client
-
-In eic-shell, in your analysis directory:
-
-```bash
-eic-mcp up
-eic-mcp config opencode
-R=https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills
-curl -fsSLO $R/AGENTS.md
-curl -fsSL --create-dirs -o .opencode/skills/lambda-fit/SKILL.md $R/lambda-fit/SKILL.md
-opencode
-```
-
-Check that `/mcp` lists `uproot`, `xrootd`, and `rucio`, then paste the prompts below. For Claude
-Code, use `eic-mcp config claude` and `.claude/skills/`.
-
-## The composed pipeline
-
-The skill (Episode 4) gives the steps, the uproot server (Episode 3) reads the data, and the agent loop (Episode 1) runs and checks it.
-
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px','lineColor':'#94a3b8','edgeLabelBackground':'#e2e8f0','clusterBkg':'#1f293720','clusterBorder':'#94a3b8','titleColor':'#94a3b8'}}}%%
-flowchart LR
-    accTitle: {End-to-end agent run}
-    accDescr: {End-to-end agent run}
-    A["resolve input<br/>root:// file or file list"]:::data --> B["build m(p,π) histogram<br/>uproot MCP"]:::tool
-    B --> C["fit Gaussian + poly-2<br/>opencode prompt"]:::tool
+Continue in the directory from Episodes 3 and 4: servers running (`eic-mcp status`),
+`AGENTS.md` and the lambda-fit skill installed, and `/mcp` in opencode listing `uproot`, `xrootd`,
+and `rucio`.
     C --> D["report μ, σ, S, χ²/ndf<br/>+ plot + provenance"]:::out
     classDef data fill:#fff4e0,stroke:#f08c00,stroke-width:1.5px,color:#5c3b00;
     classDef tool fill:#e6f7ed,stroke:#2f9e44,stroke-width:1.5px,color:#0b3d1f;
@@ -125,37 +101,31 @@ A smaller model may call different tools than the skill says and still get the s
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## Scaling to the full sample
+## Scaling up
 
-The same calculation can run over many files and return one merged histogram:
+The same kernel can run over many files and return one merged histogram:
 
 ```{.ai-prompt}
-Using the lambda-fit skill, run the same proton-pion mass kernel across the first 8 files of the
+Using the lambda-fit skill, run the same proton-pion mass kernel across the first 10 files of the
 campaign 26.04.1 BeAGLE eCu ep 10x115 dataset with execute_kernel_dataset (tree 'events'),
 merge the histograms, then fit the result and report mu, sigma, the yield, and chi2/ndf
-for both Lambda and anti-Lambda, with the plot.
+for both Lambda and anti-Lambda.
 ```
 
-Eight files take about a minute (paste the fit prompt above if it stops). For more files, run background jobs in **batches of ~20 files** and let the assistant wait for them:
+Ten files take about a minute (paste the fit prompt above if it stops). For more files, run
+background jobs in batches and let the assistant wait for them:
 
 ```{.ai-prompt}
 Using the lambda-fit skill, run the proton-pion mass kernel over the first 100 files of the
 campaign 26.04.1 BeAGLE eCu ep 10x115 dataset. Submit it with submit_kernel_dataset
 (tree 'events') in batches of about 20 files, poll get_job_status until every job finishes,
 fetch the histograms with get_job_result and merge them, then fit and report mu, sigma,
-the yield, and chi2/ndf for both Lambda and anti-Lambda, with the plot.
+the yield, and chi2/ndf for both Lambda and anti-Lambda.
 ```
 
-Over ~100 files this gives the reference spectrum below: a clear Λ⁰ (and Λ̄) peak over the combinatorial background.
+Thirty files are enough for a visible peak. The reference spectrum below uses ~100 files:
 
 ![Fitted Λ⁰ and Λ̄ invariant-mass spectra (reference fit)](fig/lambda_fit.svg){alt='Proton–pion invariant-mass spectrum with Gaussian-plus-polynomial fits showing clear Lambda and anti-Lambda peaks near 1.1157 GeV'}
-
-```output
-Lambda      -> p pi-:   mu = 1116.30 +/- 0.32 MeV   sigma = 2.72 +/- 0.33 MeV   S = 123   chi2/ndf = 1.16
-anti-Lambda -> pbar pi+: mu = 1116.06 +/- 0.33 MeV   sigma = 3.35 +/- 0.34 MeV   S = 160   chi2/ndf = 1.05
-```
-
-The fitted $\mu$ sits ~0.6 MeV above the PDG value (1.115683 GeV), a calibration-level offset typical of reconstructed momenta; $\sigma$ is the detector mass resolution, not the (negligible) Λ⁰ natural width.
 
 ## Extracting the yield
 
@@ -181,11 +151,17 @@ The polynomial absorbs the combinatorial background (Episode 2); the integrated 
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## Exercises (specification)
+## The whole analysis in one prompt
 
-* Run the single-file chain through your assistant and report $\mu$, $\sigma$, $S$, and $\chi^2/\text{ndf}$.
-* Process 8 files and compare the fit to the ~100-file result; comment on the statistical uncertainty.
-* Complete the audit checklist for your run, attaching the recorded tool calls as provenance.
+Everything in Episodes 3 to 5 fits in one request, starting from nothing but the sample name:
+
+```{.ai-prompt}
+Using the lambda-fit skill, measure the Lambda0 and anti-Lambda0 peaks in the first 30 files of
+the campaign 26.04.1 BeAGLE eCu ep 10x115 reconstructed-DIS dataset.
+```
+
+The tools, the skill, and the criteria make this short prompt reproducible: the same request gives
+the same histogram on any MCP client.
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
@@ -200,7 +176,7 @@ The [final episode](06-eic-mcp-servers.md) lists the other MCP servers the EIC p
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
-- One prompt runs the whole Λ⁰ analysis, from one file up to the full dataset.
+- One prompt runs the whole Λ⁰ analysis, from one file to many.
 - Check the fit against the audit checklist before you trust it.
 
 :::::::::::::::::::::::::::::::::::::::::::::

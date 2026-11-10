@@ -15,8 +15,8 @@ histograms, fitting). It teaches the agentic harness, applied to a real ePIC mea
   server (run, register, inspect, histogram).
 * **Episode 4** is a how-to on `AGENTS.md` and `SKILL.md`, with full example files shipped under
   `files/skills/`.
-* **Episode 5** is the end-to-end run (single file → full sample via `execute_kernel_dataset`,
-  signal extraction, audit checklist), with a per-client setup section.
+* **Episode 5** is the end-to-end run (single file → 10 and 30 files, signal extraction, audit
+  exercise).
 * **Episode 6** is a catalog of the EIC MCP servers and the corun-ai ecosystem.
 
 ## Before the workshop
@@ -31,19 +31,19 @@ histograms, fitting). It teaches the agentic harness, applied to a real ePIC mea
 
 ## Timing and pitfalls
 
-* Total ≈ 2 h 45 m teaching + 1.5 h exercises (a full day with breaks). Episode 3 is the longest.
+* Total ≈ 1 h teaching + 1 h 5 m exercises (a 2-hour slot). Episode 3 is the longest.
 * **Common snag:** the assistant stays in "one-shot" mode and only prints code. Have learners
   confirm **Agent/edit mode** in the Setup page's "Check it works" exercise.
 * **Servers not connected:** if `/mcp` shows nothing, check `eic-mcp status` and that
   `opencode.jsonc` (generate it with `eic-mcp config opencode`) is in the directory where
   `opencode` was launched.
-* **Statistics:** the peak gets clearer with more `root://` files: a few files show a small
-  excess; tens of files give a clean fit. Set expectations accordingly.
+* **Statistics:** one file is below the skill's minimum; 10 files are a quick check; 30 files
+  show the peak; the reference figure uses ~100.
 * **macOS learners:** the container home is wiped when eic-shell exits, so keep work in the
   eic-shell folder. A client on the Mac itself needs the port edit from the Setup page.
 * **Free-tier throttling:** at busy hours the free hosted models can take minutes per agent turn
   (the MCP tool context makes each request large). If the session drags, switch the class to
-  another free model in the opencode picker, or keep one paid key as backup.
+  another free model in the opencode picker, or keep one paid API key as backup.
 * **Store outage:** if rucio queries work but all xrootd/uproot file access times out, the
   XRootD store is likely down. Check with
   `xrdfs root://epicxrd1.sdcc.bnl.gov:1095 ls /eic/EPIC/RECO` before the session, and have a

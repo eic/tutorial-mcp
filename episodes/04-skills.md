@@ -1,7 +1,7 @@
 ---
 title: "Persisting instructions: AGENTS.md and SKILL.md"
-teaching: 30
-exercises: 20
+teaching: 10
+exercises: 15
 ---
 
 <style>
@@ -49,17 +49,15 @@ pre.ai-prompt::before, div.sourceCode.ai-prompt::before {
 
 - How do you give an assistant durable project context?
 - AGENTS.md or SKILL.md: when to use each?
-- How do you make every tool read the same rules?
 - What's in a usable SKILL.md for the Λ⁰ fit?
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::: objectives
 
-- Write an AGENTS.md for always-on project context.
-- Bridge it so one AGENTS.md drives any tool.
-- Write a SKILL.md that runs the Λ⁰ fit on demand.
-- Encode success criteria + provenance for auditable output.
+- Say what belongs in AGENTS.md and what in a SKILL.md.
+- Install the lesson's AGENTS.md and lambda-fit skill.
+- Write a small SKILL.md with success criteria.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -88,81 +86,48 @@ flowchart TD
 
 ## AGENTS.md: project context
 
-`AGENTS.md` is plain Markdown at your project root (subdirectories may override it for files beneath them). opencode, Codex, Gemini CLI, Zed, and others read it automatically; a tool that looks for a different filename reads the same content through a one-line bridge (next section).
-
-It is loaded on every turn, so keep it short and factual:
+`AGENTS.md` is plain Markdown at your project root. opencode, Codex, Copilot CLI, Cursor, Antigravity, and others
+read it automatically. The lesson's file:
 
 ```markdown
-# AGENTS.md — Lambda analysis project
+# AGENTS.md — Lambda analysis in ePIC data
 
-## What this project does
-Reconstruct Lambda0 -> p pi- in ePIC EDM4eic data and fit the invariant-mass
-peak near 1.115683 GeV.
-
-## Environment
-- Everything runs inside eic-shell; the MCP servers are started with `eic-mcp up`.
-- Data lives on the grid: find a DIS dataset with the `rucio` tools and read its
-  root:// files in place with `uproot`. Do not download.
-
-## Tools
-- Use the `rucio` MCP server (list_dids, list_files, list_file_replicas) to locate
-  a dataset and resolve its root:// URLs.
-- Use the `xrootd` MCP server (check_file_exists, get_file_info) to verify a file.
-- Use the `uproot` MCP server (get_tree_info, histogram_branch, execute_kernel,
-  execute_kernel_dataset) for all ROOT file access. Prefer get_tree_info over
-  get_file_structure: on an EDM4eic file the latter returns megabytes.
-- Do NOT write bespoke file I/O; the servers already handle it.
-
-## When a tool fails
-
-- Never install software (no `pip install`, above all not `--break-system-packages`)
-  and never re-implement the analysis with local uproot/ROOT.
-- A timed-out call means the server is BUSY, not broken: it is single-threaded and
-  still working on the previous request. Wait, retry once, and if it still fails,
-  stop and report which tool failed with which arguments.
-- Never reuse a cached earlier tool result as if it were fresh. A number that did
-  not come from the MCP servers is not reproducible, so it is not an answer.
+## Data access
+- Find datasets with the `rucio` MCP tools; keep `limit` at 50 or less.
+- A file's URL is root://epicxrd1.sdcc.bnl.gov:1095//eic/EPIC followed by its
+  rucio name (/RECO/...). The `xrootd` tools take the path /eic/EPIC/RECO/...
+- Read files only through the `uproot` MCP tools. No downloads, no local
+  ROOT/uproot, no software installs.
+- Never call get_tree_info on an EDM4eic file (it returns 1.5 MB). Check
+  branches with validate_dataset_schema.
 
 ## Data model
-- Tree: events.  Collection: ReconstructedChargedParticles.
-- Members: .PDG, .momentum.x, .momentum.y, .momentum.z   (momenta in GeV).
-- PDG codes: proton 2212, pi- -211, antiproton -2212, pi+ 211.
+- Tree `events`, collection ReconstructedChargedParticles:
+  .PDG, .momentum.x, .momentum.y, .momentum.z (GeV).
+- m(p) = 0.9382720813, m(pi) = 0.13957061, m(Lambda) = 1.115683 GeV.
 
-## Physics constants (PDG)
-- m(proton) = 0.9382720813 GeV, m(pi) = 0.13957061 GeV, m(Lambda) = 1.115683 GeV.
+## Kernels (uproot sandbox)
+- np and ak are predefined. No `import`, no tuple unpacking in for-loops,
+  np.sum(x) not x.sum().
+- Test a kernel on one file with execute_kernel before a dataset call: the
+  dataset tools do not show the error.
 
-## Conventions
-- Invariant mass over [1.05, 1.25] GeV, 200 bins.
-- Fit a Gaussian + 2nd-order polynomial over [1.08, 1.16] GeV.
-- Write results as JSON; save plots under output/.
+## When a tool fails
+- A timeout means the server is busy. Wait, retry once, then stop and report.
 
 ## Definition of done
-- Fitted peak within a few MeV of 1.115683 GeV and chi2/ndf of order 1.
-- Always run the fit and check these before reporting a result.
+- Every number comes from a tool call in this session and is reported with the
+  dataset DID and the file list.
 ```
 
-It records the schema, the tool policy (use the server, not hand-written I/O), the conventions, and a definition of done.
+Every line is something the model cannot find out by itself and got wrong in Episode 3: where the
+files are served from, which call floods the context, what the sandbox rejects. Two rules:
 
-::::::::::::::::::::::::::::::::::::::::::::: callout
+* **Keep it short.** It is loaded on every turn, so every line costs tokens.
+* **Write what went wrong.** When the assistant makes a mistake twice, add one line.
 
-## Two rules for a useful AGENTS.md
-
-* **Keep it short.** It is loaded on every turn, so every line costs tokens. Write only what the model cannot infer from the code.
-* **Describe concepts, not file paths.** "The reconstructed tracks are in the `ReconstructedChargedParticles` collection" stays true; a path like `src/old/lambda_v2.py` goes stale, and the model then searches in the wrong place.
-
-:::::::::::::::::::::::::::::::::::::::::::::
-
-## One source of truth: bridge files
-
-opencode, Codex, Gemini CLI, and Zed read `AGENTS.md`. Some tools read only their own file: GitHub Copilot reads `copilot-instructions.md`, Cursor reads `.cursorrules`. Without it they run with no context and no warning.
-
-Do not copy your rules into a second file; the copies will diverge. Make the tool-specific file a one-line *bridge* to `AGENTS.md`. `.github/copilot-instructions.md` (Copilot) and `.cursorrules` (Cursor) contain:
-
-```markdown
-Follow the project rules in AGENTS.md.
-```
-
-The bridge file is in the repository: [`copilot-instructions.md`](https://github.com/eic/tutorial-mcp/blob/main/files/skills/copilot-instructions.md).
+Claude Code reads `CLAUDE.md` instead; make that file one line, `@AGENTS.md`. Do not copy the
+rules into a second file: the copies will diverge.
 
 ## SKILL.md — a named procedure
 
@@ -174,9 +139,10 @@ skills/
     SKILL.md              specification: applicability, inputs, steps, success criteria
 ```
 
-The procedure only uses the MCP tools, so it needs no scripts of its own.
 
-The YAML frontmatter has a `name` and a `description`. The client matches your request against the `description` to decide whether to load the skill. **Only the name and description stay in context**; the body is read only when the description matches.
+Its YAML frontmatter has a `name` and a
+`description`; **only these stay in context**, and the body is read when a request matches the
+description. The lesson's skill:
 
 ```markdown
 ---
@@ -189,54 +155,42 @@ description: >
 
 # Lambda invariant-mass fit
 
-## When to use
-Any request to find, fit, or quantify the Lambda0 (or its antiparticle) in ePIC
-reconstructed data via the proton-pion invariant mass.
-
-## Inputs
-- file: one EDM4eic .root URL (a root:// file from a DIS dataset), or
-- file_list: the dataset's root:// files for the full sample
-  (resolve both with the rucio tools: list_dids, list_files, list_file_replicas).
-
 ## Steps
-1. Confirm the uproot MCP server is connected: get_tree_info on the input.
-2. Build the proton-pion invariant-mass histogram with execute_kernel (one file)
-   or execute_kernel_dataset (many files), tree_name 'events' and the
-   ReconstructedChargedParticles momentum/PDG branches. For a large sample, cap
-   the file count first; for more than ~10 files use submit_kernel_dataset and
-   poll, in batches of ~20 files per job (one big job can hit an upstream idle
-   timeout), so no single tool call outlives the client's timeout. Write any
-   reduce/merge code as plain NumPy array operations (the sandbox rejects tuple
-   unpacking in loops).
-3. Fit the histogram with a second execute_kernel call (Gaussian + 2nd-order
-   polynomial over [1.08, 1.16] GeV; NumPy/awkward only, no imports).
-4. Report mu, sigma, signal yield S, and chi2/ndf.
+1. Check the input files with validate_dataset_schema.
+2. Histogram m(p pi-) and m(pbar pi+) over [1.08, 1.16] GeV in 80 bins, and
+   return the counts and their sum. One file: execute_kernel. Many files:
+   execute_kernel_dataset with reduce_code, at most 10 files per call.
+3. Fit each histogram in one more execute_kernel call: Gaussian + 2nd-order
+   polynomial. Scan mu and sigma on a grid and solve the other four parameters
+   by weighted linear least squares.
+4. Report mu, sigma, the yield S = A sqrt(2 pi) sigma / bin width, and
+   chi2/ndf, with uncertainties.
 
 ## Success criteria (check before reporting success)
-- At least ~50 entries in the fit window. With fewer, report insufficient
-  statistics and stop — a low-stats fit lets the polynomial absorb the peak and
-  can pass the checks below by accident.
+- The entries in the fitted histogram equal the sum returned in step 2. If
+  not, counts were lost in copying: redo the fit.
+- At least 50 entries. With fewer, report insufficient statistics and stop.
 - |mu - 1.115683 GeV| < 0.005 GeV.
-- sigma in ~[0.001, 0.005] GeV (this is detector resolution, not natural width).
-- chi2/ndf of order 1.
-If any check fails, report the failure and the fit diagnostics, not a result.
+- sigma in [0.001, 0.005] GeV (detector resolution).
+- chi2/ndf between 0.5 and 1.5.
+If any check fails, report the failure and the fit numbers, not a result.
 
 ## Provenance
-List the tool calls and their parameters, and the dataset used (campaign and
-file list), so the run can be reproduced.
+List the dataset DID, the files used, and the tool calls with their arguments.
 ```
 
-::::::::::::::::::::::::::::::::::::::::::::: callout
+The skill says what to do and how to judge the result, not how to code it; the assistant writes
+the kernels.
 
-## How clients load a skill
+## Install both files
 
-opencode reads skills from `.opencode/skills/<name>/SKILL.md` in the project directory (or
-`~/.config/opencode/skills/` for all projects); Claude Code uses `.claude/skills/`. Download
-the lesson's copy:
+opencode reads skills from `.opencode/skills/<name>/SKILL.md` in the project directory; Claude Code
+uses `.claude/skills/`. In your analysis directory:
 
 ```bash
-curl -fsSL --create-dirs -o .opencode/skills/lambda-fit/SKILL.md \
-  https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills/lambda-fit/SKILL.md
+R=https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/skills
+curl -fsSLO $R/AGENTS.md
+curl -fsSL --create-dirs -o .opencode/skills/lambda-fit/SKILL.md $R/lambda-fit/SKILL.md
 ```
 
 Loading is the model's decision, based on the skill's `description`. A small model may answer
@@ -330,7 +284,7 @@ The kernel can return the pair count next to the histogram
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-The [next episode](05-end-to-end-agents.md) runs this skill end to end and scales it from one file to the full sample.
+The [next episode](05-end-to-end-agents.md) runs this skill end to end
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 

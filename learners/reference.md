@@ -14,8 +14,8 @@ agentic loop
 
 AGENTS.md
 :   A plain-Markdown file giving an assistant always-on project context (environment, data model,
-    conventions, definition of done). Read automatically by many clients; equivalent to a
-    `copilot-instructions.md`, `.cursorrules`, or "custom instructions" elsewhere.
+    conventions, definition of done). Read automatically by most clients; Claude Code reads
+    `CLAUDE.md`, which can point to it.
 
 branching fraction
 :   The probability that a particle decays through a particular channel. For Λ⁰ → p π⁻ it is ≈ 63.9%.
@@ -49,7 +49,8 @@ LLM (large language model)
 
 MCP (Model Context Protocol)
 :   An open client–server standard for exposing tools, resources, and prompts to language-model
-    clients, so one tool implementation serves many assistants. See <https://modelcontextprotocol.io>.
+    clients, so one tool implementation serves many assistants. Governed by the Linux Foundation's
+    Agentic AI Foundation; current specification `2026-07-28`. See <https://modelcontextprotocol.io>.
 
 MCP server
 :   A program that advertises MCP tools/resources to clients over stdio or HTTP. Here, the

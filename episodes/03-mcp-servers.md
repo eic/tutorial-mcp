@@ -1,7 +1,7 @@
 ---
 title: "Tool servers and the Model Context Protocol (MCP)"
-teaching: 30
-exercises: 35
+teaching: 15
+exercises: 25
 ---
 
 <style>
@@ -275,6 +275,27 @@ example:
 Pions dominate; **protons are rare** (≈ 2%), so the Λ⁰ signal will be small. A sizeable fraction of
 tracks have **no PID** (code 0) or a wrong one. This misidentification adds to the combinatorial
 background, which is why we fit the peak instead of counting it.
+
+:::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: challenge
+
+## Exercise: a bare question (≈ 5 min)
+
+The prompts above name the tool and the branches. Now ask without any of that, in a new session,
+and count the tool calls:
+
+```{.ai-prompt}
+How many events are in the first file of the campaign 26.04.1 BeAGLE eCu ep 10x115 reconstructed-DIS dataset?
+```
+
+::::::::::::::: solution
+
+1,223. In a test run with a small model this took 16 tool calls and 102 s: it never asked the
+catalog, walked the store directory by directory, and two calls failed. Note your own count;
+[Episode 4](04-skills.md) repeats the question.
 
 :::::::::::::::
 
