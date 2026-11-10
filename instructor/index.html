@@ -505,13 +505,9 @@ with <code>./eic-shell</code>:</p>
 <p>In opencode, <code>/mcp</code> should list <code>uproot</code>,
 <code>xrootd</code>, and <code>rucio</code> as connected. The free
 hosted models need no login. The servers stop when you leave eic-shell:
-keep that shell open, and after a restart run <code>eic-mcp up</code>
-again. If <code>eic-mcp</code> or <code>opencode</code> is not found,
-exit eic-shell, return to the folder containing the launcher, run
-<code>./eic-shell --upgrade</code>, and start eic-shell again.</p>
-<p>On macOS, eic-shell is a Docker container: the servers stop when you
-leave it, and its home (<code>/root</code>) is wiped, so opencode
-forgets its settings. Keep your work in the eic-shell folder.</p>
+keep that shell open.</p>
+<p>On macOS the container’s home (<code>/root</code>) is wiped on exit:
+keep your work in the eic-shell folder.</p>
 <div id="check-it-works" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -540,33 +536,30 @@ any.</p>
 <th>Free access</th>
 </tr></thead><tbody><tr><td><a href="https://opencode.ai" class="external-link">opencode</a></td>
 <td>terminal</td>
-<td>open source (MIT); free hosted models (no key), an API key, or a
-local model</td>
+<td>free hosted models, an API key, or a local model</td>
 </tr><tr><td><a href="https://github.com/features/copilot" class="external-link">GitHub
 Copilot</a></td>
 <td>
 <a href="https://code.visualstudio.com/" class="external-link">VS Code</a>, CLI</td>
-<td>free tier; free Pro for verified students/educators/OSS
-maintainers</td>
+<td>free tier; free Pro for students and educators</td>
 </tr><tr><td><a href="https://antigravity.google/" class="external-link">Antigravity</a></td>
 <td>terminal (<code>agy</code>), IDE</td>
-<td>replaces Gemini CLI for personal Google accounts; free preview</td>
+<td>free preview; replaces Gemini CLI</td>
 </tr><tr><td><a href="https://developers.openai.com/codex" class="external-link">Codex</a></td>
 <td>terminal, IDE</td>
-<td>included with paid ChatGPT plans</td>
+<td>paid ChatGPT plans</td>
 </tr><tr><td><a href="https://claude.com/claude-code" class="external-link">Claude Code</a></td>
 <td>terminal, IDE</td>
-<td>included with Claude plans</td>
+<td>Claude plans</td>
 </tr><tr><td><a href="https://cursor.com/" class="external-link">Cursor</a></td>
 <td>dedicated editor</td>
 <td>free tier</td>
 </tr><tr><td><a href="https://cline.bot/" class="external-link">Cline</a></td>
 <td>VS Code extensions</td>
-<td>open source; needs an API key</td>
+<td>needs an API key</td>
 </tr></tbody></table><p>eic-shell also has <code>claude</code> and <code>copilot</code>: run
 <code>eic-mcp config claude</code> (or <code>copilot</code>), then start
-it. The first login prints a code to paste in a browser, so it works
-over SSH.</p>
+it.</p>
 <div id="assistant-outside-eic-shell" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -576,8 +569,7 @@ over SSH.</p>
 <h3 class="callout-title">Assistant outside eic-shell</h3>
 <div class="callout-content">
 <p>The servers must run in eic-shell, but the client can run on your
-machine. Keep <code>eic-mcp up</code> running and put the client config
-in the directory where you start the client.</p>
+machine, started in the directory that holds its config file.</p>
 <ul><li><p><strong>Linux, WSL:</strong> apptainer shares the host network
 and your home directory. Run <code>eic-mcp config &lt;client&gt;</code>
 inside eic-shell, in the directory where you will start the
@@ -590,13 +582,12 @@ itself):</p>
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="bu">cd</span> ~/eic</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1" aria-label="code-block-3-2"></a><span class="va">DOCKER_OPTIONS</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">./eic-shell</span> <span class="at">--</span> eic-mcp docker-args<span class="va">)</span><span class="st">"</span> <span class="ex">./eic-shell</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1" aria-label="code-block-3-1"></a><span class="va">DOCKER_OPTIONS</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">./eic-shell</span> <span class="at">--</span> eic-mcp docker-args<span class="va">)</span><span class="st">"</span> <span class="ex">./eic-shell</span></span></code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a><span class="bu">cd</span> ~/eic/lambda             <span class="co"># on the Mac: the directory where you will launch opencode</span></span>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1" aria-label="code-block-4-1"></a>         <span class="co"># on Mac: the directory where you will launch opencode</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1" aria-label="code-block-4-2"></a><span class="ex">curl</span> <span class="at">-fsSLO</span> https://raw.githubusercontent.com/eic/tutorial-mcp/main/files/mcp-config/opencode.jsonc</span></code></pre>
 </div>
 </li>
